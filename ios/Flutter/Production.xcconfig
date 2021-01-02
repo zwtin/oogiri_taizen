@@ -1,0 +1,4 @@
+FLUTTER_FLAVOR=Production
+PRODUCT_BUNDLE_IDENTIFIER=com.zwtin.oogiritaizen
+DISPLAY_NAME=Flavor
+FLUTTER_TARGET=lib/main.dart
