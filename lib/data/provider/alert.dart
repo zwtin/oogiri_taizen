@@ -9,6 +9,7 @@ final alertProvider = ChangeNotifierProvider<Alert>(
 );
 
 class Alert extends ChangeNotifier {
+  String viewName;
   String title;
   String subtitle;
   bool showCancelButton;
@@ -16,12 +17,14 @@ class Alert extends ChangeNotifier {
   SweetAlertStyle style;
 
   void show({
+    String viewName,
     String title,
     String subtitle,
     bool showCancelButton,
     SweetAlertOnPress onPress,
     SweetAlertStyle style,
   }) {
+    this.viewName = viewName;
     this.title = title;
     this.subtitle = subtitle;
     this.showCancelButton = showCancelButton;
