@@ -62,8 +62,36 @@ class BottomTabView extends HookWidget {
 
           // 表示画面の配列
           children: <Widget>[
-            AnswerListView(),
-            MyProfileView(),
+            Navigator(
+              // ルート画面生成
+              onGenerateRoute: (RouteSettings settings) {
+                return PageRouteBuilder<Widget>(
+                  pageBuilder: (
+                    BuildContext context,
+                    Animation<double> animation1,
+                    Animation<double> animation2,
+                  ) {
+                    // 中身
+                    return AnswerListView();
+                  },
+                );
+              },
+            ),
+            Navigator(
+              // ルート画面生成
+              onGenerateRoute: (RouteSettings settings) {
+                return PageRouteBuilder<Widget>(
+                  pageBuilder: (
+                    BuildContext context,
+                    Animation<double> animation1,
+                    Animation<double> animation2,
+                  ) {
+                    // 中身
+                    return MyProfileView();
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
