@@ -16,6 +16,11 @@ class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel({@required this.alert});
   final Alert alert;
 
+  double getRadiansFromDegree(double degree) {
+    const unitRadian = 57.295779513;
+    return degree / unitRadian;
+  }
+
   void tapped() {
     alert.show(
       viewName: 'AnswerListView',
