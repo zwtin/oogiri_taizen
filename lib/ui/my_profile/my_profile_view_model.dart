@@ -14,16 +14,7 @@ final myProfileViewModelProvider = ChangeNotifierProvider<MyProfileViewModel>(
 
 class MyProfileViewModel extends ChangeNotifier {
   MyProfileViewModel({@required this.alert});
-  final Alert alert;
+  final Alert alert; // アラート表示用
 
-  void tapped() {
-    alert.show(
-      viewName: 'MyProfileView',
-      title: 'エラー',
-      subtitle: '選択済みのタブです',
-      showCancelButton: false,
-      onPress: null,
-      style: null,
-    );
-  }
+  String userId;
 }
