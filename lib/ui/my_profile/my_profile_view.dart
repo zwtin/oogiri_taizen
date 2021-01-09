@@ -175,6 +175,18 @@ class MyProfileView extends HookWidget {
                   ),
                   preferredSize: const Size.fromHeight(1),
                 ),
+                // ナビゲーションバーの右上のボタン
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      viewModel.signOut();
+                    },
+                  ),
+                ],
               ),
               body: DefaultTabController(
                 length: 2,
@@ -207,13 +219,13 @@ class MyProfileView extends HookWidget {
                   body: TabBarView(
                     children: [
                       RefreshIndicator(
-                        onRefresh: () {},
+                        onRefresh: viewModel.refresh,
                         child: ListView.builder(
                           key: const PageStorageKey<String>('posted'),
                           itemBuilder: (BuildContext context, int index) {
-//                            if (index == viewModel.items.length - 5) {
-//                              viewModel.addAnswer();
-//                            }
+                            if (index == viewModel.items.length - 5) {
+                              viewModel.addAnswer();
+                            }
                             return SizedBox(
                               child: Center(
                                 child: Text(index.toString()),
@@ -221,14 +233,17 @@ class MyProfileView extends HookWidget {
                               height: 50,
                             );
                           },
-//                          itemCount: viewModel.items.length,
+                          itemCount: viewModel.items.length,
                         ),
                       ),
                       RefreshIndicator(
-                        onRefresh: () {},
+                        onRefresh: viewModel.refresh,
                         child: ListView.builder(
                           key: const PageStorageKey<String>('favorite'),
                           itemBuilder: (BuildContext context, int index) {
+                            if (index == viewModel.items.length - 5) {
+                              viewModel.addAnswer();
+                            }
                             return SizedBox(
                               child: Center(
                                 child: Text(index.toString()),
@@ -236,7 +251,7 @@ class MyProfileView extends HookWidget {
                               height: 50,
                             );
                           },
-//                          itemCount: viewModel.items.length,
+                          itemCount: viewModel.items.length,
                         ),
                       ),
                     ],
