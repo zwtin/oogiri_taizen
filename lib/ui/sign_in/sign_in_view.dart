@@ -212,7 +212,9 @@ class SignInView extends HookWidget {
                         child: SignInButton(
                           Buttons.Google,
                           mini: false,
-                          onPressed: () {},
+                          onPressed: () {
+                            viewModel.googleSignIn();
+                          },
                         ),
                       ),
                       Container(

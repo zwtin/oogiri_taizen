@@ -37,6 +37,7 @@ dependencies:
   firebase_crashlytics: ^0.2.4
   firebase_performance: ^0.4.3
   firebase_analytics: ^6.3.0
+  firebase_storage: ^5.2.0
   #  firebase_admob: ^0.10.2
   #  firebase_dynamic_links: ^0.6.2
   #  firebase_messaging: ^7.0.3

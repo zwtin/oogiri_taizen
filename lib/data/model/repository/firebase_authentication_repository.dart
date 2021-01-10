@@ -47,7 +47,12 @@ class FirebaseAuthenticationRepository {
   }) async {
     await _firebaseAuth.sendSignInLinkToEmail(
       email: email,
-      actionCodeSettings: null,
+      actionCodeSettings: ActionCodeSettings(
+        url: 'https://oogiri-taizen-dev.firebaseapp.com',
+        handleCodeInApp: true,
+        iOSBundleId: 'com.zwtin.oogiritaizen.dev',
+        androidPackageName: 'com.zwtin.oogiritaizen.dev',
+      ),
     );
 //    await _firebaseAuth.sendSignInWithEmailLink(
 //      email: email,

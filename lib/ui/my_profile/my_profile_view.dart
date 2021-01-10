@@ -196,6 +196,7 @@ class MyProfileView extends HookWidget {
                     return <Widget>[
                       SliverToBoxAdapter(
                         child: Container(
+                          color: const Color(0xFFFFCC00),
                           height: 200,
                         ),
                       ),
@@ -203,7 +204,9 @@ class MyProfileView extends HookWidget {
                         pinned: true,
                         toolbarHeight: 0,
                         collapsedHeight: 0.01,
+                        backgroundColor: Color(0xFFFFCC00),
                         bottom: TabBar(
+                          indicatorColor: Colors.blue,
                           tabs: [
                             Tab(
                               text: '投稿したボケ',

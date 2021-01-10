@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/model/firebase_authentication_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/provider/alert.dart';
 import 'package:oogiritaizen/data/provider/tab_navigator.dart';
 
@@ -27,6 +27,7 @@ class SignInViewModel extends ChangeNotifier {
 
   Future<void> googleSignIn() async {
     await _firebaseAuthenticationRepository.signInWithGoogle();
+    navigator.pop();
   }
 
   Future<void> signInWithEmailAndPassword({

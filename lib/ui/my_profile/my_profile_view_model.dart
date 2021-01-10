@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/model/entity/answer.dart';
 import 'package:oogiritaizen/data/model/entity/current_user.dart';
-import 'package:oogiritaizen/data/model/firebase_authentication_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/provider/alert.dart';
 
 final myProfileViewModelProvider = ChangeNotifierProvider<MyProfileViewModel>(
