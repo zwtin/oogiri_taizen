@@ -9,14 +9,11 @@ import 'package:oogiritaizen/ui/my_profile/my_profile_view.dart';
 class BottomTabView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    // blocを取得
-    final bottomTabViewModel = useProvider(bottomTabViewModelProvider);
-
     return WillPopScope(
       // 戻るボタン押下時
       onWillPop: () {
         // 戻るアクション
-        bottomTabViewModel.pop();
+        context.read(bottomTabViewModelProvider).pop();
         // 標準の戻るアクションは発火させない
         return Future.value(false);
       },
@@ -35,11 +32,11 @@ class BottomTabView extends HookWidget {
           ),
 
           // 選択されたタブのインデックス
-          selectedIndex: bottomTabViewModel.selected,
+          selectedIndex: useProvider(bottomTabViewModelProvider).selected,
 
           // タブ押下時
           onSelectTab: (int index) {
-            bottomTabViewModel.tapped(index);
+            context.read(bottomTabViewModelProvider).tapped(index);
           },
 
           // タブの表示アイコン
@@ -58,7 +55,7 @@ class BottomTabView extends HookWidget {
         // 表示画面
         body: IndexedStack(
           // 表示画面のインデックス
-          index: bottomTabViewModel.selected,
+          index: useProvider(bottomTabViewModelProvider).selected,
 
           // 表示画面の配列
           children: <Widget>[

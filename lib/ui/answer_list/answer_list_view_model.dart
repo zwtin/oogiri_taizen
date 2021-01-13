@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/provider/alert.dart';
+import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 
-final answerListViewModelProvider = ChangeNotifierProvider<AnswerListViewModel>(
-  (ref) {
+final answerListViewModelProvider =
+    ChangeNotifierProvider.family<AnswerListViewModel, String>(
+  (ref, id) {
     return AnswerListViewModel(
-      alert: ref.read(
-        alertProvider,
-      ),
+      ref,
+      id,
     );
   },
 );
 
 class AnswerListViewModel extends ChangeNotifier {
-  AnswerListViewModel({@required this.alert});
-  final Alert alert;
+  AnswerListViewModel(
+    this.providerReference,
+    this.id,
+  );
+
+  final ProviderReference providerReference;
+  final String id;
 
   double getRadiansFromDegree(double degree) {
     const unitRadian = 57.295779513;
@@ -22,13 +27,12 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   void tapped() {
-    alert.show(
-      viewName: 'AnswerListView',
-      title: 'エラー',
-      subtitle: '選択済みのタブです',
-      showCancelButton: false,
-      onPress: null,
-      style: null,
-    );
+    providerReference.read(alertNotifierProvider(id)).show(
+          title: 'エラー',
+          subtitle: '選択済みのタブです',
+          showCancelButton: false,
+          onPress: null,
+          style: null,
+        );
   }
 }

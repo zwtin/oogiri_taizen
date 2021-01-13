@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/provider/alert.dart';
-import 'package:oogiritaizen/data/provider/tab_1_navigator.dart';
+import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
 import 'package:oogiritaizen/ui/sign_up/sign_up_view.dart';
 import 'package:sweetalert/sweetalert.dart';
+import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 
 class MyProfileView extends HookWidget {
+  final id = StringExtension.randomString(8);
+
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(myProfileViewModelProvider);
+    final viewModel = useProvider(myProfileViewModelProvider(id));
     return ProviderListener(
-      onChange: (BuildContext context, Alert alert) {
-        if (alert.viewName == 'MyProfileView') {
-          SweetAlert.show(
-            context,
-            title: alert.title,
-            subtitle: alert.subtitle,
-            showCancelButton: alert.showCancelButton,
-            onPress: alert.onPress,
-            style: alert.style,
-          );
-        }
+      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+        SweetAlert.show(
+          context,
+          title: alertNotifier.title,
+          subtitle: alertNotifier.subtitle,
+          showCancelButton: alertNotifier.showCancelButton,
+          onPress: alertNotifier.onPress,
+          style: alertNotifier.style,
+        );
       },
-      provider: alertProvider,
+      provider: alertNotifierProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, Tab1Navigator navigator) {
-          if (navigator.n == 0) {
+        onChange: (BuildContext context, Tab1NavigatorNotifier navigator) {
+          if (navigator.nextWidget != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute<Widget>(
+                builder: (BuildContext context) {
+                  return navigator.nextWidget;
+                },
+                fullscreenDialog: navigator.fullScreen,
+              ),
+            );
+          } else if (navigator.toRoot) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           } else {
             if (Navigator.of(context).canPop()) {
@@ -39,7 +49,7 @@ class MyProfileView extends HookWidget {
             }
           }
         },
-        provider: tab1NavigatorProvider,
+        provider: tab1NavigatorNotifierProvider,
         child: Builder(
           builder: (BuildContext context) {
             if (viewModel.userId == null) {

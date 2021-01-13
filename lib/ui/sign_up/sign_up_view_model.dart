@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
-import 'package:oogiritaizen/data/provider/alert.dart';
-import 'package:oogiritaizen/data/provider/tab_navigator.dart';
+import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
 
-final signUpViewModelProvider = ChangeNotifierProvider<SignUpViewModel>(
-  (ref) {
+final signUpViewModelProvider =
+    ChangeNotifierProvider.autoDispose.family<SignUpViewModel, String>(
+  (ref, id) {
     return SignUpViewModel(
-      alert: ref.read(
-        alertProvider,
-      ),
-      navigator: ref.read(
-        tabNavigatorProvider,
-      ),
+      ref,
+      id,
     );
   },
 );
 
 class SignUpViewModel extends ChangeNotifier {
-  SignUpViewModel({@required this.alert, @required this.navigator});
-  final Alert alert;
-  final TabNavigator navigator;
+  SignUpViewModel(
+    this.providerReference,
+    this.id,
+  );
+
+  final ProviderReference providerReference;
+  final String id;
+
   final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
       FirebaseAuthenticationRepository();
   bool isLoading = false;
 
   Future<void> googleSignIn() async {
     await _firebaseAuthenticationRepository.signInWithGoogle();
-    navigator.pop();
+    providerReference.read(navigatorNotifierProvider(id)).pop();
   }
 
   Future<void> signInWithEmailAndPassword({
@@ -38,24 +40,22 @@ class SignUpViewModel extends ChangeNotifier {
     assert(password != null);
 
     if (email.isEmpty) {
-      alert.show(
-        viewName: 'SignInView',
-        title: 'エラー',
-        subtitle: 'メールアドレスを入力してください',
-        showCancelButton: false,
-        onPress: null,
-        style: null,
-      );
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: 'メールアドレスを入力してください',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
       return;
     } else if (password.isEmpty) {
-      alert.show(
-        viewName: 'SignInView',
-        title: 'エラー',
-        subtitle: 'パスワードを入力してください',
-        showCancelButton: false,
-        onPress: null,
-        style: null,
-      );
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: 'パスワードを入力してください',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
       return;
     }
     try {
@@ -65,17 +65,16 @@ class SignUpViewModel extends ChangeNotifier {
         email: email,
         password: password,
       );
-      navigator.pop();
+      providerReference.read(navigatorNotifierProvider(id)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      alert.show(
-        viewName: 'SignInView',
-        title: 'エラー',
-        subtitle: 'メールアドレスまたはパスワードが間違っています',
-        showCancelButton: false,
-        onPress: null,
-        style: null,
-      );
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: 'メールアドレスまたはパスワードが間違っています',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
       notifyListeners();
     }
   }

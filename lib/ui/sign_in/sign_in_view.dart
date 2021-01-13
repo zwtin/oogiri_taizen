@@ -4,37 +4,51 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:oogiritaizen/data/provider/alert.dart';
-import 'package:oogiritaizen/data/provider/tab_navigator.dart';
+import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
+import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 
 class SignInView extends HookWidget {
+  final id = StringExtension.randomString(8);
+
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(signInViewModelProvider);
+    final viewModel = useProvider(signInViewModelProvider(id));
     final emailTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();
 
     return ProviderListener(
-      onChange: (BuildContext context, Alert alert) {
-        if (alert.viewName == 'SignInView') {
-          SweetAlert.show(
-            context,
-            title: alert.title,
-            subtitle: alert.subtitle,
-            showCancelButton: alert.showCancelButton,
-            onPress: alert.onPress,
-            style: alert.style,
-          );
-        }
+      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+        SweetAlert.show(
+          context,
+          title: alertNotifier.title,
+          subtitle: alertNotifier.subtitle,
+          showCancelButton: alertNotifier.showCancelButton,
+          onPress: alertNotifier.onPress,
+          style: alertNotifier.style,
+        );
       },
-      provider: alertProvider,
+      provider: alertNotifierProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, TabNavigator navigator) {
-          Navigator.of(context).pop();
+        onChange: (BuildContext context, NavigatorNotifier navigator) {
+          if (navigator.nextWidget != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute<Widget>(
+                builder: (BuildContext context) {
+                  return navigator.nextWidget;
+                },
+                fullscreenDialog: navigator.fullScreen,
+              ),
+            );
+          } else if (navigator.toRoot) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          } else {
+            Navigator.of(context).pop();
+          }
         },
-        provider: tabNavigatorProvider,
+        provider: navigatorNotifierProvider(id),
         child: LoadingOverlay(
           isLoading: viewModel.isLoading,
           color: Colors.grey,

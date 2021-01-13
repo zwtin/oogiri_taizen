@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sweetalert/sweetalert.dart';
 
-final alertProvider = ChangeNotifierProvider<Alert>(
-  (ref) {
-    return Alert();
+final alertNotifierProvider =
+    ChangeNotifierProvider.autoDispose.family<AlertNotifier, String>(
+  (ref, id) {
+    return AlertNotifier(id);
   },
 );
 
-class Alert extends ChangeNotifier {
-  String viewName;
+class AlertNotifier extends ChangeNotifier {
+  AlertNotifier(this.id);
+
+  String id;
+
   String title;
   String subtitle;
   bool showCancelButton;
@@ -17,14 +21,12 @@ class Alert extends ChangeNotifier {
   SweetAlertStyle style;
 
   void show({
-    String viewName,
     String title,
     String subtitle,
     bool showCancelButton,
     SweetAlertOnPress onPress,
     SweetAlertStyle style,
   }) {
-    this.viewName = viewName;
     this.title = title;
     this.subtitle = subtitle;
     this.showCancelButton = showCancelButton;

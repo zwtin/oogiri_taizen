@@ -1,23 +1,24 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/model/entity/answer.dart';
 import 'package:oogiritaizen/data/model/entity/current_user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
-import 'package:oogiritaizen/data/provider/alert.dart';
 
-final myProfileViewModelProvider = ChangeNotifierProvider<MyProfileViewModel>(
-  (ref) {
+final myProfileViewModelProvider =
+    ChangeNotifierProvider.family<MyProfileViewModel, String>(
+  (ref, id) {
     return MyProfileViewModel(
-      alert: ref.read(
-        alertProvider,
-      ),
+      ref,
+      id,
     );
   },
 );
 
 class MyProfileViewModel extends ChangeNotifier {
-  MyProfileViewModel({@required this.alert}) {
+  MyProfileViewModel(
+    this.providerReference,
+    this.id,
+  ) {
     _firebaseAuthenticationRepository.getCurrentUserStream().listen(
       (CurrentUser currentUser) {
         userId = currentUser?.id;
@@ -26,7 +27,9 @@ class MyProfileViewModel extends ChangeNotifier {
     );
   }
 
-  final Alert alert; // アラート表示用
+  final ProviderReference providerReference;
+  final String id;
+
   final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
       FirebaseAuthenticationRepository();
 
