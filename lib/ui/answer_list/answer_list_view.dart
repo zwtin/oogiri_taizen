@@ -186,7 +186,15 @@ class AnswerListView extends HookWidget {
                               Icons.menu,
                               color: Colors.white,
                             ),
-                            onClick: () {},
+                            onClick: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<Widget>(
+                                  builder: (BuildContext context) {
+                                    return AnswerListView();
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -218,17 +226,8 @@ class AnswerListView extends HookWidget {
                               Icons.camera_alt,
                               color: Colors.white,
                             ),
-                            onClick: () async {
-                              final packageInfo =
-                                  await PackageInfo.fromPlatform();
-                              showAboutDialog(
-                                context: context,
-                                applicationIcon: const FlutterLogo(),
-                                applicationName: packageInfo.packageName,
-                                applicationVersion: packageInfo.version,
-                                applicationLegalese:
-                                    '\u{a9} 2014 The Flutter Authors',
-                              );
+                            onClick: () {
+                              viewModel.tapped();
                             },
                           ),
                         ),
