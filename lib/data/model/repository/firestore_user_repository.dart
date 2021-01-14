@@ -1,27 +1,28 @@
-//import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter_firebase/use_cases/create_answer_entity.dart';
-//import 'package:flutter_firebase/use_cases/favorite_answer_entity.dart';
-//import 'package:flutter_firebase/use_cases/user.dart';
-//
-//class FirestoreUserRepository {
-//  final _firestore = Firestore.instance;
-//
-//  @override
-//  Stream<User> getUserStream({@required String userId}) {
-//    return _firestore.collection('users').document(userId).snapshots().map(
-//      (DocumentSnapshot snapshot) {
-//        return User()
-//          ..id = snapshot.data['id'] as String
-//          ..name = snapshot.data['name'] as String
-//          ..imageUrl = snapshot.data['image_url'] as String
-//          ..introduction = snapshot.data['introduction'] as String;
-//      },
-//    );
-//  }
-//
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
+
+class FirestoreUserRepository {
+  final _firestore = FirebaseFirestore.instance;
+
+  Stream<User> getUserStream({@required String userId}) {
+    return _firestore.collection('users').doc(userId).snapshots().map(
+      (DocumentSnapshot snapshot) {
+        return User()
+          ..id = snapshot.data()['id'] as String
+          ..name = snapshot.data()['name'] as String
+          ..imageUrl = snapshot.data()['image_url'] as String
+          ..introduction = snapshot.data()['introduction'] as String;
+      },
+    );
+  }
+
 //  @override
 //  Future<User> getUser({@required String userId}) async {
+//    final snapshot = await _firestore.collection('users').doc(userId).get();
+//
+//
+//    snapshot.data().map((key, value) => null)
 //    final user =
 //        await _firestore.collection('users').document(userId).get().then(
 //      (DocumentSnapshot snapshot) {
@@ -114,4 +115,4 @@
 //      },
 //    );
 //  }
-//}
+}

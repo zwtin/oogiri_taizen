@@ -16,6 +16,153 @@ class MyProfileView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(myProfileViewModelProvider(id));
+    if (viewModel.user == null) {
+      return ProviderListener(
+        onChange: (BuildContext context, AlertNotifier alertNotifier) {
+          SweetAlert.show(
+            context,
+            title: alertNotifier.title,
+            subtitle: alertNotifier.subtitle,
+            showCancelButton: alertNotifier.showCancelButton,
+            onPress: alertNotifier.onPress,
+            style: alertNotifier.style,
+          );
+        },
+        provider: alertNotifierProvider(id),
+        child: ProviderListener(
+          onChange: (BuildContext context, Tab1NavigatorNotifier navigator) {
+            if (navigator.nextWidget != null) {
+              Navigator.of(context).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigator.nextWidget;
+                  },
+                  fullscreenDialog: navigator.fullScreen,
+                ),
+              );
+            } else if (navigator.toRoot) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            } else {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else {
+                context.read(bottomTabViewModelProvider).tapped(0);
+              }
+            }
+          },
+          provider: tab1NavigatorNotifierProvider,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'マイページ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              backgroundColor: const Color(0xFFFFCC00),
+              elevation: 0,
+              bottom: PreferredSize(
+                child: Container(
+                  color: Colors.white24,
+                  height: 1,
+                ),
+                preferredSize: const Size.fromHeight(1),
+              ),
+            ),
+            body: Stack(
+              children: [
+                Container(
+                  color: const Color(0xFFFFCC00),
+                ),
+                Column(
+                  children: [
+                    const Spacer(),
+                    Row(
+                      children: [
+                        // ボタン0
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                            child: RaisedButton(
+                              child: const SizedBox(
+                                child: Center(
+                                  child: Text(
+                                    'ログイン',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                height: 50,
+                              ),
+                              color: const Color(0xFFFFCC00),
+                              textColor: Colors.white,
+                              onPressed: () {
+                                // ボタン押下時
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute<SignInView>(
+                                    builder: (BuildContext context) {
+                                      // 複数のProviderを提供
+                                      return SignInView();
+                                    },
+                                    // 全画面で表示
+                                    fullscreenDialog: true,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // ボタン1
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                            child: RaisedButton(
+                              child: const SizedBox(
+                                child: Center(
+                                  child: Text(
+                                    '新規登録',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                height: 50,
+                              ),
+                              color: const Color(0xFFFFCC00),
+                              textColor: Colors.white,
+                              onPressed: () {
+                                // ボタン押下時
+                                Navigator.of(context, rootNavigator: true).push(
+                                  MaterialPageRoute<SignUpView>(
+                                    builder: (BuildContext context) {
+                                      // 複数のProviderを提供
+                                      return SignUpView();
+                                    },
+                                    // 全画面で表示
+                                    fullscreenDialog: true,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
         SweetAlert.show(
@@ -50,259 +197,140 @@ class MyProfileView extends HookWidget {
           }
         },
         provider: tab1NavigatorNotifierProvider,
-        child: Builder(
-          builder: (BuildContext context) {
-            if (viewModel.userId == null) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text(
-                    'マイページ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  backgroundColor: const Color(0xFFFFCC00),
-                  elevation: 0,
-                  bottom: PreferredSize(
-                    child: Container(
-                      color: Colors.white24,
-                      height: 1,
-                    ),
-                    preferredSize: const Size.fromHeight(1),
-                  ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'マイページ',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: const Color(0xFFFFCC00),
+            elevation: 0,
+            bottom: PreferredSize(
+              child: Container(
+                color: Colors.white24,
+                height: 1,
+              ),
+              preferredSize: const Size.fromHeight(1),
+            ),
+            // ナビゲーションバーの右上のボタン
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.white,
                 ),
-                body: Stack(
-                  children: [
-                    Container(
-                      color: const Color(0xFFFFCC00),
-                    ),
-                    Column(
-                      children: [
-                        const Spacer(),
-                        Row(
+                onPressed: () {
+                  showModalBottomSheet<int>(
+                    context: context,
+                    builder: (BuildContext _context) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            // ボタン0
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 40),
-                                child: RaisedButton(
-                                  child: const SizedBox(
-                                    child: Center(
-                                      child: Text(
-                                        'ログイン',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    height: 50,
-                                  ),
-                                  color: const Color(0xFFFFCC00),
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignInView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignInView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('プロフィール編集'),
+                              onTap: () {},
                             ),
-
-                            // ボタン1
-                            Expanded(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 40),
-                                child: RaisedButton(
-                                  child: const SizedBox(
-                                    child: Center(
-                                      child: Text(
-                                        '新規登録',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    height: 50,
-                                  ),
-                                  color: const Color(0xFFFFCC00),
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignUpView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignUpView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                            ListTile(
+                              leading: const Icon(Icons.settings),
+                              title: const Text('設定'),
+                              onTap: () {},
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.logout),
+                              title: const Text('ログアウト'),
+                              onTap: () {
+                                Navigator.of(_context).pop();
+                                viewModel.signOut();
+                              },
                             ),
                           ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                  'マイページ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                backgroundColor: const Color(0xFFFFCC00),
-                elevation: 0,
-                bottom: PreferredSize(
-                  child: Container(
-                    color: Colors.white24,
-                    height: 1,
-                  ),
-                  preferredSize: const Size.fromHeight(1),
-                ),
-                // ナビゲーションバーの右上のボタン
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      showModalBottomSheet<int>(
-                        context: context,
-                        builder: (BuildContext _context) {
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: const Icon(Icons.edit),
-                                  title: const Text('プロフィール編集'),
-                                  onTap: () {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.settings),
-                                  title: const Text('設定'),
-                                  onTap: () {},
-                                ),
-                                ListTile(
-                                  leading: const Icon(Icons.logout),
-                                  title: const Text('ログアウト'),
-                                  onTap: () {
-                                    Navigator.of(_context).pop();
-                                    viewModel.signOut();
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                        ),
                       );
                     },
+                  );
+                },
+              ),
+            ],
+          ),
+          body: DefaultTabController(
+            length: 2,
+            child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverToBoxAdapter(
+                    child: Container(
+                      color: const Color(0xFFFFCC00),
+                      height: 200,
+                    ),
+                  ),
+                  const SliverAppBar(
+                    pinned: true,
+                    toolbarHeight: 0,
+                    collapsedHeight: 0.01,
+                    backgroundColor: Color(0xFFFFCC00),
+                    bottom: TabBar(
+                      indicatorColor: Colors.blue,
+                      tabs: [
+                        Tab(
+                          text: '投稿したボケ',
+                        ),
+                        Tab(
+                          text: 'お気に入りのボケ',
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              body: TabBarView(
+                children: [
+                  RefreshIndicator(
+                    onRefresh: viewModel.refresh,
+                    child: ListView.builder(
+                      key: const PageStorageKey<String>('posted'),
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == viewModel.items.length - 5) {
+                          viewModel.addAnswer();
+                        }
+                        return SizedBox(
+                          child: Center(
+                            child: Text(index.toString()),
+                          ),
+                          height: 50,
+                        );
+                      },
+                      itemCount: viewModel.items.length,
+                    ),
+                  ),
+                  RefreshIndicator(
+                    onRefresh: viewModel.refresh,
+                    child: ListView.builder(
+                      key: const PageStorageKey<String>('favorite'),
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == viewModel.items.length - 5) {
+                          viewModel.addAnswer();
+                        }
+                        return SizedBox(
+                          child: Center(
+                            child: Text(index.toString()),
+                          ),
+                          height: 50,
+                        );
+                      },
+                      itemCount: viewModel.items.length,
+                    ),
                   ),
                 ],
               ),
-              body: DefaultTabController(
-                length: 2,
-                child: NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      SliverToBoxAdapter(
-                        child: Container(
-                          color: const Color(0xFFFFCC00),
-                          height: 200,
-                        ),
-                      ),
-                      const SliverAppBar(
-                        pinned: true,
-                        toolbarHeight: 0,
-                        collapsedHeight: 0.01,
-                        backgroundColor: Color(0xFFFFCC00),
-                        bottom: TabBar(
-                          indicatorColor: Colors.blue,
-                          tabs: [
-                            Tab(
-                              text: '投稿したボケ',
-                            ),
-                            Tab(
-                              text: 'お気に入りのボケ',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ];
-                  },
-                  body: TabBarView(
-                    children: [
-                      RefreshIndicator(
-                        onRefresh: viewModel.refresh,
-                        child: ListView.builder(
-                          key: const PageStorageKey<String>('posted'),
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == viewModel.items.length - 5) {
-                              viewModel.addAnswer();
-                            }
-                            return SizedBox(
-                              child: Center(
-                                child: Text(index.toString()),
-                              ),
-                              height: 50,
-                            );
-                          },
-                          itemCount: viewModel.items.length,
-                        ),
-                      ),
-                      RefreshIndicator(
-                        onRefresh: viewModel.refresh,
-                        child: ListView.builder(
-                          key: const PageStorageKey<String>('favorite'),
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == viewModel.items.length - 5) {
-                              viewModel.addAnswer();
-                            }
-                            return SizedBox(
-                              child: Center(
-                                child: Text(index.toString()),
-                              ),
-                              height: 50,
-                            );
-                          },
-                          itemCount: viewModel.items.length,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

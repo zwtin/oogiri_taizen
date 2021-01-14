@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/model/entity/answer.dart';
 import 'package:oogiritaizen/data/model/entity/current_user.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 
 final myProfileViewModelProvider =
     ChangeNotifierProvider.family<MyProfileViewModel, String>(
@@ -21,8 +24,17 @@ class MyProfileViewModel extends ChangeNotifier {
   ) {
     _firebaseAuthenticationRepository.getCurrentUserStream().listen(
       (CurrentUser currentUser) {
-        userId = currentUser?.id;
-        notifyListeners();
+        if (currentUser == null) {
+          user = null;
+          notifyListeners();
+        } else {
+          _firestoreUserRepository.getUserStream(userId: currentUser.id).listen(
+            (User _user) {
+              user = _user;
+              notifyListeners();
+            },
+          );
+        }
       },
     );
   }
@@ -32,8 +44,10 @@ class MyProfileViewModel extends ChangeNotifier {
 
   final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
       FirebaseAuthenticationRepository();
+  final FirestoreUserRepository _firestoreUserRepository =
+      FirestoreUserRepository();
 
-  String userId;
+  User user;
 
   bool isConnecting = false;
   List<Answer> items = [
