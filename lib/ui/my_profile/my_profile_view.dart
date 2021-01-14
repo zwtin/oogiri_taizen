@@ -193,7 +193,32 @@ class MyProfileView extends HookWidget {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      viewModel.signOut();
+                      showModalBottomSheet<int>(
+                        context: context,
+                        builder: (BuildContext _context) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.edit),
+                                  title: const Text('プロフィール編集'),
+                                  onTap: () {},
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.logout),
+                                  title: const Text('ログアウト'),
+                                  onTap: () {
+                                    Navigator.of(_context).pop();
+                                    viewModel.signOut();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ],
