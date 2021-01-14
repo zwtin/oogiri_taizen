@@ -28,8 +28,22 @@ class SignInViewModel extends ChangeNotifier {
   bool isLoading = false;
 
   Future<void> googleSignIn() async {
-    await _firebaseAuthenticationRepository.signInWithGoogle();
-    providerReference.read(navigatorNotifierProvider(id)).pop();
+    try {
+      isLoading = true;
+      notifyListeners();
+      await _firebaseAuthenticationRepository.signInWithGoogle();
+      providerReference.read(navigatorNotifierProvider(id)).pop();
+    } on Exception catch (error) {
+      isLoading = false;
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: 'ログインに失敗しました',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
+      notifyListeners();
+    }
   }
 
   Future<void> signInWithEmailAndPassword({

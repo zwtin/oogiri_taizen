@@ -49,6 +49,8 @@ class SignUpView extends HookWidget {
         },
         provider: navigatorNotifierProvider(id),
         child: LoadingOverlay(
+          isLoading: viewModel.isLoading,
+          color: Colors.grey,
           child: Scaffold(
             // ナビゲーションバー
             appBar: AppBar(
@@ -234,8 +236,6 @@ class SignUpView extends HookWidget {
               ],
             ),
           ),
-          isLoading: false,
-          color: Colors.grey,
         ),
       ),
     );
