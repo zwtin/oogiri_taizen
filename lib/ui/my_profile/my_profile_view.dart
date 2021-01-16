@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
+import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
+import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
 import 'package:oogiritaizen/ui/sign_up/sign_up_view.dart';
@@ -220,7 +222,6 @@ class MyProfileView extends HookWidget {
               IconButton(
                 icon: const Icon(
                   Icons.menu,
-                  color: Colors.white,
                 ),
                 onPressed: () {
                   showModalBottomSheet<int>(
@@ -234,7 +235,16 @@ class MyProfileView extends HookWidget {
                             ListTile(
                               leading: const Icon(Icons.edit),
                               title: const Text('プロフィール編集'),
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.of(_context).pop();
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<EditProfileView>(
+                                    builder: (BuildContext context) {
+                                      return EditProfileView();
+                                    },
+                                  ),
+                                );
+                              },
                             ),
                             ListTile(
                               leading: const Icon(Icons.settings),
@@ -267,7 +277,94 @@ class MyProfileView extends HookWidget {
                   SliverToBoxAdapter(
                     child: Container(
                       color: const Color(0xFFFFCC00),
-                      height: 200,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<ImageDetailView>(
+                                    builder: (BuildContext context) {
+                                      return ImageDetailView();
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Hero(
+                                tag: 'aaa',
+                                child: Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                        'assets/images/no_user.jpg',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 16,
+                            ),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  viewModel.user.name,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'ID:',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    SizedBox(
+                                      width: 150,
+                                      child: Text(
+                                        viewModel.user.id,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  height: 16,
+                                ),
+                                Text(
+                                  viewModel.user.introduction,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            )),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const SliverAppBar(

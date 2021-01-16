@@ -157,6 +157,14 @@ class AnswerListView extends HookWidget {
                   )
                 ],
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.announcement,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
             ),
             body: Stack(
               children: [
