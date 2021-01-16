@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -282,27 +283,33 @@ class MyProfileView extends HookWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
+                            GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(
+                                Navigator.of(context, rootNavigator: true).push(
                                   MaterialPageRoute<ImageDetailView>(
                                     builder: (BuildContext context) {
                                       return ImageDetailView();
                                     },
+                                    fullscreenDialog: true,
                                   ),
                                 );
                               },
                               child: Hero(
-                                tag: 'aaa',
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                        'assets/images/no_user.jpg',
+                                tag: 'imageHero',
+                                child: ClipOval(
+                                  child: SizedBox(
+                                    width: 120,
+                                    height: 120,
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      imageUrl: viewModel.user.imageUrl,
+                                      errorWidget:
+                                          (context, url, dynamic error) =>
+                                              Image.asset(
+                                        'assets/icon/no_user.jpg',
                                       ),
                                     ),
                                   ),

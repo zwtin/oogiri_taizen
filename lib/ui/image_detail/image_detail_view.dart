@@ -6,31 +6,18 @@ class ImageDetailView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'マイページ',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+      body: GestureDetector(
+        child: Center(
+          child: PhotoView(
+            imageProvider: NetworkImage(
+              'https://firebasestorage.googleapis.com/v0/b/oogiri-taizen-dev.appspot.com/o/images%2Fusers%2Fzwtin.jpg?alt=media&token=e1349bbc-b26f-4933-bcb7-9c930ecb817d',
+            ),
+            heroAttributes: PhotoViewHeroAttributes(tag: 'imageHero'),
           ),
         ),
-        backgroundColor: const Color(0xFFFFCC00),
-        elevation: 0,
-        bottom: PreferredSize(
-          child: Container(
-            color: Colors.white24,
-            height: 1,
-          ),
-          preferredSize: const Size.fromHeight(1),
-        ),
-      ),
-      body: Center(
-        child: PhotoView(
-          imageProvider: AssetImage(
-            'assets/images/no_user.jpg',
-          ),
-          heroAttributes: PhotoViewHeroAttributes(tag: 'aaa'),
-        ),
+        onTap: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }
