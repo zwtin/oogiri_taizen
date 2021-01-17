@@ -6,6 +6,7 @@ import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
+import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
@@ -286,11 +287,12 @@ class MyProfileView extends HookWidget {
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context, rootNavigator: true).push(
-                                  MaterialPageRoute<ImageDetailView>(
-                                    builder: (BuildContext context) {
-                                      return ImageDetailView();
-                                    },
-                                    fullscreenDialog: true,
+                                  FadeInRoute(
+                                    widget: ImageDetailView(
+                                      imageUrl: viewModel.user.imageUrl,
+                                      imageTag: 'imageHero',
+                                    ),
+                                    opaque: false,
                                   ),
                                 );
                               },
