@@ -17,24 +17,18 @@ class FirestoreUserRepository {
     );
   }
 
-//  @override
-//  Future<User> getUser({@required String userId}) async {
-//    final snapshot = await _firestore.collection('users').doc(userId).get();
-//
-//
-//    snapshot.data().map((key, value) => null)
-//    final user =
-//        await _firestore.collection('users').document(userId).get().then(
-//      (DocumentSnapshot snapshot) {
-//        return User()
-//          ..id = snapshot.data['id'] as String
-//          ..name = snapshot.data['name'] as String
-//          ..imageUrl = snapshot.data['image_url'] as String
-//          ..introduction = snapshot.data['introduction'] as String;
-//      },
-//    );
-//    return user;
-//  }
+  Future<User> getUser({@required String userId}) async {
+    return _firestore.collection('users').doc(userId).get().then(
+      (DocumentSnapshot snapshot) {
+        return User()
+          ..id = snapshot.data()['id'] as String
+          ..name = snapshot.data()['name'] as String
+          ..imageUrl = snapshot.data()['image_url'] as String
+          ..introduction = snapshot.data()['introduction'] as String;
+      },
+    );
+  }
+
 //
 //  @override
 //  Future<bool> isExistUser({@required String userId}) async {
@@ -54,21 +48,20 @@ class FirestoreUserRepository {
 //    );
 //  }
 //
-//  @override
-//  Future<void> updateUser(
-//      {@required String userId, @required User user}) async {
-//    final data = <String, dynamic>{};
-//    if (user.name != null) {
-//      data['name'] = user.name;
-//    }
-//    if (user.introduction != null) {
-//      data['introduction'] = user.introduction;
-//    }
-//    if (user.imageUrl != null) {
-//      data['image_url'] = user.imageUrl;
-//    }
-//    await _firestore.collection('users').document(userId).updateData(data);
-//  }
+  Future<void> updateUser(
+      {@required String userId, @required User user}) async {
+    final data = <String, dynamic>{};
+    if (user.name != null) {
+      data['name'] = user.name;
+    }
+    if (user.introduction != null) {
+      data['introduction'] = user.introduction;
+    }
+    if (user.imageUrl != null) {
+      data['image_url'] = user.imageUrl;
+    }
+    await _firestore.collection('users').doc(userId).update(data);
+  }
 //
 //  @override
 //  Stream<List<CreateAnswerEntity>> getCreateAnswersStream(

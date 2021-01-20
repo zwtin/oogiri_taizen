@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/ui/edit_profile/edit_profile_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 
@@ -12,6 +13,27 @@ class EditProfileView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = useProvider(editProfileViewModelProvider(id));
+    final nameTextController = useTextEditingController();
+    final introductionTextController = useTextEditingController();
+
+    nameTextController.addListener(
+      () {
+        context.read(editProfileViewModelProvider(id)).user.name =
+            nameTextController.text;
+      },
+    );
+
+    introductionTextController.addListener(
+      () {
+        context.read(editProfileViewModelProvider(id)).user.introduction =
+            introductionTextController.text;
+      },
+    );
+
+    nameTextController.text = viewModel.user.name;
+    introductionTextController.text = viewModel.user.introduction;
+
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
         SweetAlert.show(
@@ -43,7 +65,7 @@ class EditProfileView extends HookWidget {
         },
         provider: navigatorNotifierProvider(id),
         child: LoadingOverlay(
-          isLoading: false,
+          isLoading: viewModel.isConnecting,
           color: Colors.grey,
           child: Scaffold(
             // ナビゲーションバー
@@ -65,31 +87,13 @@ class EditProfileView extends HookWidget {
                 preferredSize: const Size.fromHeight(1),
               ),
               actions: [
-//                IconButton(
-//                  icon: const Icon(
-//                    Icons.post_add,
-//                  ),
-//                  onPressed: () {},
-//                ),
-                Center(
-                  child: Container(
-                    width: 80,
-                    padding: EdgeInsets.fromLTRB(0, 0, 16, 0),
-                    child: RaisedButton(
-                      child: const Text(
-                        '投稿',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {},
-                      color: const Color(0xFFFFCC00),
-                      shape: const StadiumBorder(
-                        side: BorderSide(color: Colors.white, width: 2),
-                      ),
-                    ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.edit,
                   ),
+                  onPressed: () {
+                    context.read(editProfileViewModelProvider(id)).postUser();
+                  },
                 ),
               ],
             ),
@@ -99,14 +103,117 @@ class EditProfileView extends HookWidget {
                   color: const Color(0xFFFFCC00),
                 ),
                 SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: 32,
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            Container(
+                              color: Colors.green,
+                              width: 120,
+                              height: 120,
+                            )
+                          ],
+                        ),
+                        Container(
+                          height: 16,
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.white,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '名前　　',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Container(
+                                width: 16,
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                  child: TextField(
+                                    controller: nameTextController,
+                                    keyboardType: TextInputType.name,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                    decoration: const InputDecoration.collapsed(
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.white,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '自己紹介',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Container(
+                                width: 16,
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                  child: TextField(
+                                    controller: introductionTextController,
+                                    maxLines: 5,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                    decoration: const InputDecoration.collapsed(
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.white,
+                        ),
+                        Container(
+                          height: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -105,6 +105,7 @@ class SignInView extends HookWidget {
                             ),
                           ),
                           child: TextField(
+                            keyboardType: TextInputType.emailAddress,
                             controller: emailTextController,
                             decoration: InputDecoration(
                               //Focusしていないとき
@@ -143,6 +144,7 @@ class SignInView extends HookWidget {
                             ),
                           ),
                           child: TextField(
+                            keyboardType: TextInputType.visiblePassword,
                             controller: passwordTextController,
                             obscureText: true,
                             decoration: InputDecoration(
