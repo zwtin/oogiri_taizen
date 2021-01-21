@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
-import 'package:oogiritaizen/ui/image_edit/image_edit_view.dart';
 
 final editProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, String>(
@@ -129,11 +129,35 @@ class EditProfileViewModel extends ChangeNotifier {
   }
 
   Future<void> getImage() async {
-    final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
-    if (imageFile != null) {
-      providerReference
-          .read(navigatorNotifierProvider(id))
-          .present(ImageEditView(File(imageFile.path)));
-    }
+    final pickedFile =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    final croppedFile = await ImageCropper.cropImage(
+        sourcePath: pickedFile.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
+            : [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
+        androidUiSettings: const AndroidUiSettings(
+            toolbarColor: Color(0xFFFFCC00),
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: const IOSUiSettings());
+
+    if (croppedFile != null) {}
   }
 }
