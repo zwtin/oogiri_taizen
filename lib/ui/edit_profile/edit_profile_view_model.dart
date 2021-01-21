@@ -6,6 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firebase_storage_repository.dart';
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
@@ -24,9 +25,7 @@ class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(
     this.providerReference,
     this.id,
-  ) {
-    setup();
-  }
+  );
 
   final ProviderReference providerReference;
   final String id;
@@ -35,44 +34,18 @@ class EditProfileViewModel extends ChangeNotifier {
       FirebaseAuthenticationRepository();
   final FirestoreUserRepository _firestoreUserRepository =
       FirestoreUserRepository();
+  final FirebaseStorageRepository _firebaseStorageRepository =
+      FirebaseStorageRepository();
 
-  User user;
+  User originalUser;
+  String editedName;
+  String editedIntroduction;
+  File imageFile;
 
   bool isConnecting = false;
 
-  Future<void> setup() async {
-    try {
-      isConnecting = true;
-      notifyListeners();
-
-      final currentUser = _firebaseAuthenticationRepository.getCurrentUser();
-      if (currentUser != null) {
-        user = await _firestoreUserRepository.getUser(userId: currentUser.id);
-        isConnecting = false;
-        notifyListeners();
-      } else {
-        user = null;
-        isConnecting = false;
-        notifyListeners();
-      }
-    } on Exception catch (error) {
-      isConnecting = false;
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: 'ログイン情報の取得に失敗しました',
-            showCancelButton: false,
-            onPress: (bool b) {
-              providerReference.read(navigatorNotifierProvider(id)).pop();
-              return b;
-            },
-            style: null,
-          );
-      notifyListeners();
-    }
-  }
-
   Future<void> postUser() async {
-    if (user.name.isEmpty) {
+    if (editedName.isEmpty) {
       // ユーザー名入力チェック
       providerReference.read(alertNotifierProvider(id)).show(
             title: 'エラー',
@@ -84,7 +57,7 @@ class EditProfileViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (user.introduction.isEmpty) {
+    if (editedIntroduction.isEmpty) {
       // 自己紹介入力チェック
       providerReference.read(alertNotifierProvider(id)).show(
             title: 'エラー',
@@ -99,9 +72,18 @@ class EditProfileViewModel extends ChangeNotifier {
     try {
       isConnecting = true;
       notifyListeners();
+      var uploadedUrl = '';
+      if (imageFile != null) {
+        uploadedUrl = await _firebaseStorageRepository.upload(imageFile);
+      }
       await _firestoreUserRepository.updateUser(
-        userId: user.id,
-        user: user,
+        userId: originalUser.id,
+        user: User()
+          ..name = originalUser.name == editedName ? null : editedName
+          ..introduction = originalUser.introduction == editedIntroduction
+              ? null
+              : editedIntroduction
+          ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
       );
       isConnecting = false;
       providerReference.read(alertNotifierProvider(id)).show(
@@ -158,6 +140,9 @@ class EditProfileViewModel extends ChangeNotifier {
             lockAspectRatio: false),
         iosUiSettings: const IOSUiSettings());
 
-    if (croppedFile != null) {}
+    if (croppedFile != null) {
+      imageFile = croppedFile;
+      notifyListeners();
+    }
   }
 }

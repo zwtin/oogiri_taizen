@@ -242,7 +242,12 @@ class MyProfileView extends HookWidget {
                                 Navigator.of(context).push(
                                   MaterialPageRoute<EditProfileView>(
                                     builder: (BuildContext context) {
-                                      return EditProfileView();
+                                      return EditProfileView(
+                                        context
+                                            .read(
+                                                myProfileViewModelProvider(id))
+                                            .user,
+                                      );
                                     },
                                   ),
                                 );
@@ -298,21 +303,29 @@ class MyProfileView extends HookWidget {
                               },
                               child: Hero(
                                 tag: 'imageHero',
-                                child: ClipOval(
-                                  child: SizedBox(
-                                    width: 120,
-                                    height: 120,
-                                    child: CachedNetworkImage(
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                        child: CircularProgressIndicator(),
+                                child: SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    imageUrl: viewModel.user.imageUrl,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                      imageUrl: viewModel.user.imageUrl,
-                                      errorWidget:
-                                          (context, url, dynamic error) =>
-                                              Image.asset(
-                                        'assets/icon/no_user.jpg',
-                                      ),
+                                    ),
+                                    errorWidget:
+                                        (context, url, dynamic error) =>
+                                            Image.asset(
+                                      'assets/icon/no_user.jpg',
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),

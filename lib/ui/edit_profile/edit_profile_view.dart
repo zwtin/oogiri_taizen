@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view_model.dart';
@@ -9,6 +11,9 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 
 class EditProfileView extends HookWidget {
+  EditProfileView(this.user);
+
+  final User user;
   final id = StringExtension.randomString(8);
 
   @override
@@ -17,22 +22,25 @@ class EditProfileView extends HookWidget {
     final nameTextController = useTextEditingController();
     final introductionTextController = useTextEditingController();
 
+    viewModel
+      ..originalUser = user
+      ..editedName = user.name
+      ..editedIntroduction = user.introduction;
+
     nameTextController.addListener(
       () {
-        context.read(editProfileViewModelProvider(id)).user.name =
-            nameTextController.text;
+        viewModel.editedName = nameTextController.text;
       },
     );
 
     introductionTextController.addListener(
       () {
-        context.read(editProfileViewModelProvider(id)).user.introduction =
-            introductionTextController.text;
+        viewModel.editedIntroduction = introductionTextController.text;
       },
     );
 
-    nameTextController.text = viewModel.user.name;
-    introductionTextController.text = viewModel.user.introduction;
+    nameTextController.text = viewModel.editedName;
+    introductionTextController.text = viewModel.editedIntroduction;
 
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
@@ -109,16 +117,59 @@ class EditProfileView extends HookWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            context
-                                .read(editProfileViewModelProvider(id))
-                                .getImage();
-                          },
-                          child: Container(
-                            color: Colors.green,
-                            width: 120,
-                            height: 120,
+                        SizedBox(
+                          width: 120,
+                          height: 120,
+                          child: Stack(
+                            children: [
+                              ClipOval(
+                                child: SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    imageUrl: viewModel.originalUser.imageUrl,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget:
+                                        (context, url, dynamic error) =>
+                                            Image.asset(
+                                      'assets/icon/no_user.jpg',
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ClipOval(
+                                child: SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: viewModel.imageFile != null
+                                      ? Image.file(
+                                          viewModel.imageFile,
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Container(),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read(editProfileViewModelProvider(id))
+                                      .getImage();
+                                },
+                              ),
+                            ],
                           ),
                         ),
                         Container(
@@ -159,6 +210,7 @@ class EditProfileView extends HookWidget {
                                     ),
                                     decoration: const InputDecoration.collapsed(
                                       border: InputBorder.none,
+                                      hintText: null,
                                     ),
                                   ),
                                 ),
@@ -201,6 +253,7 @@ class EditProfileView extends HookWidget {
                                     ),
                                     decoration: const InputDecoration.collapsed(
                                       border: InputBorder.none,
+                                      hintText: null,
                                     ),
                                   ),
                                 ),
