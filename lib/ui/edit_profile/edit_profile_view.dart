@@ -22,25 +22,22 @@ class EditProfileView extends HookWidget {
     final nameTextController = useTextEditingController();
     final introductionTextController = useTextEditingController();
 
-    viewModel
-      ..originalUser = user
-      ..editedName = user.name
-      ..editedIntroduction = user.introduction;
+    viewModel.user = user;
 
     nameTextController.addListener(
       () {
-        viewModel.editedName = nameTextController.text;
+        viewModel.user.name = nameTextController.text;
       },
     );
 
     introductionTextController.addListener(
       () {
-        viewModel.editedIntroduction = introductionTextController.text;
+        viewModel.user.introduction = introductionTextController.text;
       },
     );
 
-    nameTextController.text = viewModel.editedName;
-    introductionTextController.text = viewModel.editedIntroduction;
+    nameTextController.text = viewModel.user.name;
+    introductionTextController.text = viewModel.user.introduction;
 
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
@@ -130,7 +127,7 @@ class EditProfileView extends HookWidget {
                                     placeholder: (context, url) => const Center(
                                       child: CircularProgressIndicator(),
                                     ),
-                                    imageUrl: viewModel.originalUser.imageUrl,
+                                    imageUrl: viewModel.user.imageUrl,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
                                       decoration: BoxDecoration(

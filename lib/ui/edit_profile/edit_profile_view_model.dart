@@ -37,15 +37,14 @@ class EditProfileViewModel extends ChangeNotifier {
   final FirebaseStorageRepository _firebaseStorageRepository =
       FirebaseStorageRepository();
 
-  User originalUser;
-  String editedName;
-  String editedIntroduction;
+  User user;
+
   File imageFile;
 
   bool isConnecting = false;
 
   Future<void> postUser() async {
-    if (editedName.isEmpty) {
+    if (user.name.isEmpty) {
       // ユーザー名入力チェック
       providerReference.read(alertNotifierProvider(id)).show(
             title: 'エラー',
@@ -57,7 +56,7 @@ class EditProfileViewModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (editedIntroduction.isEmpty) {
+    if (user.introduction.isEmpty) {
       // 自己紹介入力チェック
       providerReference.read(alertNotifierProvider(id)).show(
             title: 'エラー',
@@ -77,12 +76,10 @@ class EditProfileViewModel extends ChangeNotifier {
         uploadedUrl = await _firebaseStorageRepository.upload(imageFile);
       }
       await _firestoreUserRepository.updateUser(
-        userId: originalUser.id,
+        userId: user.id,
         user: User()
-          ..name = originalUser.name == editedName ? null : editedName
-          ..introduction = originalUser.introduction == editedIntroduction
-              ? null
-              : editedIntroduction
+          ..name = user.name
+          ..introduction = user.introduction
           ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
       );
       isConnecting = false;
