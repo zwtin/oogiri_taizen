@@ -113,7 +113,7 @@ class AnswerListView extends HookWidget {
       child: ProviderListener(
         onChange: (BuildContext context, Tab0NavigatorNotifier navigator) {
           if (navigator.nextWidget != null) {
-            Navigator.of(context).push(
+            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
                   return navigator.nextWidget;

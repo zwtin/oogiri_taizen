@@ -49,7 +49,7 @@ class EditProfileView extends HookWidget {
       child: ProviderListener(
         onChange: (BuildContext context, NavigatorNotifier navigator) {
           if (navigator.nextWidget != null) {
-            Navigator.of(context).push(
+            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
                   return navigator.nextWidget;
@@ -109,14 +109,17 @@ class EditProfileView extends HookWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(
-                          children: [
-                            Container(
-                              color: Colors.green,
-                              width: 120,
-                              height: 120,
-                            )
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read(editProfileViewModelProvider(id))
+                                .getImage();
+                          },
+                          child: Container(
+                            color: Colors.green,
+                            width: 120,
+                            height: 120,
+                          ),
                         ),
                         Container(
                           height: 16,

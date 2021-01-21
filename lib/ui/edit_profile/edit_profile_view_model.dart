@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/ui/image_edit/image_edit_view.dart';
 
 final editProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, String>(
@@ -121,6 +125,15 @@ class EditProfileViewModel extends ChangeNotifier {
             style: null,
           );
       notifyListeners();
+    }
+  }
+
+  Future<void> getImage() async {
+    final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      providerReference
+          .read(navigatorNotifierProvider(id))
+          .present(ImageEditView(File(imageFile.path)));
     }
   }
 }

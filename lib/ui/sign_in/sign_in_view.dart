@@ -34,7 +34,7 @@ class SignInView extends HookWidget {
       child: ProviderListener(
         onChange: (BuildContext context, NavigatorNotifier navigator) {
           if (navigator.nextWidget != null) {
-            Navigator.of(context).push(
+            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
                   return navigator.nextWidget;
