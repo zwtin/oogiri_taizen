@@ -239,16 +239,20 @@ class MyProfileView extends HookWidget {
                               title: const Text('プロフィール編集'),
                               onTap: () {
                                 Navigator.of(_context).pop();
-                                Navigator.of(context).push(
+                                Navigator.of(context, rootNavigator: true).push(
                                   MaterialPageRoute<EditProfileView>(
                                     builder: (BuildContext context) {
                                       return EditProfileView(
                                         context
                                             .read(
-                                                myProfileViewModelProvider(id))
+                                              myProfileViewModelProvider(
+                                                id,
+                                              ),
+                                            )
                                             .user,
                                       );
                                     },
+                                    fullscreenDialog: true,
                                   ),
                                 );
                               },

@@ -241,7 +241,7 @@ class EditProfileView extends HookWidget {
                                       const EdgeInsets.fromLTRB(0, 4, 0, 4),
                                   child: TextField(
                                     controller: introductionTextController,
-                                    maxLines: 5,
+                                    maxLines: 6,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
