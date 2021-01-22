@@ -325,7 +325,6 @@ class MyProfileView extends HookWidget {
                                         (context, url, dynamic error) =>
                                             Image.asset(
                                       'assets/icon/no_user.jpg',
-                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),

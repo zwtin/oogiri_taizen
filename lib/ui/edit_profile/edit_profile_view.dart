@@ -142,7 +142,6 @@ class EditProfileView extends HookWidget {
                                         (context, url, dynamic error) =>
                                             Image.asset(
                                       'assets/icon/no_user.jpg',
-                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),
@@ -154,7 +153,7 @@ class EditProfileView extends HookWidget {
                                   child: viewModel.imageFile != null
                                       ? Image.file(
                                           viewModel.imageFile,
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.cover,
                                         )
                                       : Container(),
                                 ),
