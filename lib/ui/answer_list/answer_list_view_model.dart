@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/data/model/entity/current_user.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
+import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
@@ -19,10 +23,33 @@ class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
     this.providerReference,
     this.id,
-  );
+  ) {
+    _firebaseAuthenticationRepository.getCurrentUserStream().listen(
+      (CurrentUser currentUser) {
+        if (currentUser == null) {
+          user = null;
+          notifyListeners();
+        } else {
+          _firestoreUserRepository.getUserStream(userId: currentUser.id).listen(
+            (User _user) {
+              user = _user;
+              notifyListeners();
+            },
+          );
+        }
+      },
+    );
+  }
 
   final ProviderReference providerReference;
   final String id;
+
+  final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
+      FirebaseAuthenticationRepository();
+  final FirestoreUserRepository _firestoreUserRepository =
+      FirestoreUserRepository();
+
+  User user;
 
   double getRadiansFromDegree(double degree) {
     const unitRadian = 57.295779513;
@@ -47,7 +74,7 @@ class AnswerListViewModel extends ChangeNotifier {
 
   void transitionToPostTopic() {
     providerReference.read(tab0NavigatorNotifierProvider).present(
-          PostTopicView(),
+          PostTopicView(user),
         );
   }
 }
