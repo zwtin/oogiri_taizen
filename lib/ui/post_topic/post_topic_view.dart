@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -16,6 +17,7 @@ class PostTopicView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(postTopicViewModelProvider(id));
+    final topicTextController = useTextEditingController();
 
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
@@ -69,6 +71,16 @@ class PostTopicView extends HookWidget {
                 ),
                 preferredSize: const Size.fromHeight(1),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                  onPressed: () {
+                    context.read(postTopicViewModelProvider(id)).postTopic();
+                  },
+                ),
+              ],
             ),
             body: Stack(
               children: [
@@ -80,8 +92,101 @@ class PostTopicView extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        height: 32,
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: 44,
+                                      height: 44,
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        imageUrl: '',
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget:
+                                            (context, url, dynamic error) =>
+                                                Image.asset(
+                                          'assets/icon/no_user.jpg',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 16,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      'ざわちん のお題：',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 16,
+                              ),
+                              TextField(
+                                maxLines: null,
+                                controller: topicTextController,
+                                autofocus: true,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                                decoration: const InputDecoration.collapsed(
+                                  border: InputBorder.none,
+                                  hintText: '例）こんなYoutuberはいやだ',
+                                ),
+                              ),
+                              Container(
+                                height: 16,
+                              ),
+                              Stack(
+                                children: [
+                                  Image.asset('assets/images/no_image.jpg'),
+                                  viewModel.imageFile != null
+                                      ? Image.file(viewModel.imageFile)
+                                      : Container(),
+                                  SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .read(
+                                                postTopicViewModelProvider(id))
+                                            .getImage();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
