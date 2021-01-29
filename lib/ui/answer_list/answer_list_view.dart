@@ -204,13 +204,7 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<Widget>(
-                                  builder: (BuildContext context) {
-                                    return AnswerListView();
-                                  },
-                                ),
-                              );
+                              viewModel.transitionToPostAnswer();
                             },
                           ),
                         ),
@@ -278,15 +272,7 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<Widget>(
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      color: Colors.white,
-                                    );
-                                  },
-                                ),
-                              );
+                              viewModel.transitionToPostTopic();
                             },
                           ),
                         ),
