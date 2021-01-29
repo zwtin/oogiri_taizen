@@ -53,6 +53,10 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            // この下がないと画像が表示できない
+            // https://github.com/Baseflow/flutter_cached_network_image/issues/497
+            shrinkResources false
+            minifyEnabled false
         }
         debug {
             debuggable true

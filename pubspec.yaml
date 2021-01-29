@@ -58,7 +58,7 @@ dependencies:
 
   # For UIs
   gap: ^1.2.0
-  cached_network_image: ^2.3.3
+  cached_network_image: ^2.5.0
   ff_navigation_bar: ^0.1.4
   loading_overlay: ^0.2.1
   sweetalert: ^0.0.1
