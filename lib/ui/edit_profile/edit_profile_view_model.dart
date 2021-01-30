@@ -73,7 +73,10 @@ class EditProfileViewModel extends ChangeNotifier {
       notifyListeners();
       var uploadedUrl = '';
       if (imageFile != null) {
-        uploadedUrl = await _firebaseStorageRepository.upload(imageFile);
+        uploadedUrl = await _firebaseStorageRepository.upload(
+          path: 'images/users',
+          file: imageFile,
+        );
       }
       await _firestoreUserRepository.updateUser(
         userId: user.id,

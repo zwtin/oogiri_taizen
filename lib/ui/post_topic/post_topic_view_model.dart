@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:oogiritaizen/data/model/entity/topic.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
+import 'package:oogiritaizen/data/model/repository/firebase_storage_repository.dart';
+import 'package:oogiritaizen/data/model/repository/firestore_topic_repository.dart';
+import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
 
 final postTopicViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<PostTopicViewModel, String>(
@@ -24,10 +30,68 @@ class PostTopicViewModel extends ChangeNotifier {
   final ProviderReference providerReference;
   final String id;
 
-  bool isLoading = false;
+  final FirebaseStorageRepository _firebaseStorageRepository =
+      FirebaseStorageRepository();
+  final FirestoreTopicRepository _firestoreTopicRepository =
+      FirestoreTopicRepository();
+
+  bool isConnecting = false;
   File imageFile;
 
-  void postTopic() {}
+  User user;
+  Topic topic = Topic();
+
+  Future<void> postTopic() async {
+    if (topic.text.isEmpty) {
+      // ユーザー名入力チェック
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: 'テキストが未入力です',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
+      notifyListeners();
+      return;
+    }
+    try {
+      isConnecting = true;
+      notifyListeners();
+      if (imageFile != null) {
+        topic.imageUrl = await _firebaseStorageRepository.upload(
+          path: 'images/topics',
+          file: imageFile,
+        );
+      }
+      await _firestoreTopicRepository.postTopic(
+        user: user,
+        topic: topic,
+      );
+
+      isConnecting = false;
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: '投稿完了',
+            subtitle: 'お題を投稿しました',
+            showCancelButton: false,
+            onPress: (bool b) {
+              providerReference.read(navigatorNotifierProvider(id)).pop();
+              return b;
+            },
+            style: null,
+          );
+      notifyListeners();
+    } on Exception catch (error) {
+      isConnecting = false;
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: '通信エラーが発生しました',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
+      notifyListeners();
+    }
+  }
 
   Future<void> getImage() async {
     final pickedFile =

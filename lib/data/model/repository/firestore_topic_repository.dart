@@ -1,10 +1,11 @@
-//import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter_firebase/use_cases/topic_entity.dart';
-//
-//class FirestoreTopicRepository {
-//  final _firestore = Firestore.instance;
-//
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:oogiritaizen/data/model/entity/topic.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
+
+class FirestoreTopicRepository {
+  final _firestore = FirebaseFirestore.instance;
+
 //  @override
 //  Stream<List<TopicEntity>> getTopicListStream() {
 //    return _firestore.collection('topics').snapshots().map(
@@ -23,7 +24,7 @@
 //      },
 //    );
 //  }
-//
+
 //  @override
 //  Future<List<TopicEntity>> getTopicList() async {
 //    final list = await _firestore.collection('topics').getDocuments().then(
@@ -43,7 +44,7 @@
 //    );
 //    return list;
 //  }
-//
+
 //  @override
 //  Stream<TopicEntity> getTopicStream({@required String id}) {
 //    return _firestore.collection('topics').document(id).snapshots().map(
@@ -58,7 +59,7 @@
 //      },
 //    );
 //  }
-//
+
 //  @override
 //  Future<TopicEntity> getTopic({@required String id}) {
 //    return _firestore.collection('topics').document(id).get().then(
@@ -73,34 +74,37 @@
 //      },
 //    );
 //  }
-//
-//  @override
-//  Future<void> postTopic(
-//      {@required String userId, @required TopicEntity topic}) async {
-//    await _firestore.runTransaction(
-//      (transaction) {
-//        final ref = _firestore.collection('topics').document();
-//        final topicMap = {
-//          'id': ref.documentID,
-//          'text': topic.text,
-//          'image_url': topic.imageUrl,
-//          'created_at': FieldValue.serverTimestamp(),
-//          'created_user': topic.createdUser,
-//        };
-//        transaction.set(
-//          ref,
-//          topicMap,
-//        );
-//        final userMap = {'id': ref.documentID};
-//        transaction.set(
-//            _firestore
-//                .collection('users')
-//                .document(userId)
-//                .collection('create_topics')
-//                .document(ref.documentID),
-//            userMap);
-//        return null;
-//      },
-//    );
-//  }
-//}
+
+  Future<void> postTopic({@required User user, @required Topic topic}) async {
+    await _firestore.runTransaction<void>(
+      (transaction) {
+        final topicRef = _firestore.collection('topics').doc();
+        final topicMap = {
+          'id': topicRef.id,
+          'text': topic.text,
+          'image_url': topic.imageUrl ?? '',
+          'created_at': FieldValue.serverTimestamp(),
+          'created_user': user.id,
+        };
+        transaction.set(
+          topicRef,
+          topicMap,
+        );
+        final userTopicRef = _firestore
+            .collection('users')
+            .doc(user.id)
+            .collection('create_topics')
+            .doc(topicRef.id);
+        final userMap = {
+          'id': topicRef.id,
+          'create_at': FieldValue.serverTimestamp(),
+        };
+        transaction.set(
+          userTopicRef,
+          userMap,
+        );
+        return null;
+      },
+    );
+  }
+}

@@ -9,17 +9,18 @@ class FirebaseStorageRepository {
 
   final FirebaseStorage _storage;
 
-  Future<String> upload(File imageFile) async {
+  Future<String> upload({String path, File file}) async {
     final imageName = StringExtension.randomString(16);
+    final imagePath = '$path/$imageName';
 
     final result = await FlutterImageCompress.compressWithFile(
-      imageFile.absolute.path,
+      file.absolute.path,
       minHeight: 500,
       minWidth: 500,
       quality: 85,
     );
 
-    final ref = _storage.ref().child('images/users/$imageName');
+    final ref = _storage.ref().child(imagePath);
 
     final metaData = SettableMetadata(contentType: 'image/jpeg');
     final uploadTask = ref.putData(result, metaData);

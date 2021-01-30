@@ -23,6 +23,14 @@ class PostTopicView extends HookWidget {
     final viewModel = useProvider(postTopicViewModelProvider(id));
     final topicTextController = useTextEditingController();
 
+    viewModel.user = user;
+
+    topicTextController.addListener(
+      () {
+        viewModel.topic.text = topicTextController.text;
+      },
+    );
+
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
         SweetAlert.show(
@@ -54,7 +62,7 @@ class PostTopicView extends HookWidget {
         },
         provider: navigatorNotifierProvider(id),
         child: LoadingOverlay(
-          isLoading: viewModel.isLoading,
+          isLoading: viewModel.isConnecting,
           color: Colors.grey,
           child: Scaffold(
             // ナビゲーションバー
@@ -153,6 +161,7 @@ class PostTopicView extends HookWidget {
                                             color: Colors.black,
                                             fontSize: 16,
                                           ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         Row(
                                           children: [
