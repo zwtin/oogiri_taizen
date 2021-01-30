@@ -65,14 +65,30 @@ class TopicListViewModel extends ChangeNotifier {
   }
 
   Future<void> getNewTopicList() async {
+    if (isConnecting) {
+      return;
+    }
+    isConnecting = true;
     final getNewTopicListParameter = GetNewTopicListParameter()
       ..topic = items.last;
     try {
       final response = await _firestoreTopicRepository.getNewTopicList(
-          parameter: getNewTopicListParameter);
+        parameter: getNewTopicListParameter,
+      );
       items.addAll(response.topics);
       hasNext = response.hasNext;
+      isConnecting = false;
       notifyListeners();
-    } on Exception catch (error) {}
+    } on Exception catch (error) {
+      isConnecting = false;
+      providerReference.read(alertNotifierProvider(id)).show(
+            title: 'エラー',
+            subtitle: '通信エラーが発生しました',
+            showCancelButton: false,
+            onPress: null,
+            style: null,
+          );
+      notifyListeners();
+    }
   }
 }

@@ -113,58 +113,46 @@ class FirestoreTopicRepository {
   // createdAtより古い回答を10個返す
   Future<GetNewTopicListResponse> getNewTopicList(
       {@required GetNewTopicListParameter parameter}) async {
-    assert(parameter != null);
-    try {
-//      final querySnapshot = await _firestore
-//          .collection('topics')
-//          .where(
-//            'created_at',
-////          isLessThan: parameter.topic.createdAt != null
-////              ? parameter.topic.createdAt.add(const Duration(milliseconds: -1))
-////              : FieldValue.serverTimestamp(),
-//            isLessThan: FieldValue.serverTimestamp(),
-//          )
-//          .orderBy('created_at', descending: true)
-//          .limit(11)
-//          .get();
-
-//      var list = querySnapshot.docs.map((DocumentSnapshot documentSnapshot) {
-//        return Topic()
-//          ..id = documentSnapshot.data()['id'] as String
-//          ..text = documentSnapshot.data()['text'] as String
-//          ..imageUrl = documentSnapshot.data()['image_url'] as String
-//          ..createdAt =
-//              (documentSnapshot.data()['created_at'] as Timestamp).toDate()
-//          ..createdUser = documentSnapshot.data()['created_user'] as String;
-//      }).toList();
-//
-//      final hasNext = list.length > 10;
-//
-//      if (hasNext) {
-//        // 11個取得できた時は、最後の要素を削除
-//        list.removeLast();
-//      }
-//      return GetNewTopicListResponse()
-//        ..topics = list
-//        ..hasNext = hasNext;
-      await new Future.delayed(new Duration(seconds: 3));
-
-      return GetNewTopicListResponse()
-        ..topics = [
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-          Topic(),
-        ]
-        ..hasNext = true;
-    } on Exception catch (error) {
-      debugPrint(error.toString());
+    QuerySnapshot querySnapshot;
+    if (parameter?.topic?.createdAt != null) {
+      querySnapshot = await _firestore
+          .collection('topics')
+          .where(
+            'created_at',
+            isLessThan: parameter.topic.createdAt.add(
+              const Duration(
+                milliseconds: -1,
+              ),
+            ),
+          )
+          .orderBy('created_at', descending: true)
+          .limit(11)
+          .get();
+    } else {
+      querySnapshot = await _firestore
+          .collection('topics')
+          .orderBy('created_at', descending: true)
+          .limit(11)
+          .get();
     }
+    var list = querySnapshot.docs.map((DocumentSnapshot documentSnapshot) {
+      return Topic()
+        ..id = documentSnapshot.data()['id'] as String
+        ..text = documentSnapshot.data()['text'] as String
+        ..imageUrl = documentSnapshot.data()['image_url'] as String
+        ..createdAt =
+            (documentSnapshot.data()['created_at'] as Timestamp).toDate()
+        ..createdUser = documentSnapshot.data()['created_user'] as String;
+    }).toList();
+
+    final hasNext = list.length > 10;
+
+    if (hasNext) {
+      // 11個取得できた時は、最後の要素を削除
+      list.removeLast();
+    }
+    return GetNewTopicListResponse()
+      ..topics = list
+      ..hasNext = hasNext;
   }
 }
