@@ -204,7 +204,7 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              viewModel.transitionToPostAnswer();
+                              viewModel.transitionToPostTopic();
                             },
                           ),
                         ),
@@ -272,7 +272,7 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              viewModel.transitionToPostTopic();
+                              viewModel.transitionToTopicList();
                             },
                           ),
                         ),

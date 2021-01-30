@@ -8,6 +8,7 @@ import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view.dart';
+import 'package:oogiritaizen/ui/topic_list/topic_list_view.dart';
 
 final answerListViewModelProvider =
     ChangeNotifierProvider.family<AnswerListViewModel, String>(
@@ -66,15 +67,15 @@ class AnswerListViewModel extends ChangeNotifier {
         );
   }
 
-  void transitionToPostAnswer() {
-    providerReference.read(tab0NavigatorNotifierProvider).present(
-          PostAnswerView(),
-        );
-  }
-
   void transitionToPostTopic() {
     providerReference.read(tab0NavigatorNotifierProvider).present(
           PostTopicView(user),
+        );
+  }
+
+  void transitionToTopicList() {
+    providerReference.read(tab0NavigatorNotifierProvider).present(
+          TopicListView(user),
         );
   }
 }

@@ -23,6 +23,8 @@ class TopicListView extends HookWidget {
   Widget build(BuildContext context) {
     final viewModel = useProvider(topicListViewModelProvider(id));
 
+    viewModel.user = user;
+
     return ProviderListener(
       onChange: (BuildContext context, AlertNotifier alertNotifier) {
         SweetAlert.show(
@@ -53,47 +55,72 @@ class TopicListView extends HookWidget {
           }
         },
         provider: navigatorNotifierProvider(id),
-        child: LoadingOverlay(
-          isLoading: viewModel.isLoading,
-          color: Colors.grey,
-          child: Scaffold(
-            // ナビゲーションバー
-            appBar: AppBar(
-              title: const Text(
-                'お題選択',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: const Color(0xFFFFCC00),
-              elevation: 0, // 影をなくす
-              bottom: PreferredSize(
-                child: Container(
-                  color: Colors.white24,
-                  height: 1,
-                ),
-                preferredSize: const Size.fromHeight(1),
+        child: Scaffold(
+          // ナビゲーションバー
+          appBar: AppBar(
+            title: const Text(
+              'お題選択',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            body: Stack(
-              children: [
-                Container(
-                  color: const Color(0xFFFFCC00),
-                ),
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: 32,
-                      ),
-                    ],
+            backgroundColor: const Color(0xFFFFCC00),
+            elevation: 0, // 影をなくす
+            bottom: PreferredSize(
+              child: Container(
+                color: Colors.white24,
+                height: 1,
+              ),
+              preferredSize: const Size.fromHeight(1),
+            ),
+          ),
+          body: Stack(
+            children: [
+              Container(
+                color: const Color(0xFFFFCC00),
+              ),
+              RefreshIndicator(
+                color: const Color(0xFFFFCC00),
+                onRefresh: () async {
+                  await viewModel.refreshNewTopicList();
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom,
                   ),
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == viewModel.items.length - 3) {
+                      viewModel.getNewTopicList();
+                    }
+                    if (index == viewModel.items.length) {
+                      return const SizedBox(
+                        height: 62,
+                        child: Center(
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    }
+                    return Card(
+                      child: Padding(
+                        child: Text(
+                          '$index',
+                          style: TextStyle(fontSize: 22.0),
+                        ),
+                        padding: EdgeInsets.all(20.0),
+                      ),
+                    );
+                  },
+                  itemCount: viewModel.hasNext
+                      ? viewModel.items.length + 1
+                      : viewModel.items.length,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
