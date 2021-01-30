@@ -85,6 +85,7 @@ class FirestoreTopicRepository {
           'id': topicRef.id,
           'text': topic.text,
           'image_url': topic.imageUrl ?? '',
+          'answered_time': 0,
           'created_at': FieldValue.serverTimestamp(),
           'created_user': user.id,
         };
@@ -140,6 +141,7 @@ class FirestoreTopicRepository {
         ..id = documentSnapshot.data()['id'] as String
         ..text = documentSnapshot.data()['text'] as String
         ..imageUrl = documentSnapshot.data()['image_url'] as String
+        ..answeredTime = documentSnapshot.data()['answered_time'] as int
         ..createdAt =
             (documentSnapshot.data()['created_at'] as Timestamp).toDate()
         ..createdUser = documentSnapshot.data()['created_user'] as String;
