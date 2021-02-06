@@ -7,6 +7,8 @@ import 'package:oogiritaizen/data/model/repository/firestore_topic_repository.da
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/model/use_case/topic_list_item.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
 
 final topicListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<TopicListViewModel, String>(
@@ -133,5 +135,11 @@ class TopicListViewModel extends ChangeNotifier {
           );
       notifyListeners();
     }
+  }
+
+  void transitionToPostAnswer(TopicListItem topicListItem) {
+    providerReference.read(navigatorNotifierProvider(id)).present(
+          PostAnswerView(user, Topic()),
+        );
   }
 }

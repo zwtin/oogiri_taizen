@@ -4,6 +4,8 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:oogiritaizen/data/model/entity/topic.dart';
+import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
@@ -12,6 +14,11 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 
 class PostAnswerView extends HookWidget {
+  PostAnswerView(this.user, this.topic);
+
+  final User user;
+  final Topic topic;
+
   final id = StringExtension.randomString(8);
 
   @override

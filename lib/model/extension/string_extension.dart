@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'package:intl/intl.dart';
+
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 extension StringExtension on String {
   static String randomString(int length) {
