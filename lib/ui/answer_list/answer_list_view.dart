@@ -2,12 +2,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:sweetalert/sweetalert.dart';
+
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/answer_list/answer_list_view_model.dart';
 import 'package:oogiritaizen/ui/circular_button.dart';
-import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/data/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class AnswerListView extends HookWidget {
   final id = StringExtension.randomString(8);
@@ -104,29 +105,31 @@ class AnswerListView extends HookWidget {
             .animate(controller);
 
     return ProviderListener(
-      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+      onChange: (BuildContext context, AlertViewModel alertViewModel) {
         SweetAlert.show(
           context,
-          title: alertNotifier.title,
-          subtitle: alertNotifier.subtitle,
-          showCancelButton: alertNotifier.showCancelButton,
-          onPress: alertNotifier.onPress,
-          style: alertNotifier.style,
+          title: alertViewModel.alertEntity.title,
+          subtitle: alertViewModel.alertEntity.subtitle,
+          showCancelButton: alertViewModel.alertEntity.showCancelButton,
+          onPress: alertViewModel.alertEntity.onPress,
+          style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertNotifierProvider(id),
+      provider: alertViewModelProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, Tab0NavigatorNotifier navigator) {
-          if (navigator.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
+        onChange:
+            (BuildContext context, NavigatorViewModel navigatorViewModel) {
+          if (navigatorViewModel.nextWidget != null) {
+            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
+                .push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
-                  return navigator.nextWidget;
+                  return navigatorViewModel.nextWidget;
                 },
-                fullscreenDialog: navigator.fullScreen,
+                fullscreenDialog: navigatorViewModel.fullScreen,
               ),
             );
-          } else if (navigator.toRoot) {
+          } else if (navigatorViewModel.toRoot) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           } else {
             if (Navigator.of(context).canPop()) {
@@ -136,7 +139,7 @@ class AnswerListView extends HookWidget {
             }
           }
         },
-        provider: tab0NavigatorNotifierProvider,
+        provider: navigatorViewModelProvider('Tab0'),
         child: DefaultTabController(
           // タブ数
           length: 2,

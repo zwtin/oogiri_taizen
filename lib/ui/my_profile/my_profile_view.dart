@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
@@ -35,17 +35,19 @@ class MyProfileView extends HookWidget {
       },
       provider: alertNotifierProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, Tab1NavigatorNotifier navigator) {
-          if (navigator.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
+        onChange:
+            (BuildContext context, NavigatorViewModel navigatorViewModel) {
+          if (navigatorViewModel.nextWidget != null) {
+            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
+                .push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
-                  return navigator.nextWidget;
+                  return navigatorViewModel.nextWidget;
                 },
-                fullscreenDialog: navigator.fullScreen,
+                fullscreenDialog: navigatorViewModel.fullScreen,
               ),
             );
-          } else if (navigator.toRoot) {
+          } else if (navigatorViewModel.toRoot) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           } else {
             if (Navigator.of(context).canPop()) {
@@ -55,7 +57,7 @@ class MyProfileView extends HookWidget {
             }
           }
         },
-        provider: tab1NavigatorNotifierProvider,
+        provider: navigatorViewModelProvider('Tab1'),
         child: Builder(
           builder: (BuildContext context) {
             // 未ログイン時

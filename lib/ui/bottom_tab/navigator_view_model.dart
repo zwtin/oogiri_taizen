@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final tab1NavigatorNotifierProvider =
-    ChangeNotifierProvider<Tab1NavigatorNotifier>(
-  (ref) {
-    return Tab1NavigatorNotifier();
+final navigatorViewModelProvider =
+    ChangeNotifierProvider.autoDispose.family<NavigatorViewModel, String>(
+  (ref, id) {
+    return NavigatorViewModel(id);
   },
 );
 
-class Tab1NavigatorNotifier extends ChangeNotifier {
+class NavigatorViewModel extends ChangeNotifier {
+  NavigatorViewModel(this.id);
+
+  String id;
+
   Widget nextWidget;
   bool fullScreen;
   bool toRoot;
 
-  void push(Widget _nextWidget) {
-    nextWidget = _nextWidget;
+  void push(Widget nextWidget) {
+    this.nextWidget = nextWidget;
     fullScreen = false;
     toRoot = false;
     notifyListeners();
   }
 
-  void present(Widget _nextWidget) {
-    nextWidget = _nextWidget;
+  void present(Widget nextWidget) {
+    this.nextWidget = nextWidget;
     fullScreen = true;
     toRoot = false;
     notifyListeners();

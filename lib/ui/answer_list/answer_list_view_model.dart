@@ -5,7 +5,9 @@ import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
+import 'package:oogiritaizen/model/entity/alert_entity.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
@@ -20,7 +22,8 @@ final answerListViewModelProvider =
   (ref, id) {
     return AnswerListViewModel(
       id,
-      ref.watch(tab0NavigatorNotifierProvider),
+      ref.watch(navigatorViewModelProvider('Tab0')),
+      ref.watch(alertViewModelProvider(id)),
       ref.watch(authenticationUseCaseProvider(id)),
       ref.watch(userUseCaseProvider(id)),
     );
@@ -30,7 +33,8 @@ final answerListViewModelProvider =
 class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
     this.id,
-    this.tab0navigatorNotifier,
+    this.navigatorViewModel,
+    this.alertViewModel,
     this.authenticationUseCase,
     this.userUseCase,
   ) {
@@ -47,30 +51,32 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   final String id;
-  final Tab0NavigatorNotifier tab0navigatorNotifier;
+  final NavigatorViewModel navigatorViewModel;
+  final AlertViewModel alertViewModel;
   final AuthenticationUseCase authenticationUseCase;
   final UserUseCase userUseCase;
 
   User user;
 
   void tapped() {
-//    providerReference.read(alertNotifierProvider(id)).show(
-//          title: 'エラー',
-//          subtitle: '選択済みのタブです',
-//          showCancelButton: false,
-//          onPress: null,
-//          style: null,
-//        );
+    alertViewModel.show(
+      alertEntity: AlertEntity()
+        ..title = 'エラー'
+        ..subtitle = '選択済みのタブです'
+        ..showCancelButton = false
+        ..onPress = null
+        ..style = null,
+    );
   }
 
   void transitionToPostTopic() {
-    tab0navigatorNotifier.present(
+    navigatorViewModel.present(
       PostTopicView(user),
     );
   }
 
   void transitionToTopicList() {
-    tab0navigatorNotifier.present(
+    navigatorViewModel.present(
       TopicListView(user),
     );
   }

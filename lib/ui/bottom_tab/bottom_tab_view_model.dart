@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
-import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
 final bottomTabViewModelProvider =
     ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
   (ref) {
     return BottomTabViewModel(
-      ref.watch(tab0NavigatorNotifierProvider),
-      ref.watch(tab1NavigatorNotifierProvider),
+      ref.watch(navigatorViewModelProvider('Tab0')),
+      ref.watch(navigatorViewModelProvider('Tab1')),
     );
   },
 );
 
 class BottomTabViewModel extends ChangeNotifier {
   BottomTabViewModel(
-    this.tab0navigatorNotifier,
-    this.tab1navigatorNotifier,
+    this.tab0NavigatorViewModel,
+    this.tab1NavigatorViewModel,
   );
 
-  final Tab0NavigatorNotifier tab0navigatorNotifier;
-  final Tab1NavigatorNotifier tab1navigatorNotifier;
+  final NavigatorViewModel tab0NavigatorViewModel;
+  final NavigatorViewModel tab1NavigatorViewModel;
 
   int selected = 0;
 
@@ -28,10 +27,10 @@ class BottomTabViewModel extends ChangeNotifier {
     if (selected == index) {
       switch (index) {
         case 0:
-          tab0navigatorNotifier.popToRoot();
+          tab0NavigatorViewModel.popToRoot();
           break;
         case 1:
-          tab1navigatorNotifier.popToRoot();
+          tab1NavigatorViewModel.popToRoot();
           break;
       }
     } else {
@@ -43,10 +42,10 @@ class BottomTabViewModel extends ChangeNotifier {
   void pop() {
     switch (selected) {
       case 0:
-        tab0navigatorNotifier.pop();
+        tab0NavigatorViewModel.pop();
         break;
       case 1:
-        tab1navigatorNotifier.pop();
+        tab1NavigatorViewModel.pop();
         break;
     }
   }
