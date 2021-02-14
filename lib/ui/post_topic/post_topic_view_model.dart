@@ -47,7 +47,7 @@ class PostTopicViewModel extends ChangeNotifier {
   bool isConnecting = false;
   File imageFile;
   UserEntity loginUser;
-  TopicEntity editedTopic;
+  TopicEntity editedTopic = TopicEntity();
 
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
