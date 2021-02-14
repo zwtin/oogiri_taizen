@@ -37,10 +37,10 @@ class TopicRepositoryImpl implements TopicRepository {
 
   @override
   Future<void> postTopic({
-    @required UserModel user,
+    @required String userId,
     @required TopicModel topic,
   }) async {
-    assert(user != null);
+    assert(userId != null);
     assert(topic != null);
 
     await _firestore.runTransaction<void>(
@@ -52,7 +52,7 @@ class TopicRepositoryImpl implements TopicRepository {
           'image_url': topic.imageUrl ?? '',
           'answered_time': 0,
           'created_at': FieldValue.serverTimestamp(),
-          'created_user': user.id,
+          'created_user': userId,
         };
         transaction.set(
           topicRef,
@@ -60,7 +60,7 @@ class TopicRepositoryImpl implements TopicRepository {
         );
         final userCreateTopicRef = _firestore
             .collection('users')
-            .doc(user.id)
+            .doc(userId)
             .collection('create_topics')
             .doc(topicRef.id);
         final userMap = {

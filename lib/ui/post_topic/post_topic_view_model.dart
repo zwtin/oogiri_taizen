@@ -4,91 +4,100 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:oogiritaizen/data/model/entity/topic.dart';
-import 'package:oogiritaizen/data/model/entity/user.dart';
-import 'package:oogiritaizen/data/model/repository/firebase_storage_repository.dart';
-import 'package:oogiritaizen/data/model/repository/firestore_topic_repository.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/model/entity/alert_entity.dart';
+import 'package:oogiritaizen/model/entity/topic_entity.dart';
+import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
+import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/model/entity/user_entity.dart';
+import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 
 final postTopicViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<PostTopicViewModel, String>(
   (ref, id) {
     return PostTopicViewModel(
-      ref,
       id,
+      ref.watch(alertViewModelProvider(id)),
+      ref.watch(navigatorViewModelProvider(id)),
+      ref.watch(userUseCaseProvider(id)),
+      ref.watch(topicUseCaseProvider(id)),
     );
   },
 );
 
 class PostTopicViewModel extends ChangeNotifier {
   PostTopicViewModel(
-    this.providerReference,
     this.id,
-  );
+    this.alertViewModel,
+    this.navigatorViewModel,
+    this.userUseCase,
+    this.topicUseCase,
+  ) {
+    setup();
+  }
 
-  final ProviderReference providerReference;
   final String id;
-
-  final FirebaseStorageRepository _firebaseStorageRepository =
-      FirebaseStorageRepository();
-  final FirestoreTopicRepository _firestoreTopicRepository =
-      FirestoreTopicRepository();
+  final AlertViewModel alertViewModel;
+  final NavigatorViewModel navigatorViewModel;
+  final UserUseCase userUseCase;
+  final TopicUseCase topicUseCase;
 
   bool isConnecting = false;
   File imageFile;
+  UserEntity loginUser;
+  TopicEntity editedTopic;
 
-  User user;
-  Topic topic = Topic();
+  Future<void> setup() async {
+    loginUser = await userUseCase.getLoginUser();
+    notifyListeners();
+  }
 
   Future<void> postTopic() async {
-    if (topic.text.isEmpty) {
-      // ユーザー名入力チェック
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: 'テキストが未入力です',
-            showCancelButton: false,
-            onPress: null,
-            style: null,
-          );
-      notifyListeners();
+    if (editedTopic.text.isEmpty) {
+      // お題本文入力チェック
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = 'エラー'
+          ..subtitle = 'テキストが未入力です'
+          ..showCancelButton = false
+          ..onPress = null
+          ..style = null,
+      );
       return;
     }
     try {
       isConnecting = true;
       notifyListeners();
-      if (imageFile != null) {
-        topic.imageUrl = await _firebaseStorageRepository.upload(
-          path: 'images/topics',
-          file: imageFile,
-        );
-      }
-      await _firestoreTopicRepository.postTopic(
-        user: user,
-        topic: topic,
-      );
 
+      await topicUseCase.postTopic(
+        imageFile: imageFile,
+        editedTopic: editedTopic,
+      );
       isConnecting = false;
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: '投稿完了',
-            subtitle: 'お題を投稿しました',
-            showCancelButton: false,
-            onPress: (bool b) {
-              providerReference.read(navigatorNotifierProvider(id)).pop();
-              return b;
-            },
-            style: null,
-          );
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = '投稿完了'
+          ..subtitle = 'お題を投稿しました'
+          ..showCancelButton = false
+          ..onPress = ((bool b) {
+            navigatorViewModel.pop();
+            return b;
+          })
+          ..style = null,
+      );
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: '通信エラーが発生しました',
-            showCancelButton: false,
-            onPress: null,
-            style: null,
-          );
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = 'エラー'
+          ..subtitle = '通信エラーが発生しました'
+          ..showCancelButton = false
+          ..onPress = null
+          ..style = null,
+      );
       notifyListeners();
     }
   }

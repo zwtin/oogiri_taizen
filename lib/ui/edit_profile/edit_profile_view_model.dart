@@ -4,108 +4,104 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:oogiritaizen/data/model/entity/user.dart';
-import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
-import 'package:oogiritaizen/data/model/repository/firebase_storage_repository.dart';
-import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/model/entity/alert_entity.dart';
+import 'package:oogiritaizen/model/entity/user_entity.dart';
+import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
 final editProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, String>(
   (ref, id) {
     return EditProfileViewModel(
-      ref,
       id,
+      ref.watch(alertViewModelProvider(id)),
+      ref.watch(navigatorViewModelProvider(id)),
+      ref.watch(userUseCaseProvider(id)),
     );
   },
 );
 
 class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(
-    this.providerReference,
     this.id,
-  );
+    this.alertViewModel,
+    this.navigatorViewModel,
+    this.userUseCase,
+  ) {
+    setup();
+  }
 
-  final ProviderReference providerReference;
   final String id;
+  final AlertViewModel alertViewModel;
+  final NavigatorViewModel navigatorViewModel;
+  final UserUseCase userUseCase;
 
-  final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
-      FirebaseAuthenticationRepository();
-  final FirestoreUserRepository _firestoreUserRepository =
-      FirestoreUserRepository();
-  final FirebaseStorageRepository _firebaseStorageRepository =
-      FirebaseStorageRepository();
-
-  User user;
-
+  UserEntity editedUser;
   File imageFile;
-
   bool isConnecting = false;
 
+  Future<void> setup() async {
+    editedUser = await userUseCase.getLoginUser();
+    notifyListeners();
+  }
+
   Future<void> postUser() async {
-    if (user.name.isEmpty) {
+    if (editedUser.name.isEmpty) {
       // ユーザー名入力チェック
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: '名前が未入力です',
-            showCancelButton: false,
-            onPress: null,
-            style: null,
-          );
-      notifyListeners();
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = 'エラー'
+          ..subtitle = '名前が未入力です'
+          ..showCancelButton = false
+          ..onPress = null
+          ..style = null,
+      );
       return;
     }
-    if (user.introduction.isEmpty) {
+    if (editedUser.introduction.isEmpty) {
       // 自己紹介入力チェック
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: '自己紹介が未入力です',
-            showCancelButton: false,
-            onPress: null,
-            style: null,
-          );
-      notifyListeners();
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = 'エラー'
+          ..subtitle = '自己紹介が未入力です'
+          ..showCancelButton = false
+          ..onPress = null
+          ..style = null,
+      );
       return;
     }
     try {
       isConnecting = true;
       notifyListeners();
-      var uploadedUrl = '';
-      if (imageFile != null) {
-        uploadedUrl = await _firebaseStorageRepository.upload(
-          path: 'images/users',
-          file: imageFile,
-        );
-      }
-      await _firestoreUserRepository.updateUser(
-        userId: user.id,
-        user: User()
-          ..name = user.name
-          ..introduction = user.introduction
-          ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
+      await userUseCase.updateUser(
+        imageFile: imageFile,
+        editedUser: editedUser,
       );
       isConnecting = false;
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: '投稿完了',
-            subtitle: 'プロフィールを更新しました',
-            showCancelButton: false,
-            onPress: (bool b) {
-              providerReference.read(navigatorNotifierProvider(id)).pop();
-              return b;
-            },
-            style: null,
-          );
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = '投稿完了'
+          ..subtitle = 'プロフィールを更新しました'
+          ..showCancelButton = false
+          ..onPress = ((bool b) {
+            navigatorViewModel.pop();
+            return b;
+          })
+          ..style = null,
+      );
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertNotifierProvider(id)).show(
-            title: 'エラー',
-            subtitle: '通信エラーが発生しました',
-            showCancelButton: false,
-            onPress: null,
-            style: null,
-          );
+      alertViewModel.show(
+        alertEntity: AlertEntity()
+          ..title = 'エラー'
+          ..subtitle = '通信エラーが発生しました'
+          ..showCancelButton = false
+          ..onPress = null
+          ..style = null,
+      );
       notifyListeners();
     }
   }

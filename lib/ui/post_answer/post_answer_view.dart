@@ -4,20 +4,17 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:oogiritaizen/data/model/entity/topic.dart';
-import 'package:oogiritaizen/data/model/entity/user.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/data/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class PostAnswerView extends HookWidget {
-  PostAnswerView(this.user, this.topic);
+  PostAnswerView(this.topicId);
 
-  final User user;
-  final Topic topic;
+  final String topicId;
 
   final id = StringExtension.randomString(8);
 
@@ -26,35 +23,37 @@ class PostAnswerView extends HookWidget {
     final viewModel = useProvider(postAnswerViewModelProvider(id));
 
     return ProviderListener(
-      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+      onChange: (BuildContext context, AlertViewModel alertViewModel) {
         SweetAlert.show(
           context,
-          title: alertNotifier.title,
-          subtitle: alertNotifier.subtitle,
-          showCancelButton: alertNotifier.showCancelButton,
-          onPress: alertNotifier.onPress,
-          style: alertNotifier.style,
+          title: alertViewModel.alertEntity.title,
+          subtitle: alertViewModel.alertEntity.subtitle,
+          showCancelButton: alertViewModel.alertEntity.showCancelButton,
+          onPress: alertViewModel.alertEntity.onPress,
+          style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertNotifierProvider(id),
+      provider: alertViewModelProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, NavigatorNotifier navigator) {
-          if (navigator.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
+        onChange:
+            (BuildContext context, NavigatorViewModel navigatorViewModel) {
+          if (navigatorViewModel.nextWidget != null) {
+            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
+                .push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
-                  return navigator.nextWidget;
+                  return navigatorViewModel.nextWidget;
                 },
-                fullscreenDialog: navigator.fullScreen,
+                fullscreenDialog: navigatorViewModel.fullScreen,
               ),
             );
-          } else if (navigator.toRoot) {
+          } else if (navigatorViewModel.toRoot) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           } else {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorNotifierProvider(id),
+        provider: navigatorViewModelProvider(id),
         child: LoadingOverlay(
           isLoading: viewModel.isLoading,
           color: Colors.grey,

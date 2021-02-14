@@ -9,7 +9,7 @@ abstract class TopicRepository {
   });
 
   Future<void> postTopic({
-    @required UserModel user,
+    @required String userId,
     @required TopicModel topic,
   });
 

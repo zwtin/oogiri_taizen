@@ -1,24 +1,18 @@
-import 'dart:async';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:oogiritaizen/model/entity/user_entity.dart';
-import 'package:oogiritaizen/model/model/login_user_model.dart';
-import 'package:oogiritaizen/model/model/user_model.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
-import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
-import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
-import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 
 final authenticationUseCaseProvider =
     Provider.autoDispose.family<AuthenticationUseCase, String>(
   (ref, id) {
-    return AuthenticationUseCaseImpl(
+    final authenticationUseCase = AuthenticationUseCaseImpl(
       id,
       ref.watch(authenticationRepositoryProvider),
     );
+    ref.onDispose(authenticationUseCase.disposed);
+    return authenticationUseCase;
   },
 );
 
@@ -35,4 +29,6 @@ class AuthenticationUseCaseImpl implements AuthenticationUseCase {
   void logout() {
     authenticationRepository.logout();
   }
+
+  Future<void> disposed() async {}
 }

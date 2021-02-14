@@ -12,7 +12,6 @@ abstract class UserRepository {
   });
 
   Future<void> updateUser({
-    @required String userId,
     @required UserModel user,
   });
 }

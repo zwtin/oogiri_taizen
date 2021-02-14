@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
@@ -12,7 +12,7 @@ import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
 import 'package:oogiritaizen/ui/sign_up/sign_up_view.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/data/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class MyProfileView extends HookWidget {
   final id = StringExtension.randomString(8);
@@ -23,17 +23,17 @@ class MyProfileView extends HookWidget {
     final viewModel = useProvider(myProfileViewModelProvider(id));
 
     return ProviderListener(
-      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+      onChange: (BuildContext context, AlertViewModel alertViewModel) {
         SweetAlert.show(
           context,
-          title: alertNotifier.title,
-          subtitle: alertNotifier.subtitle,
-          showCancelButton: alertNotifier.showCancelButton,
-          onPress: alertNotifier.onPress,
-          style: alertNotifier.style,
+          title: alertViewModel.alertEntity.title,
+          subtitle: alertViewModel.alertEntity.subtitle,
+          showCancelButton: alertViewModel.alertEntity.showCancelButton,
+          onPress: alertViewModel.alertEntity.onPress,
+          style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertNotifierProvider(id),
+      provider: alertViewModelProvider(id),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -61,7 +61,7 @@ class MyProfileView extends HookWidget {
         child: Builder(
           builder: (BuildContext context) {
             // 未ログイン時
-            if (viewModel.user == null) {
+            if (viewModel.loginUser == null) {
               return Scaffold(
                 appBar: AppBar(
                   title: const Text(
@@ -114,17 +114,17 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignInView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignInView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
+//                                    Navigator.of(context, rootNavigator: true)
+//                                        .push(
+//                                      MaterialPageRoute<SignInView>(
+//                                        builder: (BuildContext context) {
+//                                          // 複数のProviderを提供
+//                                          return SignInView();
+//                                        },
+//                                        // 全画面で表示
+//                                        fullscreenDialog: true,
+//                                      ),
+//                                    );
                                   },
                                 ),
                               ),
@@ -153,17 +153,17 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignUpView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignUpView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
+//                                    Navigator.of(context, rootNavigator: true)
+//                                        .push(
+//                                      MaterialPageRoute<SignUpView>(
+//                                        builder: (BuildContext context) {
+//                                          // 複数のProviderを提供
+//                                          return SignUpView();
+//                                        },
+//                                        // 全画面で表示
+//                                        fullscreenDialog: true,
+//                                      ),
+//                                    );
                                   },
                                 ),
                               ),
@@ -218,15 +218,7 @@ class MyProfileView extends HookWidget {
                                         .push(
                                       MaterialPageRoute<EditProfileView>(
                                         builder: (BuildContext context) {
-                                          return EditProfileView(
-                                            context
-                                                .read(
-                                                  myProfileViewModelProvider(
-                                                    id,
-                                                  ),
-                                                )
-                                                .user,
-                                          );
+                                          return EditProfileView();
                                         },
                                         fullscreenDialog: true,
                                       ),
@@ -275,7 +267,8 @@ class MyProfileView extends HookWidget {
                                         .push(
                                       FadeInRoute(
                                         widget: ImageDetailView(
-                                          imageUrl: viewModel.user.imageUrl,
+                                          imageUrl:
+                                              viewModel.loginUser.imageUrl,
                                           imageTag: 'imageHero',
                                         ),
                                         opaque: false,
@@ -292,7 +285,7 @@ class MyProfileView extends HookWidget {
                                             const Center(
                                           child: CircularProgressIndicator(),
                                         ),
-                                        imageUrl: viewModel.user.imageUrl,
+                                        imageUrl: viewModel.loginUser.imageUrl,
                                         imageBuilder:
                                             (context, imageProvider) =>
                                                 Container(
@@ -321,7 +314,7 @@ class MyProfileView extends HookWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      viewModel.user.name,
+                                      viewModel.loginUser.name,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -342,7 +335,7 @@ class MyProfileView extends HookWidget {
                                         SizedBox(
                                           width: 150,
                                           child: Text(
-                                            viewModel.user.id,
+                                            viewModel.loginUser.id,
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -357,7 +350,7 @@ class MyProfileView extends HookWidget {
                                       height: 16,
                                     ),
                                     Text(
-                                      viewModel.user.introduction,
+                                      viewModel.loginUser.introduction,
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,

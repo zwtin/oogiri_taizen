@@ -245,9 +245,7 @@ class AnswerListView extends HookWidget {
                               Icons.camera_alt,
                               color: Colors.white,
                             ),
-                            onClick: () {
-                              viewModel.tapped();
-                            },
+                            onClick: () {},
                           ),
                         ),
                       ),

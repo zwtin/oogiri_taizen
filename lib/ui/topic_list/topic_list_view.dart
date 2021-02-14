@@ -5,57 +5,53 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:oogiritaizen/data/model/entity/user.dart';
-import 'package:oogiritaizen/data/provider/alert_notifier.dart';
-import 'package:oogiritaizen/data/provider/navigator_notifier.dart';
+import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/data/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class TopicListView extends HookWidget {
-  TopicListView(this.user);
-
-  final User user;
   final id = StringExtension.randomString(8);
 
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(topicListViewModelProvider(id));
 
-    viewModel.user = user;
-
     return ProviderListener(
-      onChange: (BuildContext context, AlertNotifier alertNotifier) {
+      onChange: (BuildContext context, AlertViewModel alertViewModel) {
         SweetAlert.show(
           context,
-          title: alertNotifier.title,
-          subtitle: alertNotifier.subtitle,
-          showCancelButton: alertNotifier.showCancelButton,
-          onPress: alertNotifier.onPress,
-          style: alertNotifier.style,
+          title: alertViewModel.alertEntity.title,
+          subtitle: alertViewModel.alertEntity.subtitle,
+          showCancelButton: alertViewModel.alertEntity.showCancelButton,
+          onPress: alertViewModel.alertEntity.onPress,
+          style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertNotifierProvider(id),
+      provider: alertViewModelProvider(id),
       child: ProviderListener(
-        onChange: (BuildContext context, NavigatorNotifier navigator) {
-          if (navigator.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigator.fullScreen).push(
+        onChange:
+            (BuildContext context, NavigatorViewModel navigatorViewModel) {
+          if (navigatorViewModel.nextWidget != null) {
+            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
+                .push(
               MaterialPageRoute<Widget>(
                 builder: (BuildContext context) {
-                  return navigator.nextWidget;
+                  return navigatorViewModel.nextWidget;
                 },
-                fullscreenDialog: navigator.fullScreen,
+                fullscreenDialog: navigatorViewModel.fullScreen,
               ),
             );
-          } else if (navigator.toRoot) {
+          } else if (navigatorViewModel.toRoot) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           } else {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorNotifierProvider(id),
+        provider: navigatorViewModelProvider(id),
         child: Scaffold(
           // ナビゲーションバー
           appBar: AppBar(
@@ -84,7 +80,7 @@ class TopicListView extends HookWidget {
               RefreshIndicator(
                 color: const Color(0xFFFFCC00),
                 onRefresh: () async {
-                  await viewModel.refreshNewTopicList();
+                  await context.read(topicListViewModelProvider(id)).refresh();
                 },
                 child: ListView.builder(
                   padding: EdgeInsets.only(
@@ -125,7 +121,8 @@ class TopicListView extends HookWidget {
                                     ),
                                     imageUrl: viewModel.items
                                         .elementAt(index)
-                                        .createdUserImageUrl,
+                                        .createdUser
+                                        .imageUrl,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
                                       decoration: BoxDecoration(
@@ -156,7 +153,7 @@ class TopicListView extends HookWidget {
                                         StringExtension.getJPStringFromDateTime(
                                           viewModel.items
                                               .elementAt(index)
-                                              .topicCreatedAt,
+                                              .createdAt,
                                         ),
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -171,7 +168,8 @@ class TopicListView extends HookWidget {
                                               child: Text(
                                                 viewModel.items
                                                     .elementAt(index)
-                                                    .createdUserName,
+                                                    .createdUser
+                                                    .name,
                                                 style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,
@@ -200,18 +198,18 @@ class TopicListView extends HookWidget {
                               height: 16,
                             ),
                             Text(
-                              viewModel.items.elementAt(index).topicText,
+                              viewModel.items.elementAt(index).text,
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22,
                               ),
                             ),
-                            (viewModel.items.elementAt(index).topicImageUrl !=
+                            (viewModel.items.elementAt(index).imageUrl !=
                                         null &&
                                     viewModel.items
                                         .elementAt(index)
-                                        .topicImageUrl
+                                        .imageUrl
                                         .isNotEmpty)
                                 ? Padding(
                                     padding:
@@ -223,7 +221,7 @@ class TopicListView extends HookWidget {
                                       ),
                                       imageUrl: viewModel.items
                                           .elementAt(index)
-                                          .topicImageUrl,
+                                          .imageUrl,
                                       errorWidget:
                                           (context, url, dynamic error) =>
                                               Image.asset(

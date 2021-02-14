@@ -46,9 +46,10 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<void> updateUser({
-    @required String userId,
     @required UserModel user,
   }) async {
+    assert(user.id != null);
+
     final data = <String, dynamic>{};
     if (user.name != null) {
       data['name'] = user.name;
@@ -59,7 +60,7 @@ class UserRepositoryImpl implements UserRepository {
     if (user.imageUrl != null) {
       data['image_url'] = user.imageUrl;
     }
-    await _firestore.collection('users').doc(userId).update(data);
+    await _firestore.collection('users').doc(user.id).update(data);
   }
 //
 //  @override

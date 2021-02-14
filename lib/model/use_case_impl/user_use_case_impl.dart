@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,8 +8,10 @@ import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/model/login_user_model.dart';
 import 'package:oogiritaizen/model/model/user_model.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
+import 'package:oogiritaizen/model/repository/storage_repository.dart';
 import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/storage_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 
@@ -17,6 +20,7 @@ final userUseCaseProvider = Provider.autoDispose.family<UserUseCase, String>(
     final userUseCase = UserUseCaseImpl(
       id,
       ref.watch(authenticationRepositoryProvider),
+      ref.watch(storageRepositoryProvider),
       ref.watch(userRepositoryProvider),
     );
     ref.onDispose(userUseCase.disposed);
@@ -28,11 +32,13 @@ class UserUseCaseImpl implements UserUseCase {
   UserUseCaseImpl(
     this.id,
     this.authenticationRepository,
+    this.storageRepository,
     this.userRepository,
   );
 
   final String id;
   final AuthenticationRepository authenticationRepository;
+  final StorageRepository storageRepository;
   final UserRepository userRepository;
 
   List<StreamController<UserEntity>> list = [];
@@ -64,6 +70,38 @@ class UserUseCaseImpl implements UserUseCase {
     );
 
     return loginUserStream.stream;
+  }
+
+  @override
+  Future<UserEntity> getLoginUser() async {
+    final loginUserModel = authenticationRepository.getLoginUser();
+    final loginUser = await userRepository.getUser(userId: loginUserModel.id);
+    return UserEntity()
+      ..id = loginUser.id
+      ..name = loginUser.name
+      ..introduction = loginUser.introduction
+      ..imageUrl = loginUser.imageUrl;
+  }
+
+  @override
+  Future<void> updateUser({
+    @required File imageFile,
+    @required UserEntity editedUser,
+  }) async {
+    var uploadedUrl = '';
+    if (imageFile != null) {
+      uploadedUrl = await storageRepository.upload(
+        path: 'images/users',
+        file: imageFile,
+      );
+    }
+    await userRepository.updateUser(
+      user: UserModel()
+        ..id = authenticationRepository.getLoginUser().id
+        ..name = editedUser.name
+        ..introduction = editedUser.introduction
+        ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
+    );
   }
 
   Future<void> disposed() async {
