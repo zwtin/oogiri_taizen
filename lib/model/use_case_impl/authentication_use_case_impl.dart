@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meta/meta.dart';
 
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
@@ -24,6 +25,31 @@ class AuthenticationUseCaseImpl implements AuthenticationUseCase {
 
   final String id;
   final AuthenticationRepository authenticationRepository;
+
+  @override
+  Future<void> loginWithEmailAndPassword({
+    @required String email,
+    @required String password,
+  }) async {
+    await authenticationRepository.loginWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  @override
+  Future<void> loginWithGoogle() async {
+    await authenticationRepository.loginWithGoogle();
+  }
+
+  @override
+  Future<void> sendLoginEmail({
+    @required String email,
+  }) async {
+    await authenticationRepository.sendSignInWithEmailLink(
+      email: email,
+    );
+  }
 
   @override
   void logout() {

@@ -114,17 +114,17 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-//                                    Navigator.of(context, rootNavigator: true)
-//                                        .push(
-//                                      MaterialPageRoute<SignInView>(
-//                                        builder: (BuildContext context) {
-//                                          // 複数のProviderを提供
-//                                          return SignInView();
-//                                        },
-//                                        // 全画面で表示
-//                                        fullscreenDialog: true,
-//                                      ),
-//                                    );
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
+                                      MaterialPageRoute<SignInView>(
+                                        builder: (BuildContext context) {
+                                          // 複数のProviderを提供
+                                          return SignInView();
+                                        },
+                                        // 全画面で表示
+                                        fullscreenDialog: true,
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
@@ -153,17 +153,17 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-//                                    Navigator.of(context, rootNavigator: true)
-//                                        .push(
-//                                      MaterialPageRoute<SignUpView>(
-//                                        builder: (BuildContext context) {
-//                                          // 複数のProviderを提供
-//                                          return SignUpView();
-//                                        },
-//                                        // 全画面で表示
-//                                        fullscreenDialog: true,
-//                                      ),
-//                                    );
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
+                                      MaterialPageRoute<SignUpView>(
+                                        builder: (BuildContext context) {
+                                          // 複数のProviderを提供
+                                          return SignUpView();
+                                        },
+                                        // 全画面で表示
+                                        fullscreenDialog: true,
+                                      ),
+                                    );
                                   },
                                 ),
                               ),
