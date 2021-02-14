@@ -2,10 +2,17 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/repository/storage_repository.dart';
+
+final storageRepositoryProvider = Provider<StorageRepository>(
+  (ref) {
+    return StorageRepositoryImpl();
+  },
+);
 
 class StorageRepositoryImpl implements StorageRepository {
   final _firebaseStorage = FirebaseStorage.instance;

@@ -7,8 +7,43 @@ import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view.dart';
 
 class BottomTabView extends HookWidget {
+  final tab0 = Navigator(
+    // ルート画面生成
+    onGenerateRoute: (RouteSettings settings) {
+      return PageRouteBuilder<Widget>(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation1,
+          Animation<double> animation2,
+        ) {
+          // 中身
+          return AnswerListView();
+        },
+      );
+    },
+  );
+
+  final tab1 = Navigator(
+    // ルート画面生成
+    onGenerateRoute: (RouteSettings settings) {
+      return PageRouteBuilder<Widget>(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation1,
+          Animation<double> animation2,
+        ) {
+          // 中身
+          return MyProfileView();
+        },
+      );
+    },
+  );
+
   @override
   Widget build(BuildContext context) {
+    // ViewModel取得
+    final viewModel = useProvider(bottomTabViewModelProvider);
+
     return WillPopScope(
       // 戻るボタン押下時
       onWillPop: () {
@@ -32,7 +67,7 @@ class BottomTabView extends HookWidget {
           ),
 
           // 選択されたタブのインデックス
-          selectedIndex: useProvider(bottomTabViewModelProvider).selected,
+          selectedIndex: viewModel.selected,
 
           // タブ押下時
           onSelectTab: (int index) {
@@ -55,40 +90,12 @@ class BottomTabView extends HookWidget {
         // 表示画面
         body: IndexedStack(
           // 表示画面のインデックス
-          index: useProvider(bottomTabViewModelProvider).selected,
+          index: viewModel.selected,
 
           // 表示画面の配列
           children: <Widget>[
-            Navigator(
-              // ルート画面生成
-              onGenerateRoute: (RouteSettings settings) {
-                return PageRouteBuilder<Widget>(
-                  pageBuilder: (
-                    BuildContext context,
-                    Animation<double> animation1,
-                    Animation<double> animation2,
-                  ) {
-                    // 中身
-                    return AnswerListView();
-                  },
-                );
-              },
-            ),
-            Navigator(
-              // ルート画面生成
-              onGenerateRoute: (RouteSettings settings) {
-                return PageRouteBuilder<Widget>(
-                  pageBuilder: (
-                    BuildContext context,
-                    Animation<double> animation1,
-                    Animation<double> animation2,
-                  ) {
-                    // 中身
-                    return MyProfileView();
-                  },
-                );
-              },
-            ),
+            tab0,
+            tab1,
           ],
         ),
       ),

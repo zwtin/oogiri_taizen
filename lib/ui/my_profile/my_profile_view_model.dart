@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,46 +8,48 @@ import 'package:oogiritaizen/data/model/entity/current_user.dart';
 import 'package:oogiritaizen/data/model/entity/user.dart';
 import 'package:oogiritaizen/data/model/repository/firebase_authentication_repository.dart';
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
+import 'package:oogiritaizen/model/entity/user_entity.dart';
+import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
+import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
+import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/model/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 
 final myProfileViewModelProvider =
-    ChangeNotifierProvider.family<MyProfileViewModel, String>(
+    ChangeNotifierProvider.autoDispose.family<MyProfileViewModel, String>(
   (ref, id) {
-    return MyProfileViewModel(
-      ref,
+    final viewModel = MyProfileViewModel(
       id,
+      ref.watch(authenticationUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(id)),
     );
+    ref.onDispose(viewModel.disposed);
+    return viewModel;
   },
 );
 
 class MyProfileViewModel extends ChangeNotifier {
   MyProfileViewModel(
-    this.providerReference,
     this.id,
+    this.authenticationUseCase,
+    this.userUseCase,
   ) {
-    _firebaseAuthenticationRepository.getCurrentUserStream().listen(
-      (CurrentUser currentUser) {
-        if (currentUser == null) {
-          user = null;
-          notifyListeners();
-        } else {
-          _firestoreUserRepository.getUserStream(userId: currentUser.id).listen(
-            (User _user) {
-              user = _user;
-              notifyListeners();
-            },
-          );
-        }
+    userUseCase.getLoginUserStream().listen(
+      (UserEntity userEntity) {
+        user = User()
+          ..id = userEntity.id
+          ..name = userEntity.name
+          ..introduction = userEntity.introduction
+          ..imageUrl = userEntity.imageUrl;
+        notifyListeners();
       },
     );
   }
 
-  final ProviderReference providerReference;
   final String id;
-
-  final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
-      FirebaseAuthenticationRepository();
-  final FirestoreUserRepository _firestoreUserRepository =
-      FirestoreUserRepository();
+  final AuthenticationUseCase authenticationUseCase;
+  final UserUseCase userUseCase;
 
   User user;
 
@@ -73,8 +77,8 @@ class MyProfileViewModel extends ChangeNotifier {
     Answer(),
   ];
 
-  Future<void> signOut() async {
-    await _firebaseAuthenticationRepository.signOut();
+  void signOut() {
+    authenticationUseCase.logout();
   }
 
   Future<void> addAnswer() async {
@@ -116,5 +120,9 @@ class MyProfileViewModel extends ChangeNotifier {
       Answer(),
     ];
     notifyListeners();
+  }
+
+  void disposed() {
+    debugPrint('aaaaa');
   }
 }

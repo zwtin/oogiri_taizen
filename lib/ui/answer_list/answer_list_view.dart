@@ -12,6 +12,11 @@ import 'package:oogiritaizen/data/model/extension/string_extension.dart';
 class AnswerListView extends HookWidget {
   final id = StringExtension.randomString(8);
 
+  double getRadiansFromDegree(double degree) {
+    const unitRadian = 57.295779513;
+    return degree / unitRadian;
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(answerListViewModelProvider(id));
@@ -180,19 +185,18 @@ class AnswerListView extends HookWidget {
                 ),
                 AnimatedBuilder(
                   animation: controller,
-                  builder: (BuildContext context, child) {
+                  builder: (BuildContext context, Widget child) {
                     return Positioned(
                       right: 35,
                       bottom: 35,
                       child: Transform.translate(
                         offset: Offset.fromDirection(
-                          viewModel.getRadiansFromDegree(270),
+                          getRadiansFromDegree(270),
                           degOneTransitionAnimation.value * 100,
                         ),
                         child: Transform(
                           transform: Matrix4.rotationZ(
-                            viewModel
-                                .getRadiansFromDegree(rotationAnimation.value),
+                            getRadiansFromDegree(rotationAnimation.value),
                           )..scale(degOneTransitionAnimation.value),
                           alignment: Alignment.center,
                           child: CircularButton(
@@ -204,7 +208,9 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              viewModel.transitionToPostTopic();
+                              context
+                                  .read(answerListViewModelProvider(id))
+                                  .transitionToPostTopic();
                             },
                           ),
                         ),
@@ -214,19 +220,18 @@ class AnswerListView extends HookWidget {
                 ),
                 AnimatedBuilder(
                   animation: controller,
-                  builder: (BuildContext context, child) {
+                  builder: (BuildContext context, Widget child) {
                     return Positioned(
                       right: 35,
                       bottom: 35,
                       child: Transform.translate(
                         offset: Offset.fromDirection(
-                          viewModel.getRadiansFromDegree(225),
+                          getRadiansFromDegree(225),
                           degTwoTransitionAnimation.value * 100,
                         ),
                         child: Transform(
                           transform: Matrix4.rotationZ(
-                            viewModel
-                                .getRadiansFromDegree(rotationAnimation.value),
+                            getRadiansFromDegree(rotationAnimation.value),
                           )..scale(degOneTransitionAnimation.value),
                           alignment: Alignment.center,
                           child: CircularButton(
@@ -254,13 +259,12 @@ class AnswerListView extends HookWidget {
                       bottom: 35,
                       child: Transform.translate(
                         offset: Offset.fromDirection(
-                          viewModel.getRadiansFromDegree(180),
+                          getRadiansFromDegree(180),
                           degThreeTransitionAnimation.value * 100,
                         ),
                         child: Transform(
                           transform: Matrix4.rotationZ(
-                            viewModel
-                                .getRadiansFromDegree(rotationAnimation.value),
+                            getRadiansFromDegree(rotationAnimation.value),
                           )..scale(degOneTransitionAnimation.value),
                           alignment: Alignment.center,
                           child: CircularButton(
@@ -272,7 +276,9 @@ class AnswerListView extends HookWidget {
                               color: Colors.white,
                             ),
                             onClick: () {
-                              viewModel.transitionToTopicList();
+                              context
+                                  .read(answerListViewModelProvider(id))
+                                  .transitionToTopicList();
                             },
                           ),
                         ),
@@ -282,14 +288,13 @@ class AnswerListView extends HookWidget {
                 ),
                 AnimatedBuilder(
                   animation: controller,
-                  builder: (BuildContext context, child) {
+                  builder: (BuildContext context, Widget child) {
                     return Positioned(
                       right: 30,
                       bottom: 30,
                       child: Transform(
                         transform: Matrix4.rotationZ(
-                          viewModel
-                              .getRadiansFromDegree(rotationAnimation2.value),
+                          getRadiansFromDegree(rotationAnimation2.value),
                         ),
                         alignment: Alignment.center,
                         child: CircularButton(

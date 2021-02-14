@@ -3,16 +3,24 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_1_navigator_notifier.dart';
 
-final bottomTabViewModelProvider = ChangeNotifierProvider<BottomTabViewModel>(
+final bottomTabViewModelProvider =
+    ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
   (ref) {
-    return BottomTabViewModel(ref);
+    return BottomTabViewModel(
+      ref.watch(tab0NavigatorNotifierProvider),
+      ref.watch(tab1NavigatorNotifierProvider),
+    );
   },
 );
 
 class BottomTabViewModel extends ChangeNotifier {
-  BottomTabViewModel(this.providerReference);
+  BottomTabViewModel(
+    this.tab0navigatorNotifier,
+    this.tab1navigatorNotifier,
+  );
 
-  final ProviderReference providerReference;
+  final Tab0NavigatorNotifier tab0navigatorNotifier;
+  final Tab1NavigatorNotifier tab1navigatorNotifier;
 
   int selected = 0;
 
@@ -20,10 +28,10 @@ class BottomTabViewModel extends ChangeNotifier {
     if (selected == index) {
       switch (index) {
         case 0:
-          providerReference.read(tab0NavigatorNotifierProvider).popToRoot();
+          tab0navigatorNotifier.popToRoot();
           break;
         case 1:
-          providerReference.read(tab1NavigatorNotifierProvider).popToRoot();
+          tab1navigatorNotifier.popToRoot();
           break;
       }
     } else {
@@ -35,10 +43,10 @@ class BottomTabViewModel extends ChangeNotifier {
   void pop() {
     switch (selected) {
       case 0:
-        providerReference.read(tab0NavigatorNotifierProvider).pop();
+        tab0navigatorNotifier.pop();
         break;
       case 1:
-        providerReference.read(tab1NavigatorNotifierProvider).pop();
+        tab1navigatorNotifier.pop();
         break;
     }
   }

@@ -6,76 +6,76 @@ import 'package:oogiritaizen/data/model/repository/firebase_authentication_repos
 import 'package:oogiritaizen/data/model/repository/firestore_user_repository.dart';
 import 'package:oogiritaizen/data/provider/alert_notifier.dart';
 import 'package:oogiritaizen/data/provider/tab_0_navigator_notifier.dart';
+import 'package:oogiritaizen/model/entity/user_entity.dart';
+import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
+import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/model/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view.dart';
 
 final answerListViewModelProvider =
-    ChangeNotifierProvider.family<AnswerListViewModel, String>(
+    ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, String>(
   (ref, id) {
     return AnswerListViewModel(
-      ref,
       id,
+      ref.watch(tab0NavigatorNotifierProvider),
+      ref.watch(authenticationUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(id)),
     );
   },
 );
 
 class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
-    this.providerReference,
     this.id,
+    this.tab0navigatorNotifier,
+    this.authenticationUseCase,
+    this.userUseCase,
   ) {
-    _firebaseAuthenticationRepository.getCurrentUserStream().listen(
-      (CurrentUser currentUser) {
-        if (currentUser == null) {
-          user = null;
-          notifyListeners();
-        } else {
-          _firestoreUserRepository.getUserStream(userId: currentUser.id).listen(
-            (User _user) {
-              user = _user;
-              notifyListeners();
-            },
-          );
-        }
+    userUseCase.getLoginUserStream().listen(
+      (UserEntity userEntity) {
+        user = User()
+          ..id = userEntity.id
+          ..name = userEntity.name
+          ..introduction = userEntity.introduction
+          ..imageUrl = userEntity.imageUrl;
+        notifyListeners();
       },
     );
   }
 
-  final ProviderReference providerReference;
   final String id;
-
-  final FirebaseAuthenticationRepository _firebaseAuthenticationRepository =
-      FirebaseAuthenticationRepository();
-  final FirestoreUserRepository _firestoreUserRepository =
-      FirestoreUserRepository();
+  final Tab0NavigatorNotifier tab0navigatorNotifier;
+  final AuthenticationUseCase authenticationUseCase;
+  final UserUseCase userUseCase;
 
   User user;
 
-  double getRadiansFromDegree(double degree) {
-    const unitRadian = 57.295779513;
-    return degree / unitRadian;
-  }
-
   void tapped() {
-    providerReference.read(alertNotifierProvider(id)).show(
-          title: 'エラー',
-          subtitle: '選択済みのタブです',
-          showCancelButton: false,
-          onPress: null,
-          style: null,
-        );
+//    providerReference.read(alertNotifierProvider(id)).show(
+//          title: 'エラー',
+//          subtitle: '選択済みのタブです',
+//          showCancelButton: false,
+//          onPress: null,
+//          style: null,
+//        );
   }
 
   void transitionToPostTopic() {
-    providerReference.read(tab0NavigatorNotifierProvider).present(
-          PostTopicView(user),
-        );
+    tab0navigatorNotifier.present(
+      PostTopicView(user),
+    );
   }
 
   void transitionToTopicList() {
-    providerReference.read(tab0NavigatorNotifierProvider).present(
-          TopicListView(user),
-        );
+    tab0navigatorNotifier.present(
+      TopicListView(user),
+    );
+  }
+
+  void disposed() {
+    debugPrint('aaaaa');
   }
 }

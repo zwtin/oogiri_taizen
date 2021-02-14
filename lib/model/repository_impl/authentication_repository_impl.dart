@@ -1,10 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:oogiritaizen/model/model/login_user_model.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
+
+final authenticationRepositoryProvider = Provider<AuthenticationRepository>(
+  (ref) {
+    return AuthenticationRepositoryImpl();
+  },
+);
 
 class AuthenticationRepositoryImpl implements AuthenticationRepository {
   final _firebaseAuth = FirebaseAuth.instance;
