@@ -4,10 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final postAnswerViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<PostAnswerViewModel, String>(
   (ref, id) {
-    return PostAnswerViewModel(
+    final postAnswerViewModel = PostAnswerViewModel(
       ref,
       id,
     );
+    ref.onDispose(postAnswerViewModel.disposed);
+    return postAnswerViewModel;
   },
 );
 
@@ -21,4 +23,8 @@ class PostAnswerViewModel extends ChangeNotifier {
   final String id;
 
   bool isLoading = false;
+
+  Future<void> disposed() async {
+    debugPrint(id);
+  }
 }

@@ -17,13 +17,15 @@ import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 final postTopicViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<PostTopicViewModel, String>(
   (ref, id) {
-    return PostTopicViewModel(
+    final postTopicViewModel = PostTopicViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider(id)),
       ref.watch(userUseCaseProvider(id)),
       ref.watch(topicUseCaseProvider(id)),
     );
+    ref.onDispose(postTopicViewModel.disposed);
+    return postTopicViewModel;
   },
 );
 
@@ -136,5 +138,9 @@ class PostTopicViewModel extends ChangeNotifier {
       imageFile = croppedFile;
       notifyListeners();
     }
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

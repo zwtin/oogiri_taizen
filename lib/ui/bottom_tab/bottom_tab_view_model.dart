@@ -5,10 +5,12 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 final bottomTabViewModelProvider =
     ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
   (ref) {
-    return BottomTabViewModel(
+    final bottomTabViewModel = BottomTabViewModel(
       ref.watch(navigatorViewModelProvider('Tab0')),
       ref.watch(navigatorViewModelProvider('Tab1')),
     );
+    ref.onDispose(bottomTabViewModel.disposed);
+    return bottomTabViewModel;
   },
 );
 
@@ -48,5 +50,9 @@ class BottomTabViewModel extends ChangeNotifier {
         tab1NavigatorViewModel.pop();
         break;
     }
+  }
+
+  Future<void> disposed() async {
+    debugPrint('bottomTab');
   }
 }

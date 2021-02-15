@@ -9,12 +9,14 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 final signInViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignInViewModel, String>(
   (ref, id) {
-    return SignInViewModel(
+    final signInViewModel = SignInViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider(id)),
       ref.watch(authenticationUseCaseProvider(id)),
     );
+    ref.onDispose(signInViewModel.disposed);
+    return signInViewModel;
   },
 );
 
@@ -98,5 +100,9 @@ class SignInViewModel extends ChangeNotifier {
       );
       notifyListeners();
     }
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

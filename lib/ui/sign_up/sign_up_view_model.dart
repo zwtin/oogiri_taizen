@@ -9,12 +9,14 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 final signUpViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignUpViewModel, String>(
   (ref, id) {
-    return SignUpViewModel(
+    final signUpViewModel = SignUpViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider(id)),
       ref.watch(authenticationUseCaseProvider(id)),
     );
+    ref.onDispose(signUpViewModel.disposed);
+    return signUpViewModel;
   },
 );
 
@@ -94,5 +96,9 @@ class SignUpViewModel extends ChangeNotifier {
       );
       notifyListeners();
     }
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

@@ -15,15 +15,15 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 final myProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<MyProfileViewModel, String>(
   (ref, id) {
-    final viewModel = MyProfileViewModel(
+    final myProfileViewModel = MyProfileViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider('Tab1')),
       ref.watch(authenticationUseCaseProvider(id)),
       ref.watch(userUseCaseProvider(id)),
     );
-    ref.onDispose(viewModel.disposed);
-    return viewModel;
+    ref.onDispose(myProfileViewModel.disposed);
+    return myProfileViewModel;
   },
 );
 
@@ -125,7 +125,7 @@ class MyProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void disposed() {
-    debugPrint('aaaaa');
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

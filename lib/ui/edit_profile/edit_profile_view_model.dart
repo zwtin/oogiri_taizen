@@ -14,12 +14,14 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 final editProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, String>(
   (ref, id) {
-    return EditProfileViewModel(
+    final editProfileViewModel = EditProfileViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider(id)),
       ref.watch(userUseCaseProvider(id)),
     );
+    ref.onDispose(editProfileViewModel.disposed);
+    return editProfileViewModel;
   },
 );
 
@@ -140,5 +142,9 @@ class EditProfileViewModel extends ChangeNotifier {
       imageFile = croppedFile;
       notifyListeners();
     }
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

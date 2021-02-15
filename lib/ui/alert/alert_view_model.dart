@@ -7,7 +7,9 @@ import 'package:oogiritaizen/model/entity/alert_entity.dart';
 final alertViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<AlertViewModel, String>(
   (ref, id) {
-    return AlertViewModel(id);
+    final alertViewModel = AlertViewModel(id);
+    ref.onDispose(alertViewModel.disposed);
+    return alertViewModel;
   },
 );
 
@@ -23,5 +25,9 @@ class AlertViewModel extends ChangeNotifier {
   }) {
     this.alertEntity = alertEntity;
     notifyListeners();
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

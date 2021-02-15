@@ -9,11 +9,13 @@ import 'package:oogiritaizen/ui/topic_list/topic_list_view.dart';
 final answerListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, String>(
   (ref, id) {
-    return AnswerListViewModel(
+    final answerListViewModel = AnswerListViewModel(
       id,
       ref.watch(alertViewModelProvider(id)),
       ref.watch(navigatorViewModelProvider('Tab0')),
     );
+    ref.onDispose(answerListViewModel.disposed);
+    return answerListViewModel;
   },
 );
 
@@ -38,5 +40,9 @@ class AnswerListViewModel extends ChangeNotifier {
     navigatorViewModel.present(
       TopicListView(),
     );
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }

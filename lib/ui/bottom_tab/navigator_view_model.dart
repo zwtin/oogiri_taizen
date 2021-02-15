@@ -4,7 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final navigatorViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<NavigatorViewModel, String>(
   (ref, id) {
-    return NavigatorViewModel(id);
+    final navigatorViewModel = NavigatorViewModel(id);
+    ref.onDispose(navigatorViewModel.disposed);
+    return navigatorViewModel;
   },
 );
 
@@ -43,5 +45,9 @@ class NavigatorViewModel extends ChangeNotifier {
     fullScreen = false;
     toRoot = true;
     notifyListeners();
+  }
+
+  Future<void> disposed() async {
+    debugPrint(id);
   }
 }
