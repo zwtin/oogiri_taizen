@@ -11,8 +11,7 @@ final answerListViewModelProvider =
   (ref, id) {
     final answerListViewModel = AnswerListViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider('Tab0')),
+      ref,
     );
     ref.onDispose(answerListViewModel.disposed);
     return answerListViewModel;
@@ -22,24 +21,22 @@ final answerListViewModelProvider =
 class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
   );
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
 
   void transitionToPostTopic() {
-    navigatorViewModel.present(
-      PostTopicView(),
-    );
+    providerReference.read(navigatorViewModelProvider('Tab0')).present(
+          PostTopicView(),
+        );
   }
 
   void transitionToTopicList() {
-    navigatorViewModel.present(
-      TopicListView(),
-    );
+    providerReference.read(navigatorViewModelProvider('Tab0')).present(
+          TopicListView(),
+        );
   }
 
   Future<void> disposed() async {

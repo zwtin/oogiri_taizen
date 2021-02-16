@@ -11,8 +11,7 @@ final signInViewModelProvider =
   (ref, id) {
     final signInViewModel = SignInViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider(id)),
+      ref,
       ref.watch(authenticationUseCaseProvider(id)),
     );
     ref.onDispose(signInViewModel.disposed);
@@ -23,14 +22,12 @@ final signInViewModelProvider =
 class SignInViewModel extends ChangeNotifier {
   SignInViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.authenticationUseCase,
   );
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
 
   bool isLoading = false;
@@ -40,24 +37,24 @@ class SignInViewModel extends ChangeNotifier {
     @required String password,
   }) async {
     if (email.isEmpty) {
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'メールアドレスを入力してください'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'メールアドレスを入力してください'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     } else if (password.isEmpty) {
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'パスワードを入力してください'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'パスワードを入力してください'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     }
     try {
@@ -67,17 +64,17 @@ class SignInViewModel extends ChangeNotifier {
         email: email,
         password: password,
       );
-      navigatorViewModel.pop();
+      providerReference.read(navigatorViewModelProvider(id)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'メールアドレスまたはパスワードが間違っています'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'メールアドレスまたはパスワードが間違っています'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }
@@ -87,17 +84,17 @@ class SignInViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await authenticationUseCase.loginWithGoogle();
-      navigatorViewModel.pop();
+      providerReference.read(navigatorViewModelProvider(id)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'ログインに失敗しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'ログインに失敗しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }

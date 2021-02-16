@@ -19,8 +19,7 @@ final postTopicViewModelProvider =
   (ref, id) {
     final postTopicViewModel = PostTopicViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider(id)),
+      ref,
       ref.watch(userUseCaseProvider(id)),
       ref.watch(topicUseCaseProvider(id)),
     );
@@ -32,8 +31,7 @@ final postTopicViewModelProvider =
 class PostTopicViewModel extends ChangeNotifier {
   PostTopicViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.userUseCase,
     this.topicUseCase,
   ) {
@@ -41,8 +39,7 @@ class PostTopicViewModel extends ChangeNotifier {
   }
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final UserUseCase userUseCase;
   final TopicUseCase topicUseCase;
 
@@ -59,14 +56,14 @@ class PostTopicViewModel extends ChangeNotifier {
   Future<void> postTopic() async {
     if (editedTopic.text.isEmpty) {
       // お題本文入力チェック
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'テキストが未入力です'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'テキストが未入力です'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     }
     try {
@@ -78,28 +75,28 @@ class PostTopicViewModel extends ChangeNotifier {
         editedTopic: editedTopic,
       );
       isConnecting = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = '投稿完了'
-          ..subtitle = 'お題を投稿しました'
-          ..showCancelButton = false
-          ..onPress = ((bool b) {
-            navigatorViewModel.pop();
-            return b;
-          })
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = '投稿完了'
+              ..subtitle = 'お題を投稿しました'
+              ..showCancelButton = false
+              ..onPress = ((bool b) {
+                providerReference.read(navigatorViewModelProvider(id)).pop();
+                return b;
+              })
+              ..style = null,
+          );
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = '通信エラーが発生しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }

@@ -5,8 +5,8 @@ final postAnswerViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<PostAnswerViewModel, String>(
   (ref, id) {
     final postAnswerViewModel = PostAnswerViewModel(
-      ref,
       id,
+      ref,
     );
     ref.onDispose(postAnswerViewModel.disposed);
     return postAnswerViewModel;
@@ -15,12 +15,12 @@ final postAnswerViewModelProvider =
 
 class PostAnswerViewModel extends ChangeNotifier {
   PostAnswerViewModel(
-    this.providerReference,
     this.id,
+    this.providerReference,
   );
 
-  final ProviderReference providerReference;
   final String id;
+  final ProviderReference providerReference;
 
   bool isLoading = false;
 

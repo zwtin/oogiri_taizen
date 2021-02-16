@@ -17,8 +17,7 @@ final myProfileViewModelProvider =
   (ref, id) {
     final myProfileViewModel = MyProfileViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider('Tab1')),
+      ref,
       ref.watch(authenticationUseCaseProvider(id)),
       ref.watch(userUseCaseProvider(id)),
     );
@@ -30,8 +29,7 @@ final myProfileViewModelProvider =
 class MyProfileViewModel extends ChangeNotifier {
   MyProfileViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.authenticationUseCase,
     this.userUseCase,
   ) {
@@ -39,8 +37,7 @@ class MyProfileViewModel extends ChangeNotifier {
   }
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
   final UserUseCase userUseCase;
 

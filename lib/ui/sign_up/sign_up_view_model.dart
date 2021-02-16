@@ -11,8 +11,7 @@ final signUpViewModelProvider =
   (ref, id) {
     final signUpViewModel = SignUpViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider(id)),
+      ref,
       ref.watch(authenticationUseCaseProvider(id)),
     );
     ref.onDispose(signUpViewModel.disposed);
@@ -23,14 +22,12 @@ final signUpViewModelProvider =
 class SignUpViewModel extends ChangeNotifier {
   SignUpViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.authenticationUseCase,
   );
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
 
   bool isLoading = false;
@@ -40,17 +37,17 @@ class SignUpViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await authenticationUseCase.loginWithGoogle();
-      navigatorViewModel.pop();
+      providerReference.read(navigatorViewModelProvider(id)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'ログインに失敗しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'ログインに失敗しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }
@@ -60,14 +57,14 @@ class SignUpViewModel extends ChangeNotifier {
   }) async {
     assert(email != null);
     if (email.isEmpty) {
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'メールアドレスを入力してください'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'メールアドレスを入力してください'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     }
     try {
@@ -75,25 +72,25 @@ class SignUpViewModel extends ChangeNotifier {
       notifyListeners();
       await authenticationUseCase.loginWithGoogle();
       isLoading = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = '完了'
-          ..subtitle = '確認メールを送信しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = '完了'
+              ..subtitle = '確認メールを送信しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     } on Exception catch (error) {
       isLoading = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = 'メールの送信に失敗しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = 'メールの送信に失敗しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }

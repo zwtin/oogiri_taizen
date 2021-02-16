@@ -16,8 +16,7 @@ final editProfileViewModelProvider =
   (ref, id) {
     final editProfileViewModel = EditProfileViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider(id)),
+      ref,
       ref.watch(userUseCaseProvider(id)),
     );
     ref.onDispose(editProfileViewModel.disposed);
@@ -28,16 +27,14 @@ final editProfileViewModelProvider =
 class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.userUseCase,
   ) {
     setup();
   }
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final UserUseCase userUseCase;
 
   UserEntity editedUser;
@@ -52,26 +49,26 @@ class EditProfileViewModel extends ChangeNotifier {
   Future<void> postUser() async {
     if (editedUser.name.isEmpty) {
       // ユーザー名入力チェック
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = '名前が未入力です'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '名前が未入力です'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     }
     if (editedUser.introduction.isEmpty) {
       // 自己紹介入力チェック
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = '自己紹介が未入力です'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '自己紹介が未入力です'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       return;
     }
     try {
@@ -82,28 +79,28 @@ class EditProfileViewModel extends ChangeNotifier {
         editedUser: editedUser,
       );
       isConnecting = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = '投稿完了'
-          ..subtitle = 'プロフィールを更新しました'
-          ..showCancelButton = false
-          ..onPress = ((bool b) {
-            navigatorViewModel.pop();
-            return b;
-          })
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = '投稿完了'
+              ..subtitle = 'プロフィールを更新しました'
+              ..showCancelButton = false
+              ..onPress = ((bool b) {
+                providerReference.read(navigatorViewModelProvider(id)).pop();
+                return b;
+              })
+              ..style = null,
+          );
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = '通信エラーが発生しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }

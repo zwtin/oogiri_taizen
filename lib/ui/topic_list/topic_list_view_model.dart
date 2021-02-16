@@ -12,8 +12,7 @@ final topicListViewModelProvider =
   (ref, id) {
     final topicListViewModel = TopicListViewModel(
       id,
-      ref.watch(alertViewModelProvider(id)),
-      ref.watch(navigatorViewModelProvider(id)),
+      ref,
       ref.watch(topicUseCaseProvider(id)),
     );
     ref.onDispose(topicListViewModel.disposed);
@@ -24,16 +23,14 @@ final topicListViewModelProvider =
 class TopicListViewModel extends ChangeNotifier {
   TopicListViewModel(
     this.id,
-    this.alertViewModel,
-    this.navigatorViewModel,
+    this.providerReference,
     this.topicUseCase,
   ) {
     setup();
   }
 
   final String id;
-  final AlertViewModel alertViewModel;
-  final NavigatorViewModel navigatorViewModel;
+  final ProviderReference providerReference;
   final TopicUseCase topicUseCase;
 
   bool isConnecting = false;
@@ -65,14 +62,14 @@ class TopicListViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      alertViewModel.show(
-        alertEntity: AlertEntity()
-          ..title = 'エラー'
-          ..subtitle = '通信エラーが発生しました'
-          ..showCancelButton = false
-          ..onPress = null
-          ..style = null,
-      );
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
       notifyListeners();
     }
   }

@@ -6,8 +6,7 @@ final bottomTabViewModelProvider =
     ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
   (ref) {
     final bottomTabViewModel = BottomTabViewModel(
-      ref.watch(navigatorViewModelProvider('Tab0')),
-      ref.watch(navigatorViewModelProvider('Tab1')),
+      ref,
     );
     ref.onDispose(bottomTabViewModel.disposed);
     return bottomTabViewModel;
@@ -16,12 +15,10 @@ final bottomTabViewModelProvider =
 
 class BottomTabViewModel extends ChangeNotifier {
   BottomTabViewModel(
-    this.tab0NavigatorViewModel,
-    this.tab1NavigatorViewModel,
+    this.providerReference,
   );
 
-  final NavigatorViewModel tab0NavigatorViewModel;
-  final NavigatorViewModel tab1NavigatorViewModel;
+  final ProviderReference providerReference;
 
   int selected = 0;
 
@@ -29,10 +26,14 @@ class BottomTabViewModel extends ChangeNotifier {
     if (selected == index) {
       switch (index) {
         case 0:
-          tab0NavigatorViewModel.popToRoot();
+          providerReference
+              .read(navigatorViewModelProvider('Tab0'))
+              .popToRoot();
           break;
         case 1:
-          tab1NavigatorViewModel.popToRoot();
+          providerReference
+              .read(navigatorViewModelProvider('Tab0'))
+              .popToRoot();
           break;
       }
     } else {
@@ -44,10 +45,10 @@ class BottomTabViewModel extends ChangeNotifier {
   void pop() {
     switch (selected) {
       case 0:
-        tab0NavigatorViewModel.pop();
+        providerReference.read(navigatorViewModelProvider('Tab0')).pop();
         break;
       case 1:
-        tab1NavigatorViewModel.pop();
+        providerReference.read(navigatorViewModelProvider('Tab1')).pop();
         break;
     }
   }
