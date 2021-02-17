@@ -329,11 +329,8 @@ class MyProfileView extends HookWidget {
                                             color: Colors.white,
                                             fontSize: 14,
                                           ),
-                                          textAlign: TextAlign.right,
-                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(
-                                          width: 150,
+                                        Flexible(
                                           child: Text(
                                             viewModel.loginUser.id,
                                             style: const TextStyle(
