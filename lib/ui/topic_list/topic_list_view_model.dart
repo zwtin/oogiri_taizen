@@ -6,6 +6,7 @@ import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
 
 final topicListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<TopicListViewModel, String>(
@@ -74,7 +75,11 @@ class TopicListViewModel extends ChangeNotifier {
     }
   }
 
-  void transitionToPostAnswer() {}
+  void transitionToPostAnswer({@required String topicId}) {
+    providerReference.read(navigatorViewModelProvider(id)).push(
+          PostAnswerView(topicId),
+        );
+  }
 
   Future<void> disposed() async {
     debugPrint(id);

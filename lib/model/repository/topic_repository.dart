@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import 'package:oogiritaizen/model/model/topic_model.dart';
-import 'package:oogiritaizen/model/model/user_model.dart';
 
 abstract class TopicRepository {
   Future<TopicModel> getTopic({

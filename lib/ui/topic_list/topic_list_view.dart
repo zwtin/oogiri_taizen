@@ -102,118 +102,26 @@ class TopicListView extends HookWidget {
                         ),
                       );
                     }
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: 44,
-                                  height: 44,
-                                  child: CachedNetworkImage(
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                    imageUrl: viewModel.items
-                                        .elementAt(index)
-                                        .createdUser
-                                        .imageUrl,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    errorWidget:
-                                        (context, url, dynamic error) =>
-                                            Image.asset(
-                                      'assets/icon/no_user.jpg',
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 16,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        StringExtension.getJPStringFromDateTime(
-                                          viewModel.items
-                                              .elementAt(index)
-                                              .createdAt,
-                                        ),
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Flexible(
-                                            child: Container(
-                                              child: Text(
-                                                viewModel.items
-                                                    .elementAt(index)
-                                                    .createdUser
-                                                    .name,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: const Text(
-                                              ' のお題：',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              height: 16,
-                            ),
-                            Text(
-                              viewModel.items.elementAt(index).text,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
-                              ),
-                            ),
-                            (viewModel.items.elementAt(index).imageUrl !=
-                                        null &&
-                                    viewModel.items
-                                        .elementAt(index)
-                                        .imageUrl
-                                        .isNotEmpty)
-                                ? Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 16, 0, 0),
+                    return GestureDetector(
+                      onTap: () {
+                        context
+                            .read(topicListViewModelProvider(id))
+                            .transitionToPostAnswer(
+                                topicId: viewModel.items.elementAt(index).id);
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 44,
+                                    height: 44,
                                     child: CachedNetworkImage(
                                       placeholder: (context, url) =>
                                           const Center(
@@ -221,16 +129,120 @@ class TopicListView extends HookWidget {
                                       ),
                                       imageUrl: viewModel.items
                                           .elementAt(index)
+                                          .createdUser
                                           .imageUrl,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
                                       errorWidget:
                                           (context, url, dynamic error) =>
                                               Image.asset(
-                                        'assets/icon/no_image.jpg',
+                                        'assets/icon/no_user.jpg',
                                       ),
                                     ),
-                                  )
-                                : Container(),
-                          ],
+                                  ),
+                                  Container(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          StringExtension
+                                              .getJPStringFromDateTime(
+                                            viewModel.items
+                                                .elementAt(index)
+                                                .createdAt,
+                                          ),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Container(
+                                                child: Text(
+                                                  viewModel.items
+                                                      .elementAt(index)
+                                                      .createdUser
+                                                      .name,
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: const Text(
+                                                ' のお題：',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 16,
+                              ),
+                              Text(
+                                viewModel.items.elementAt(index).text,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                              (viewModel.items.elementAt(index).imageUrl !=
+                                          null &&
+                                      viewModel.items
+                                          .elementAt(index)
+                                          .imageUrl
+                                          .isNotEmpty)
+                                  ? Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 16, 0, 0),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        imageUrl: viewModel.items
+                                            .elementAt(index)
+                                            .imageUrl,
+                                        errorWidget:
+                                            (context, url, dynamic error) =>
+                                                Image.asset(
+                                          'assets/icon/no_image.jpg',
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
                         ),
                       ),
                     );

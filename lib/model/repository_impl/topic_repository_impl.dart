@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 
 import 'package:oogiritaizen/model/model/topic_model.dart';
-import 'package:oogiritaizen/model/model/user_model.dart';
 import 'package:oogiritaizen/model/repository/topic_repository.dart';
 
 final topicRepositoryProvider = Provider<TopicRepository>(
