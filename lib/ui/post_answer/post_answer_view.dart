@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/button_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:sweetalert/sweetalert.dart';
+
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
-import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
-import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class PostAnswerView extends HookWidget {
@@ -21,6 +19,10 @@ class PostAnswerView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(postAnswerViewModelProvider(id));
+
+    if (viewModel.topic == null) {
+      viewModel.getTopic(topicId: topicId);
+    }
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {

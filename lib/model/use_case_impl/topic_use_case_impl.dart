@@ -47,6 +47,28 @@ class TopicUseCaseImpl implements TopicUseCase {
   final UserRepository userRepository;
 
   @override
+  Future<TopicEntity> getTopic({
+    @required String topicId,
+  }) async {
+    final topicModel = await topicRepository.getTopic(topicId: topicId);
+    final createUserModel =
+        await userRepository.getUser(userId: topicModel.createdUser);
+    final createUserEntity = UserEntity()
+      ..id = createUserModel.id
+      ..name = createUserModel.name
+      ..introduction = createUserModel.introduction
+      ..imageUrl = createUserModel.imageUrl;
+    final topicEntity = TopicEntity()
+      ..id = topicModel.id
+      ..text = topicModel.text
+      ..imageUrl = topicModel.imageUrl
+      ..answeredTime = topicModel.answeredTime
+      ..createdAt = topicModel.createdAt
+      ..createdUser = createUserEntity;
+    return topicEntity;
+  }
+
+  @override
   Future<void> postTopic({
     @required File imageFile,
     @required TopicEntity editedTopic,
