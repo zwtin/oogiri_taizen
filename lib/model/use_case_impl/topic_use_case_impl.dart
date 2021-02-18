@@ -74,6 +74,13 @@ class TopicUseCaseImpl implements TopicUseCase {
       beforeTime: beforeTime,
       count: 11,
     );
+    final topicListEntity = TopicListEntity();
+    if (topicModelList.length == 11) {
+      topicModelList.removeLast();
+      topicListEntity.hasNext = true;
+    } else {
+      topicListEntity.hasNext = false;
+    }
     final topicEntityList = <TopicEntity>[];
     for (final topicModel in topicModelList) {
       final userModel = await userRepository.getUser(
@@ -93,17 +100,7 @@ class TopicUseCaseImpl implements TopicUseCase {
         ..createdUser = userEntity;
       topicEntityList.add(topicEntity);
     }
-    final topicListEntity = TopicListEntity();
-    if (topicEntityList.length == 11) {
-      topicEntityList.removeLast();
-      topicListEntity
-        ..topics = topicEntityList
-        ..hasNext = true;
-    } else {
-      topicListEntity
-        ..topics = topicEntityList
-        ..hasNext = false;
-    }
+    topicListEntity.topics = topicEntityList;
     return topicListEntity;
   }
 
