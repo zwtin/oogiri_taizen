@@ -3,3 +3,4 @@ PRODUCT_BUNDLE_IDENTIFIER=com.zwtin.oogiritaizen
 DISPLAY_NAME=Flavor
 FLUTTER_TARGET=lib/main.dart
 GOOGLE_SIGN_IN_CONSTANT=com.googleusercontent.apps.112273983609-9iimf3p23e5kv5msqm8bvbc1b020qq9f
+DYNAMIC_LINKS_CONSTANT=oogiritaizen.page.link
