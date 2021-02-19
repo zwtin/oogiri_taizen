@@ -7,8 +7,7 @@ enum Flavor { development, production }
 @immutable
 class Constants {
   const Constants({
-    @required this.endpoint,
-    @required this.apiKey,
+    @required this.flavor,
   });
 
   factory Constants.of() {
@@ -26,7 +25,6 @@ class Constants {
         _instance = Constants._dev();
         break;
       case Flavor.production:
-      default:
         _instance = Constants._prd();
     }
     return _instance;
@@ -34,15 +32,13 @@ class Constants {
 
   factory Constants._dev() {
     return const Constants(
-      endpoint: 'https://newsapi.org',
-      apiKey: '98c8df982b8b4da8b86cd70e851fc521',
+      flavor: Flavor.development,
     );
   }
 
   factory Constants._prd() {
     return const Constants(
-      endpoint: 'https://newsapi.org',
-      apiKey: '4bc454db94464956aea4cbb01f4bf9f4',
+      flavor: Flavor.production,
     );
   }
 
@@ -55,6 +51,5 @@ class Constants {
 
   static Constants _instance;
 
-  final String endpoint;
-  final String apiKey;
+  final Flavor flavor;
 }

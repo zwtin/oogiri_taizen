@@ -20,6 +20,11 @@ abstract class AuthenticationRepository {
     @required String email,
   });
 
+  Future<void> sendEmailVerification({
+    @required String email,
+    @required String password,
+  });
+
   Future<void> createUserWithEmailAndPassword({
     @required String email,
     @required String password,

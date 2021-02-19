@@ -12,5 +12,10 @@ abstract class AuthenticationUseCase {
     @required String email,
   });
 
+  Future<void> sendEmailVerification({
+    @required String email,
+    @required String password,
+  });
+
   void logout();
 }

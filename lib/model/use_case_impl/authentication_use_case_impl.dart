@@ -52,6 +52,17 @@ class AuthenticationUseCaseImpl implements AuthenticationUseCase {
   }
 
   @override
+  Future<void> sendEmailVerification({
+    @required String email,
+    @required String password,
+  }) async {
+    await authenticationRepository.sendEmailVerification(
+      email: email,
+      password: password,
+    );
+  }
+
+  @override
   void logout() {
     authenticationRepository.logout();
   }

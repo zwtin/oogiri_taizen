@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/constants.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:oogiritaizen/model/model/login_user_model.dart';
@@ -93,8 +94,12 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       actionCodeSettings: ActionCodeSettings(
         url: 'https://oogiri-taizen-dev.firebaseapp.com',
         handleCodeInApp: true,
-        iOSBundleId: 'com.zwtin.oogiritaizen.dev',
-        androidPackageName: 'com.zwtin.oogiritaizen.dev',
+        iOSBundleId: Constants.of().flavor == Flavor.development
+            ? 'com.zwtin.oogiritaizen.dev'
+            : 'com.zwtin.oogiritaizen',
+        androidPackageName: Constants.of().flavor == Flavor.development
+            ? 'com.zwtin.oogiritaizen.dev'
+            : 'com.zwtin.oogiritaizen',
       ),
     );
 //    await _firebaseAuth.sendSignInWithEmailLink(
@@ -106,6 +111,44 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 //      androidInstallIfNotAvailable: true,
 //      androidMinimumVersion: '1',
 //    );
+  }
+
+  @override
+  Future<void> sendEmailVerification({
+    @required String email,
+    @required String password,
+  }) async {
+    await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    final user = _firebaseAuth.currentUser;
+    if (!user.emailVerified) {
+      ActionCodeSettings actionCodeSettings;
+      final str = Constants.of().flavor;
+      if (str == Flavor.development) {
+        actionCodeSettings = ActionCodeSettings(
+          url: 'https://oogiri-taizen-dev.firebaseapp.com/?email=${user.email}',
+          dynamicLinkDomain: 'oogiritaizendev.page.link',
+          iOSBundleId: 'com.zwtin.oogiritaizen.dev',
+          androidPackageName: 'com.zwtin.oogiritaizen.dev',
+          androidInstallApp: true,
+          androidMinimumVersion: '12',
+          handleCodeInApp: true,
+        );
+      } else {
+        actionCodeSettings = ActionCodeSettings(
+          url: 'https://oogiri-taizen.firebaseapp.com/?email=${user.email}',
+          dynamicLinkDomain: 'oogiritaizen.page.link',
+          iOSBundleId: 'com.zwtin.oogiritaizen',
+          androidPackageName: 'com.zwtin.oogiritaizen',
+          androidInstallApp: true,
+          androidMinimumVersion: '12',
+          handleCodeInApp: true,
+        );
+      }
+      await user.sendEmailVerification(actionCodeSettings);
+    }
   }
 
   @override
