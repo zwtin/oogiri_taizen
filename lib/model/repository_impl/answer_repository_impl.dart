@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
-import 'package:oogiritaizen/model/model/answer_model.dart';
 
-import 'package:oogiritaizen/model/model/topic_model.dart';
+import 'package:oogiritaizen/model/model/answer_model.dart';
 import 'package:oogiritaizen/model/repository/answer_repository.dart';
-import 'package:oogiritaizen/model/repository/topic_repository.dart';
 
 final answerRepositoryProvider = Provider<AnswerRepository>(
   (ref) {
