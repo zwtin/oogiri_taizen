@@ -31,19 +31,6 @@ class BottomTabViewModel extends ChangeNotifier {
 
   Future<void> setup() async {
     await dynamicLinksUseCase.setupDynamicLinks();
-    dynamicLinksUseCase.getDynamicLinksStream().listen((Uri uri) {
-      final apiKey = uri.queryParameters['apiKey'];
-      final mode = uri.queryParameters['mode'];
-      final oobCode = uri.queryParameters['oobCode'];
-      final continueUrl = uri.queryParameters['continueUrl'];
-      final lang = uri.queryParameters['lang'];
-
-      debugPrint('apiKey = $apiKey');
-      debugPrint('mode = $mode');
-      debugPrint('oobCode = $oobCode');
-      debugPrint('continueUrl = $continueUrl');
-      debugPrint('lang = $lang');
-    });
     notifyListeners();
   }
 

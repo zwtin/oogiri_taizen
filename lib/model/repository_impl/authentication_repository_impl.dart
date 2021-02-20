@@ -46,6 +46,20 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
+  Future<void> applyActionCode({@required String actionCode}) async {
+    try {
+      await _firebaseAuth.checkActionCode(actionCode);
+      await _firebaseAuth.applyActionCode(actionCode);
+
+      await _firebaseAuth.currentUser.reload();
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'invalid-action-code') {
+        print('The code is invalid.');
+      }
+    }
+  }
+
+  @override
   Future<void> loginWithGoogle() async {
     final _googleSignIn = GoogleSignIn();
     var currentUser = _googleSignIn.currentUser;
@@ -128,7 +142,8 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       final str = Constants.of().flavor;
       if (str == Flavor.development) {
         actionCodeSettings = ActionCodeSettings(
-          url: 'https://oogiri-taizen-dev.firebaseapp.com/?email=${user.email}',
+          url:
+              'https://oogiri-taizen-dev.firebaseapp.com/?email=$email&pw=$password',
           dynamicLinkDomain: 'oogiritaizendev.page.link',
           iOSBundleId: 'com.zwtin.oogiritaizen.dev',
           androidPackageName: 'com.zwtin.oogiritaizen.dev',
@@ -138,7 +153,8 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
         );
       } else {
         actionCodeSettings = ActionCodeSettings(
-          url: 'https://oogiri-taizen.firebaseapp.com/?email=${user.email}',
+          url:
+              'https://oogiri-taizen.firebaseapp.com/?email=$email&pw=$password',
           dynamicLinkDomain: 'oogiritaizen.page.link',
           iOSBundleId: 'com.zwtin.oogiritaizen',
           androidPackageName: 'com.zwtin.oogiritaizen',

@@ -12,4 +12,8 @@ abstract class UserUseCase {
     @required File imageFile,
     @required UserEntity editedUser,
   });
+
+  Future<void> createUserWithEmailAndPassword({
+    @required String email,
+  });
 }

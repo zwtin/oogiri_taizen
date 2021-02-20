@@ -12,6 +12,8 @@ abstract class AuthenticationRepository {
     @required String password,
   });
 
+  Future<void> applyActionCode({@required String actionCode});
+
   Future<void> loginWithGoogle();
 
   Future<void> loginWithApple();

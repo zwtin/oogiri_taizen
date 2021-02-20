@@ -7,4 +7,8 @@ abstract class StorageRepository {
     @required String path,
     @required File file,
   });
+
+  Future<void> delete({
+    @required String url,
+  });
 }

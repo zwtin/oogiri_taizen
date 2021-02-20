@@ -14,6 +14,7 @@ import 'package:oogiritaizen/model/repository_impl/authentication_repository_imp
 import 'package:oogiritaizen/model/repository_impl/storage_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 final userUseCaseProvider = Provider.autoDispose.family<UserUseCase, String>(
   (ref, id) {
@@ -102,6 +103,20 @@ class UserUseCaseImpl implements UserUseCase {
         ..introduction = editedUser.introduction
         ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
     );
+  }
+
+  @override
+  Future<void> createUserWithEmailAndPassword({
+    @required String email,
+  }) async {
+    final password = StringExtension.randomString(8);
+    await authenticationRepository.sendEmailVerification(
+      email: email,
+      password: password,
+    );
+    final loginUserModel = authenticationRepository.getLoginUser();
+    await userRepository.createUser(userId: loginUserModel.id);
+    await authenticationRepository.logout();
   }
 
   Future<void> disposed() async {

@@ -15,6 +15,20 @@ class UserRepositoryImpl implements UserRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
+  Future<void> createUser({
+    @required String userId,
+  }) async {
+    assert(userId != null);
+
+    final data = <String, dynamic>{};
+    data['id'] = userId;
+    data['name'] = '名無し';
+    data['introduction'] = 'よろしくお願いします。';
+    data['image_url'] = '';
+    await _firestore.collection('users').doc(userId).set(data);
+  }
+
+  @override
   Stream<UserModel> getUserStream({
     @required String userId,
   }) {

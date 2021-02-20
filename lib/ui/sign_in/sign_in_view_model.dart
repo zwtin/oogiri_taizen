@@ -60,11 +60,7 @@ class SignInViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-//      await authenticationUseCase.loginWithEmailAndPassword(
-//        email: email,
-//        password: password,
-//      );
-      await authenticationUseCase.sendEmailVerification(
+      await authenticationUseCase.loginWithEmailAndPassword(
         email: email,
         password: password,
       );

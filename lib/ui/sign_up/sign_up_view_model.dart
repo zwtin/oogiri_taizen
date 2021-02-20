@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
+import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
@@ -13,6 +15,7 @@ final signUpViewModelProvider =
       id,
       ref,
       ref.watch(authenticationUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(id)),
     );
     ref.onDispose(signUpViewModel.disposed);
     return signUpViewModel;
@@ -24,11 +27,13 @@ class SignUpViewModel extends ChangeNotifier {
     this.id,
     this.providerReference,
     this.authenticationUseCase,
+    this.userUseCase,
   );
 
   final String id;
   final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
+  final UserUseCase userUseCase;
 
   bool isLoading = false;
 
@@ -70,7 +75,9 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      await authenticationUseCase.loginWithGoogle();
+      await userUseCase.createUserWithEmailAndPassword(
+        email: email,
+      );
       isLoading = false;
       providerReference.read(alertViewModelProvider(id)).show(
             alertEntity: AlertEntity()

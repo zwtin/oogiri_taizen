@@ -40,4 +40,12 @@ class StorageRepositoryImpl implements StorageRepository {
     final url = await ref.getDownloadURL();
     return url;
   }
+
+  @override
+  Future<void> delete({
+    @required String url,
+  }) async {
+    final ref = _firebaseStorage.refFromURL(url);
+    await ref.delete();
+  }
 }
