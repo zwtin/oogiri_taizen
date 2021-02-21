@@ -75,7 +75,7 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      await userUseCase.createUserWithEmailAndPassword(
+      await userUseCase.registerUser(
         email: email,
       );
       isLoading = false;

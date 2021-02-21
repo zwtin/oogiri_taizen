@@ -8,14 +8,7 @@ abstract class AuthenticationUseCase {
 
   Future<void> loginWithGoogle();
 
-  Future<void> sendLoginEmail({
-    @required String email,
-  });
-
-  Future<void> sendEmailVerification({
-    @required String email,
-    @required String password,
-  });
+  Future<void> sendEmailVerification();
 
   void logout();
 }

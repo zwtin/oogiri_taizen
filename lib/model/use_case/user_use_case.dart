@@ -13,7 +13,7 @@ abstract class UserUseCase {
     @required UserEntity editedUser,
   });
 
-  Future<void> createUserWithEmailAndPassword({
+  Future<void> registerUser({
     @required String email,
   });
 }

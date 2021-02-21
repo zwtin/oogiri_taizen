@@ -12,24 +12,23 @@ abstract class AuthenticationRepository {
     @required String password,
   });
 
-  Future<void> applyActionCode({@required String actionCode});
+  Future<void> loginWithCustomToken({
+    @required String token,
+  });
 
   Future<void> loginWithGoogle();
 
   Future<void> loginWithApple();
 
-  Future<void> sendSignInWithEmailLink({
-    @required String email,
-  });
-
-  Future<void> sendEmailVerification({
-    @required String email,
-    @required String password,
-  });
-
   Future<void> createUserWithEmailAndPassword({
     @required String email,
     @required String password,
+  });
+
+  Future<void> sendEmailVerification();
+
+  Future<void> applyActionCode({
+    @required String actionCode,
   });
 
   Future<void> sendPasswordResetEmail({

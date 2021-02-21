@@ -1,8 +1,10 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
 import 'package:oogiritaizen/model/repository/dynamic_links_repository.dart';
+import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/dynamic_links_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
 import 'package:oogiritaizen/model/use_case/dynamic_links_use_case.dart';
 
@@ -13,6 +15,7 @@ final dynamicLinksUseCaseProvider =
       id,
       ref.watch(authenticationRepositoryProvider),
       ref.watch(dynamicLinksRepositoryProvider),
+      ref.watch(userRepositoryProvider),
     );
     ref.onDispose(dynamicLinksUseCase.disposed);
     return dynamicLinksUseCase;
@@ -24,11 +27,13 @@ class DynamicLinksUseCaseImpl implements DynamicLinksUseCase {
     this.id,
     this.authenticationRepository,
     this.dynamicLinksRepository,
+    this.userRepository,
   );
 
   final String id;
   final AuthenticationRepository authenticationRepository;
   final DynamicLinksRepository dynamicLinksRepository;
+  final UserRepository userRepository;
 
   @override
   Future<void> setupDynamicLinks() async {
@@ -48,12 +53,10 @@ class DynamicLinksUseCaseImpl implements DynamicLinksUseCase {
         }
         if (mode == 'verifyEmail' && continueUrl != null) {
           final continueUri = Uri.parse(continueUrl);
-          final email = continueUri.queryParameters['email'];
-          final password = continueUri.queryParameters['pw'];
-          await authenticationRepository.loginWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
+          final token = continueUri.queryParameters['token'];
+          await authenticationRepository.loginWithCustomToken(token: token);
+          final user = authenticationRepository.getLoginUser();
+          await userRepository.createUser(userId: user.id);
         }
       },
     );

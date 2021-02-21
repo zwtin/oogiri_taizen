@@ -106,16 +106,15 @@ class UserUseCaseImpl implements UserUseCase {
   }
 
   @override
-  Future<void> createUserWithEmailAndPassword({
+  Future<void> registerUser({
     @required String email,
   }) async {
     final password = StringExtension.randomString(8);
-    await authenticationRepository.sendEmailVerification(
+    await authenticationRepository.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    final loginUserModel = authenticationRepository.getLoginUser();
-    await userRepository.createUser(userId: loginUserModel.id);
+    await authenticationRepository.sendEmailVerification();
     await authenticationRepository.logout();
   }
 
