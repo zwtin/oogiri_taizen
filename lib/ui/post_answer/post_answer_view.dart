@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +21,8 @@ class PostAnswerView extends HookWidget {
   Widget build(BuildContext context) {
     final viewModel = useProvider(postAnswerViewModelProvider(id));
 
-    if (viewModel.topic == null) {
+    if (viewModel.topic.id == null) {
+      viewModel.topic.id = topicId;
       viewModel.getTopic(topicId: topicId);
     }
 
@@ -89,8 +91,142 @@ class PostAnswerView extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Container(
-                        height: 32,
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 44,
+                                    height: 44,
+                                    child: (viewModel.topic.createdUser
+                                                    ?.imageUrl !=
+                                                null &&
+                                            viewModel.topic.createdUser.imageUrl
+                                                .isNotEmpty)
+                                        ? CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            imageUrl: viewModel
+                                                .topic.createdUser.imageUrl,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, dynamic error) =>
+                                                    Image.asset(
+                                              'assets/images/no_user.jpg',
+                                            ),
+                                          )
+                                        : Image.asset(
+                                            'assets/images/no_user.jpg',
+                                          ),
+                                  ),
+                                  Container(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          StringExtension
+                                              .getJPStringFromDateTime(
+                                            viewModel.topic.createdAt ??
+                                                DateTime.now(),
+                                          ),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Container(
+                                                child: Text(
+                                                  viewModel.topic.createdUser
+                                                          ?.name ??
+                                                      '',
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: const Text(
+                                                ' のお題：',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 16,
+                              ),
+                              Text(
+                                viewModel.topic.text ?? '',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                              (viewModel.topic?.imageUrl != null &&
+                                      viewModel.topic.imageUrl.isNotEmpty)
+                                  ? Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 16, 0, 0),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        imageUrl:
+                                            viewModel.topic.imageUrl ?? '',
+                                        errorWidget:
+                                            (context, url, dynamic error) =>
+                                                Image.asset(
+                                          'assets/images/no_image.jpg',
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),

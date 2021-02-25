@@ -44,9 +44,11 @@ class PostAnswerViewModel extends ChangeNotifier {
   final UserUseCase userUseCase;
 
   bool isLoading = false;
-  UserEntity loginUser;
-  TopicEntity topic;
-  AnswerEntity editedAnswer = AnswerEntity();
+  UserEntity loginUser = UserEntity();
+  TopicEntity topic = TopicEntity()..createdUser = UserEntity();
+  AnswerEntity editedAnswer = AnswerEntity()
+    ..topic = TopicEntity()
+    ..createdUser = UserEntity();
 
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
