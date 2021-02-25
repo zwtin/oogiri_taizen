@@ -53,6 +53,14 @@ class AnswerRepositoryImpl implements AnswerRepository {
     try {
       await _firestore.runTransaction<void>(
         (Transaction transaction) async {
+          final topicRef = _firestore.collection('topics').doc(topicId);
+          final documentSnapshot = await transaction.get(topicRef);
+          final answeredTime = documentSnapshot.data()['answered_time'] as int;
+          final answerUpdateMap = {
+            'answered_time': answeredTime + 1,
+          };
+          transaction.update(topicRef, answerUpdateMap);
+
           final answerRef = _firestore.collection('answers').doc();
           final answerMap = {
             'id': answerRef.id,
@@ -95,13 +103,6 @@ class AnswerRepositoryImpl implements AnswerRepository {
             topicAnswerRef,
             topicMap,
           );
-          final topicRef = _firestore.collection('topics').doc(topicId);
-          final documentSnapshot = await transaction.get(topicRef);
-          final answeredTime = documentSnapshot.data()['answered_time'] as int;
-          final answerUpdateMap = {
-            'answered_time': answeredTime + 1,
-          };
-          transaction.update(topicRef, answerUpdateMap);
           return;
         },
       );

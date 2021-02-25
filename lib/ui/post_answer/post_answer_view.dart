@@ -20,11 +20,18 @@ class PostAnswerView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(postAnswerViewModelProvider(id));
+    final answerTextController = useTextEditingController();
 
     if (viewModel.topic.id == null) {
       viewModel.topic.id = topicId;
       viewModel.getTopic(topicId: topicId);
     }
+
+    answerTextController.addListener(
+      () {
+        viewModel.editedAnswer.text = answerTextController.text;
+      },
+    );
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -59,7 +66,7 @@ class PostAnswerView extends HookWidget {
         },
         provider: navigatorViewModelProvider(id),
         child: LoadingOverlay(
-          isLoading: viewModel.isLoading,
+          isLoading: viewModel.isConnecting,
           color: Colors.grey,
           child: Scaffold(
             // ナビゲーションバー
@@ -80,6 +87,16 @@ class PostAnswerView extends HookWidget {
                 ),
                 preferredSize: const Size.fromHeight(1),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                  onPressed: () {
+                    context.read(postAnswerViewModelProvider(id)).postAnswer();
+                  },
+                ),
+              ],
             ),
             body: Stack(
               children: [
@@ -224,6 +241,117 @@ class PostAnswerView extends HookWidget {
                                       ),
                                     )
                                   : Container(),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: SizedBox(
+                                      width: 44,
+                                      height: 44,
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                        imageUrl: viewModel.loginUser.imageUrl,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget:
+                                            (context, url, dynamic error) =>
+                                                Image.asset(
+                                          'assets/icon/no_user.jpg',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          StringExtension
+                                              .getJPStringFromDateTime(
+                                            DateTime.now(),
+                                          ),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Container(
+                                                child: Text(
+                                                  viewModel.loginUser.name,
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: const Text(
+                                                ' のボケ：',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 16,
+                              ),
+                              TextField(
+                                maxLines: null,
+                                controller: answerTextController,
+                                autofocus: true,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                                decoration: const InputDecoration.collapsed(
+                                  border: InputBorder.none,
+                                  hintText: '例）こんな〇〇はいやだ',
+                                ),
+                              ),
                             ],
                           ),
                         ),
