@@ -11,6 +11,7 @@ import 'package:oogiritaizen/model/use_case_impl/authentication_use_case_impl.da
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/setting/setting_view.dart';
 
 final myProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<MyProfileViewModel, String>(
@@ -120,6 +121,12 @@ class MyProfileViewModel extends ChangeNotifier {
       AnswerListEntity(),
     ];
     notifyListeners();
+  }
+
+  void transitionToSetting() {
+    providerReference.read(navigatorViewModelProvider('Tab1')).present(
+          SettingView(),
+        );
   }
 
   Future<void> disposed() async {

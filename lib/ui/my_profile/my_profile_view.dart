@@ -228,7 +228,12 @@ class MyProfileView extends HookWidget {
                                 ListTile(
                                   leading: const Icon(Icons.settings),
                                   title: const Text('設定'),
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.of(_context).pop();
+                                    context
+                                        .read(myProfileViewModelProvider(id))
+                                        .transitionToSetting();
+                                  },
                                 ),
                                 ListTile(
                                   leading: const Icon(Icons.logout),
