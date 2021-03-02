@@ -110,15 +110,27 @@ class SettingView extends HookWidget {
                         ),
                         Text('アプリ情報'),
                         RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read(settingViewModelProvider(id))
+                                .transitionToTermsOfService();
+                          },
                           child: Text('利用規約'),
                         ),
                         RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read(settingViewModelProvider(id))
+                                .transitionToPrivacyPolicy();
+                          },
                           child: Text('プライバシーポリシー'),
                         ),
                         RaisedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context
+                                .read(settingViewModelProvider(id))
+                                .transitionToLicense();
+                          },
                           child: Text('ライセンス'),
                         ),
                         RaisedButton(

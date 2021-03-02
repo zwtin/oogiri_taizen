@@ -3,6 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/terms_of_service/terms_of_service_view.dart';
+import 'package:oogiritaizen/ui/privacy_policy/privacy_policy_view.dart';
+import 'package:oogiritaizen/ui/license/license_view.dart';
 
 final settingViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SettingViewModel, String>(
@@ -38,7 +42,23 @@ class SettingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> postSetting() async {}
+  void transitionToTermsOfService() {
+    providerReference.read(navigatorViewModelProvider(id)).present(
+          TermsOfServiceView(),
+        );
+  }
+
+  void transitionToPrivacyPolicy() {
+    providerReference.read(navigatorViewModelProvider(id)).present(
+          PrivacyPolicyView(),
+        );
+  }
+
+  void transitionToLicense() {
+    providerReference.read(navigatorViewModelProvider(id)).present(
+          LicenseView(),
+        );
+  }
 
   Future<void> disposed() async {
     debugPrint(id);
