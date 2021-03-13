@@ -106,6 +106,9 @@ class AnswerListView extends HookWidget {
         Tween(begin: beginRotationValue2, end: endRotationValue2)
             .animate(controller);
 
+    final backgroundColorOpacityAnimation =
+        Tween(begin: 0.0, end: 0.5).animate(controller);
+
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
         SweetAlert.show(
@@ -142,382 +145,405 @@ class AnswerListView extends HookWidget {
           }
         },
         provider: navigatorViewModelProvider('Tab0'),
-        child: DefaultTabController(
-          // タブ数
-          length: 2,
+        child: Stack(
+          children: [
+            DefaultTabController(
+              // タブ数
+              length: 2,
 
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'ホーム',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: const Color(0xFFFFCC00),
-              elevation: 0, // 影をなくす
-              bottom: const TabBar(
-                tabs: <Widget>[
-                  Tab(
-                    text: '新着順',
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const Text(
+                    'ホーム',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Tab(
-                    text: '人気順',
-                  )
-                ],
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.announcement,
+                  backgroundColor: const Color(0xFFFFCC00),
+                  elevation: 0, // 影をなくす
+                  bottom: const TabBar(
+                    tabs: <Widget>[
+                      Tab(
+                        text: '新着順',
+                      ),
+                      Tab(
+                        text: '人気順',
+                      )
+                    ],
                   ),
-                  onPressed: () {},
+                  actions: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.announcement,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            body: Stack(
-              children: [
-                Container(
-                  color: const Color(0xFFFFCC00),
-                ),
-                TabBarView(
+                body: Stack(
                   children: [
-                    RefreshIndicator(
+                    Container(
                       color: const Color(0xFFFFCC00),
-                      onRefresh: () async {
-                        await context
-                            .read(answerListViewModelProvider(id))
-                            .refreshNewAnswerList();
-                      },
-                      child: ListView.builder(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).padding.bottom,
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == viewModel.newAnswers.length - 3) {
-                            viewModel.getNewAnswerList();
-                          }
-                          if (index == viewModel.newAnswers.length) {
-                            return const SizedBox(
-                              height: 62,
-                              child: Center(
-                                child: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                          }
-                          return GestureDetector(
-                            onTap: () {
-                              context
-                                  .read(answerListViewModelProvider(id))
-                                  .transitionToAnswerDetail(
-                                    answerId: viewModel.newAnswers
-                                        .elementAt(index)
-                                        .id,
-                                  );
-                            },
-                            child: Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                    ),
+                    TabBarView(
+                      children: [
+                        RefreshIndicator(
+                          color: const Color(0xFFFFCC00),
+                          onRefresh: () async {
+                            await context
+                                .read(answerListViewModelProvider(id))
+                                .refreshNewAnswerList();
+                          },
+                          child: ListView.builder(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).padding.bottom,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index == viewModel.newAnswers.length - 3) {
+                                viewModel.getNewAnswerList();
+                              }
+                              if (index == viewModel.newAnswers.length) {
+                                return const SizedBox(
+                                  height: 62,
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read(answerListViewModelProvider(id))
+                                      .transitionToAnswerDetail(
+                                        answerId: viewModel.newAnswers
+                                            .elementAt(index)
+                                            .id,
+                                      );
+                                },
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SizedBox(
-                                          width: 44,
-                                          height: 44,
-                                          child: CachedNetworkImage(
-                                            placeholder: (context, url) =>
-                                                const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                            imageUrl: viewModel.newAnswers
-                                                .elementAt(index)
-                                                .topic
-                                                .createdUser
-                                                .imageUrl,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover,
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 44,
+                                              height: 44,
+                                              child: CachedNetworkImage(
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 ),
-                                              ),
-                                            ),
-                                            errorWidget:
-                                                (context, url, dynamic error) =>
-                                                    Image.asset(
-                                              'assets/icon/no_user.jpg',
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 16,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                StringExtension
-                                                    .getJPStringFromDateTime(
-                                                  viewModel.newAnswers
-                                                      .elementAt(index)
-                                                      .topic
-                                                      .createdAt,
-                                                ),
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 16,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Flexible(
-                                                    child: Container(
-                                                      child: Text(
-                                                        viewModel.newAnswers
-                                                            .elementAt(index)
-                                                            .topic
-                                                            .createdUser
-                                                            .name,
-                                                        style: const TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 16,
-                                                        ),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
+                                                imageUrl: viewModel.newAnswers
+                                                    .elementAt(index)
+                                                    .topic
+                                                    .createdUser
+                                                    .imageUrl,
+                                                imageBuilder:
+                                                    (context, imageProvider) =>
+                                                        Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                  Container(
-                                                    child: const Text(
-                                                      ' のお題：',
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 16,
-                                                      ),
+                                                ),
+                                                errorWidget: (context, url,
+                                                        dynamic error) =>
+                                                    Image.asset(
+                                                  'assets/icon/no_user.jpg',
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 16,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    StringExtension
+                                                        .getJPStringFromDateTime(
+                                                      viewModel.newAnswers
+                                                          .elementAt(index)
+                                                          .topic
+                                                          .createdAt,
                                                     ),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 16,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Container(
+                                                          child: Text(
+                                                            viewModel.newAnswers
+                                                                .elementAt(
+                                                                    index)
+                                                                .topic
+                                                                .createdUser
+                                                                .name,
+                                                            style:
+                                                                const TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 16,
+                                                            ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: const Text(
+                                                          ' のお題：',
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            ],
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          height: 16,
+                                        ),
+                                        Text(
+                                          viewModel.newAnswers
+                                              .elementAt(index)
+                                              .topic
+                                              .text,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Container(
-                                      height: 16,
-                                    ),
-                                    Text(
-                                      viewModel.newAnswers
-                                          .elementAt(index)
-                                          .topic
-                                          .text,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 22,
-                                      ),
-                                    ),
-                                    (viewModel.newAnswers
+                                        (viewModel.newAnswers
+                                                        .elementAt(index)
+                                                        .topic
+                                                        .imageUrl !=
+                                                    null &&
+                                                viewModel.newAnswers
                                                     .elementAt(index)
                                                     .topic
-                                                    .imageUrl !=
-                                                null &&
-                                            viewModel.newAnswers
-                                                .elementAt(index)
-                                                .topic
-                                                .imageUrl
-                                                .isNotEmpty)
-                                        ? Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 16, 0, 0),
-                                            child: CachedNetworkImage(
-                                              placeholder: (context, url) =>
-                                                  const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                              imageUrl: viewModel.newAnswers
-                                                  .elementAt(index)
-                                                  .topic
-                                                  .imageUrl,
-                                              errorWidget: (context, url,
-                                                      dynamic error) =>
-                                                  Image.asset(
-                                                'assets/icon/no_image.jpg',
-                                              ),
-                                            ),
-                                          )
-                                        : Container(),
-                                  ],
+                                                    .imageUrl
+                                                    .isNotEmpty)
+                                            ? Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 16, 0, 0),
+                                                child: CachedNetworkImage(
+                                                  placeholder: (context, url) =>
+                                                      const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                  imageUrl: viewModel.newAnswers
+                                                      .elementAt(index)
+                                                      .topic
+                                                      .imageUrl,
+                                                  errorWidget: (context, url,
+                                                          dynamic error) =>
+                                                      Image.asset(
+                                                    'assets/icon/no_image.jpg',
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                        itemCount: viewModel.hasNextInNew
-                            ? viewModel.newAnswers.length + 1
-                            : viewModel.newAnswers.length,
-                      ),
-                    ),
-                    Container(
-//                  color: const Color(0xFFFFCC00),
+                              );
+                            },
+                            itemCount: viewModel.hasNextInNew
+                                ? viewModel.newAnswers.length + 1
+                                : viewModel.newAnswers.length,
+                          ),
                         ),
+                        Container(
+//                  color: const Color(0xFFFFCC00),
+                            ),
+                      ],
+                    ),
                   ],
                 ),
-                AnimatedBuilder(
-                  animation: controller,
-                  builder: (BuildContext context, Widget child) {
-                    return Positioned(
-                      right: 35,
-                      bottom: 35,
-                      child: Transform.translate(
-                        offset: Offset.fromDirection(
-                          getRadiansFromDegree(270),
-                          degOneTransitionAnimation.value * 100,
-                        ),
-                        child: Transform(
-                          transform: Matrix4.rotationZ(
-                            getRadiansFromDegree(rotationAnimation.value),
-                          )..scale(degOneTransitionAnimation.value),
-                          alignment: Alignment.center,
-                          child: CircularButton(
-                            color: const Color(0xFFFFCC00),
-                            width: 55,
-                            height: 55,
-                            icon: const Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                            ),
-                            onClick: () {
-                              context
-                                  .read(answerListViewModelProvider(id))
-                                  .transitionToPostTopic();
-                            },
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                AnimatedBuilder(
-                  animation: controller,
-                  builder: (BuildContext context, Widget child) {
-                    return Positioned(
-                      right: 35,
-                      bottom: 35,
-                      child: Transform.translate(
-                        offset: Offset.fromDirection(
-                          getRadiansFromDegree(225),
-                          degTwoTransitionAnimation.value * 100,
-                        ),
-                        child: Transform(
-                          transform: Matrix4.rotationZ(
-                            getRadiansFromDegree(rotationAnimation.value),
-                          )..scale(degOneTransitionAnimation.value),
-                          alignment: Alignment.center,
-                          child: CircularButton(
-                            color: const Color(0xFFFFCC00),
-                            width: 55,
-                            height: 55,
-                            icon: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                            ),
-                            onClick: () {},
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                AnimatedBuilder(
-                  animation: controller,
-                  builder: (BuildContext context, child) {
-                    return Positioned(
-                      right: 35,
-                      bottom: 35,
-                      child: Transform.translate(
-                        offset: Offset.fromDirection(
-                          getRadiansFromDegree(180),
-                          degThreeTransitionAnimation.value * 100,
-                        ),
-                        child: Transform(
-                          transform: Matrix4.rotationZ(
-                            getRadiansFromDegree(rotationAnimation.value),
-                          )..scale(degOneTransitionAnimation.value),
-                          alignment: Alignment.center,
-                          child: CircularButton(
-                            color: const Color(0xFFFFCC00),
-                            width: 55,
-                            height: 55,
-                            icon: const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                            ),
-                            onClick: () {
-                              context
-                                  .read(answerListViewModelProvider(id))
-                                  .transitionToTopicList();
-                            },
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                AnimatedBuilder(
-                  animation: controller,
-                  builder: (BuildContext context, Widget child) {
-                    return Positioned(
-                      right: 30,
-                      bottom: 30,
-                      child: Transform(
-                        transform: Matrix4.rotationZ(
-                          getRadiansFromDegree(rotationAnimation2.value),
-                        ),
-                        alignment: Alignment.center,
-                        child: CircularButton(
-                          color: const Color(0xFFFFCC00),
-                          width: 60,
-                          height: 60,
-                          icon: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          onClick: () {
-                            if (controller.isCompleted) {
-                              controller.reverse();
-                            } else {
-                              controller.forward();
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, Widget child) {
+                return IgnorePointer(
+                  ignoring: !controller.isCompleted || controller.isAnimating,
+                  child: Container(
+                    color: Colors.black
+                        .withOpacity(backgroundColorOpacityAnimation.value),
+                  ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, Widget child) {
+                return Positioned(
+                  right: 35,
+                  bottom: 35,
+                  child: Transform.translate(
+                    offset: Offset.fromDirection(
+                      getRadiansFromDegree(270),
+                      degOneTransitionAnimation.value * 100,
+                    ),
+                    child: Transform(
+                      transform: Matrix4.rotationZ(
+                        getRadiansFromDegree(rotationAnimation.value),
+                      )..scale(degOneTransitionAnimation.value),
+                      alignment: Alignment.center,
+                      child: CircularButton(
+                        color: const Color(0xFFFFCC00),
+                        width: 55,
+                        height: 55,
+                        icon: const Icon(
+                          Icons.menu,
+                          color: Colors.white,
+                        ),
+                        onClick: () {
+                          context
+                              .read(answerListViewModelProvider(id))
+                              .transitionToPostTopic();
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, Widget child) {
+                return Positioned(
+                  right: 35,
+                  bottom: 35,
+                  child: Transform.translate(
+                    offset: Offset.fromDirection(
+                      getRadiansFromDegree(225),
+                      degTwoTransitionAnimation.value * 100,
+                    ),
+                    child: Transform(
+                      transform: Matrix4.rotationZ(
+                        getRadiansFromDegree(rotationAnimation.value),
+                      )..scale(degOneTransitionAnimation.value),
+                      alignment: Alignment.center,
+                      child: CircularButton(
+                        color: const Color(0xFFFFCC00),
+                        width: 55,
+                        height: 55,
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                        ),
+                        onClick: () {},
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, child) {
+                return Positioned(
+                  right: 35,
+                  bottom: 35,
+                  child: Transform.translate(
+                    offset: Offset.fromDirection(
+                      getRadiansFromDegree(180),
+                      degThreeTransitionAnimation.value * 100,
+                    ),
+                    child: Transform(
+                      transform: Matrix4.rotationZ(
+                        getRadiansFromDegree(rotationAnimation.value),
+                      )..scale(degOneTransitionAnimation.value),
+                      alignment: Alignment.center,
+                      child: CircularButton(
+                        color: const Color(0xFFFFCC00),
+                        width: 55,
+                        height: 55,
+                        icon: const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        ),
+                        onClick: () {
+                          context
+                              .read(answerListViewModelProvider(id))
+                              .transitionToTopicList();
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: controller,
+              builder: (BuildContext context, Widget child) {
+                return Positioned(
+                  right: 30,
+                  bottom: 30,
+                  child: Transform(
+                    transform: Matrix4.rotationZ(
+                      getRadiansFromDegree(rotationAnimation2.value),
+                    ),
+                    alignment: Alignment.center,
+                    child: CircularButton(
+                      color: const Color(0xFFFFCC00),
+                      width: 60,
+                      height: 60,
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      onClick: () {
+                        if (controller.isCompleted) {
+                          controller.reverse();
+                        } else {
+                          controller.forward();
+                        }
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
