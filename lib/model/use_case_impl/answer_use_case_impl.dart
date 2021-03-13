@@ -52,6 +52,52 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   final UserRepository userRepository;
 
   @override
+  Future<AnswerEntity> getAnswer({
+    @required String answerId,
+  }) async {
+    final answerModel = await answerRepository.getAnswer(
+      answerId: answerId,
+    );
+    final createUserModel = await userRepository.getUser(
+      userId: answerModel.createdUser,
+    );
+    final createUserEntity = UserEntity()
+      ..id = createUserModel.id
+      ..name = createUserModel.name
+      ..introduction = createUserModel.introduction
+      ..imageUrl = createUserModel.imageUrl;
+    final topicModel = await topicRepository.getTopic(
+      topicId: answerModel.topic,
+    );
+    final topicCreateUserModel = await userRepository.getUser(
+      userId: topicModel.createdUser,
+    );
+    final topicCreateUserEntity = UserEntity()
+      ..id = topicCreateUserModel.id
+      ..name = topicCreateUserModel.name
+      ..introduction = topicCreateUserModel.introduction
+      ..imageUrl = topicCreateUserModel.imageUrl;
+    final topicEntity = TopicEntity()
+      ..id = topicModel.id
+      ..text = topicModel.text
+      ..imageUrl = topicModel.imageUrl
+      ..answeredTime = topicModel.answeredTime
+      ..createdAt = topicModel.createdAt
+      ..createdUser = topicCreateUserEntity;
+    final answerEntity = AnswerEntity()
+      ..id = answerModel.id
+      ..text = answerModel.text
+      ..viewedTime = answerModel.viewedTime
+      ..likedTime = answerModel.likedTime
+      ..favoredTime = answerModel.favoredTime
+      ..point = answerModel.point
+      ..createdAt = answerModel.createdAt
+      ..topic = topicEntity
+      ..createdUser = createUserEntity;
+    return answerEntity;
+  }
+
+  @override
   Future<void> postAnswer({
     @required String topicId,
     @required AnswerEntity editedAnswer,

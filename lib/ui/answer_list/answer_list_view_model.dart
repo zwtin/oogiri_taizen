@@ -13,6 +13,7 @@ import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
+import 'package:oogiritaizen/ui/answer_detail/answer_detail_view.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view.dart';
@@ -97,6 +98,12 @@ class AnswerListViewModel extends ChangeNotifier {
           );
       notifyListeners();
     }
+  }
+
+  void transitionToAnswerDetail({@required String answerId}) {
+    providerReference.read(navigatorViewModelProvider('Tab0')).push(
+          AnswerDetailView(answerId),
+        );
   }
 
   void transitionToPostTopic() {

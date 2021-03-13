@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
 
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
@@ -211,11 +212,13 @@ class AnswerListView extends HookWidget {
                           }
                           return GestureDetector(
                             onTap: () {
-//                              context
-//                                  .read(topicListViewModelProvider(id))
-//                                  .transitionToPostAnswer(
-//                                      topicId:
-//                                          viewModel.items.elementAt(index).id);
+                              context
+                                  .read(answerListViewModelProvider(id))
+                                  .transitionToAnswerDetail(
+                                    answerId: viewModel.newAnswers
+                                        .elementAt(index)
+                                        .id,
+                                  );
                             },
                             child: Card(
                               child: Padding(
