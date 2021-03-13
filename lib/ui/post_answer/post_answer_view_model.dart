@@ -88,7 +88,7 @@ class PostAnswerViewModel extends ChangeNotifier {
       providerReference.read(alertViewModelProvider(id)).show(
             alertEntity: AlertEntity()
               ..title = '投稿完了'
-              ..subtitle = 'お題を投稿しました'
+              ..subtitle = 'ボケを投稿しました'
               ..showCancelButton = false
               ..onPress = ((bool b) {
                 providerReference.read(navigatorViewModelProvider(id)).pop();
