@@ -12,21 +12,19 @@ import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class AnswerDetailView extends HookWidget {
-  AnswerDetailView(this.answerId);
+  AnswerDetailView(this.parameter);
 
-  final String answerId;
+  final AnswerDetailViewModelParameter parameter;
 
-  final id = StringExtension.randomString(8);
+  final screenId = StringExtension.randomString(8);
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(answerDetailViewModelProvider(id));
-    final answerTextController = useTextEditingController();
-
-    if (viewModel.answer.id == null) {
-      viewModel.answer.id = answerId;
-      viewModel.getAnswer(answerId: answerId);
-    }
+    final viewModel = useProvider(
+      answerDetailViewModelProvider(
+        parameter,
+      ),
+    );
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -39,7 +37,7 @@ class AnswerDetailView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -59,7 +57,7 @@ class AnswerDetailView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(screenId),
         child: Scaffold(
           // ナビゲーションバー
           appBar: AppBar(
@@ -103,38 +101,28 @@ class AnswerDetailView extends HookWidget {
                                 SizedBox(
                                   width: 44,
                                   height: 44,
-                                  child: (viewModel.answer.topic.createdUser
-                                                  ?.imageUrl !=
-                                              null &&
-                                          viewModel.answer.topic.createdUser
-                                              .imageUrl.isNotEmpty)
-                                      ? CachedNetworkImage(
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                          imageUrl: viewModel.answer.topic
-                                              .createdUser.imageUrl,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          errorWidget:
-                                              (context, url, dynamic error) =>
-                                                  Image.asset(
-                                            'assets/images/no_user.jpg',
-                                          ),
-                                        )
-                                      : Image.asset(
-                                          'assets/images/no_user.jpg',
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    imageUrl: viewModel
+                                        .answer.topic.createdUser.imageUrl,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
                                         ),
+                                      ),
+                                    ),
+                                    errorWidget:
+                                        (context, url, dynamic error) =>
+                                            Image.asset(
+                                      'assets/images/no_user.jpg',
+                                    ),
+                                  ),
                                 ),
                                 Container(
                                   width: 16,
@@ -147,8 +135,7 @@ class AnswerDetailView extends HookWidget {
                                     children: [
                                       Text(
                                         StringExtension.getJPStringFromDateTime(
-                                          viewModel.answer.topic.createdAt ??
-                                              DateTime.now(),
+                                          viewModel.answer.topic.createdAt,
                                         ),
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -162,8 +149,7 @@ class AnswerDetailView extends HookWidget {
                                             child: Container(
                                               child: Text(
                                                 viewModel.answer.topic
-                                                        .createdUser?.name ??
-                                                    '',
+                                                    .createdUser.name,
                                                 style: const TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 16,
@@ -242,14 +228,14 @@ class AnswerDetailView extends HookWidget {
                               height: 16,
                             ),
                             Text(
-                              viewModel.answer.topic.text ?? '',
+                              viewModel.answer.topic.text,
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22,
                               ),
                             ),
-                            (viewModel.answer.topic?.imageUrl != null &&
+                            (viewModel.answer.topic.imageUrl != null &&
                                     viewModel.answer.topic.imageUrl.isNotEmpty)
                                 ? Padding(
                                     padding:
@@ -259,8 +245,7 @@ class AnswerDetailView extends HookWidget {
                                           const Center(
                                         child: CircularProgressIndicator(),
                                       ),
-                                      imageUrl:
-                                          viewModel.answer.topic.imageUrl ?? '',
+                                      imageUrl: viewModel.answer.topic.imageUrl,
                                       errorWidget:
                                           (context, url, dynamic error) =>
                                               Image.asset(
@@ -324,8 +309,7 @@ class AnswerDetailView extends HookWidget {
                                     children: [
                                       Text(
                                         StringExtension.getJPStringFromDateTime(
-                                          viewModel.answer.createdAt ??
-                                              DateTime.now(),
+                                          viewModel.answer.createdAt,
                                         ),
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -418,7 +402,7 @@ class AnswerDetailView extends HookWidget {
                               height: 16,
                             ),
                             Text(
-                              viewModel.answer.text ?? '',
+                              viewModel.answer.text,
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,

@@ -14,23 +14,34 @@ import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
-final answerDetailViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<AnswerDetailViewModel, String>(
-  (ref, id) {
+final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<AnswerDetailViewModel, AnswerDetailViewModelParameter>(
+  (ref, parameter) {
     final answerDetailViewModel = AnswerDetailViewModel(
-      id,
+      parameter.screenId,
+      parameter.answerId,
       ref,
-      ref.watch(answerUseCaseProvider(id)),
-      ref.watch(userUseCaseProvider(id)),
+      ref.watch(answerUseCaseProvider(parameter.screenId)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(answerDetailViewModel.disposed);
     return answerDetailViewModel;
   },
 );
 
+class AnswerDetailViewModelParameter {
+  AnswerDetailViewModelParameter({
+    @required this.screenId,
+    @required this.answerId,
+  });
+  final String screenId;
+  final String answerId;
+}
+
 class AnswerDetailViewModel extends ChangeNotifier {
   AnswerDetailViewModel(
-    this.id,
+    this.screenId,
+    this.answerId,
     this.providerReference,
     this.answerUseCase,
     this.userUseCase,
@@ -38,27 +49,23 @@ class AnswerDetailViewModel extends ChangeNotifier {
     setup();
   }
 
-  final String id;
+  final String screenId;
+  final String answerId;
+
   final ProviderReference providerReference;
   final AnswerUseCase answerUseCase;
   final UserUseCase userUseCase;
 
-  UserEntity loginUser = UserEntity();
-  AnswerEntity answer = AnswerEntity()
-    ..topic = TopicEntity()
-    ..createdUser = UserEntity();
+  UserEntity loginUser;
+  AnswerEntity answer;
 
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
-    notifyListeners();
-  }
-
-  Future<void> getAnswer({@required String answerId}) async {
     answer = await answerUseCase.getAnswer(answerId: answerId);
     notifyListeners();
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }
