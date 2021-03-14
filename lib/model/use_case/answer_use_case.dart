@@ -15,4 +15,14 @@ abstract class AnswerUseCase {
   Future<AnswerListEntity> getNewAnswerList({
     @required DateTime beforeTime,
   });
+
+  Future<AnswerListEntity> getUserCreateAnswerList({
+    @required String userId,
+    @required DateTime beforeTime,
+  });
+
+  Future<AnswerListEntity> getUserFavorAnswerList({
+    @required String userId,
+    @required DateTime beforeTime,
+  });
 }

@@ -385,51 +385,426 @@ class MyProfileView extends HookWidget {
                       ),
                     ];
                   },
-                  body: TabBarView(
+                  body: Stack(
                     children: [
-                      RefreshIndicator(
-                        onRefresh: () {
-                          return context
-                              .read(myProfileViewModelProvider(id))
-                              .refresh();
-                        },
-                        child: ListView.builder(
-                          key: const PageStorageKey<String>('posted'),
-                          itemBuilder: (BuildContext context, int index) {
-//                            if (index == viewModel.items.length - 5) {
-//                              viewModel.addAnswer();
-//                            }
-                            return SizedBox(
-                              child: Center(
-                                child: Text(index.toString()),
-                              ),
-                              height: 50,
-                            );
-                          },
-                          itemCount: viewModel.items.length,
-                        ),
+                      Container(
+                        color: const Color(0xFFFFCC00),
                       ),
-                      RefreshIndicator(
-                        onRefresh: () {
-                          return context
-                              .read(myProfileViewModelProvider(id))
-                              .refresh();
-                        },
-                        child: ListView.builder(
-                          key: const PageStorageKey<String>('favorite'),
-                          itemBuilder: (BuildContext context, int index) {
-//                            if (index == viewModel.items.length - 5) {
-//                              viewModel.addAnswer();
-//                            }
-                            return SizedBox(
-                              child: Center(
-                                child: Text(index.toString()),
-                              ),
-                              height: 50,
-                            );
-                          },
-                          itemCount: viewModel.items.length,
-                        ),
+                      TabBarView(
+                        children: [
+                          RefreshIndicator(
+                            color: const Color(0xFFFFCC00),
+                            onRefresh: () {
+                              return context
+                                  .read(myProfileViewModelProvider(id))
+                                  .refreshCreateAnswerList();
+                            },
+                            child: ListView.builder(
+                              key: const PageStorageKey<String>('created'),
+                              itemBuilder: (BuildContext context, int index) {
+                                if (index ==
+                                    viewModel.createAnswers.length - 3) {
+                                  viewModel.getCreateAnswerList();
+                                }
+                                if (index == viewModel.createAnswers.length) {
+                                  return const SizedBox(
+                                    height: 62,
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: 30,
+                                        height: 30,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read(myProfileViewModelProvider(id))
+                                        .transitionToAnswerDetail(
+                                          answerId: viewModel.createAnswers
+                                              .elementAt(index)
+                                              .id,
+                                        );
+                                  },
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: 44,
+                                                height: 44,
+                                                child: CachedNetworkImage(
+                                                  placeholder: (context, url) =>
+                                                      const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                  imageUrl: viewModel
+                                                      .createAnswers
+                                                      .elementAt(index)
+                                                      .topic
+                                                      .createdUser
+                                                      .imageUrl,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          dynamic error) =>
+                                                      Image.asset(
+                                                    'assets/icon/no_user.jpg',
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 16,
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      StringExtension
+                                                          .getJPStringFromDateTime(
+                                                        viewModel.createAnswers
+                                                            .elementAt(index)
+                                                            .topic
+                                                            .createdAt,
+                                                      ),
+                                                      style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16,
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Container(
+                                                            child: Text(
+                                                              viewModel
+                                                                  .createAnswers
+                                                                  .elementAt(
+                                                                      index)
+                                                                  .topic
+                                                                  .createdUser
+                                                                  .name,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 16,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          child: const Text(
+                                                            ' のお題：',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            height: 16,
+                                          ),
+                                          Text(
+                                            viewModel.createAnswers
+                                                .elementAt(index)
+                                                .topic
+                                                .text,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22,
+                                            ),
+                                          ),
+                                          (viewModel.createAnswers
+                                                          .elementAt(index)
+                                                          .topic
+                                                          .imageUrl !=
+                                                      null &&
+                                                  viewModel.createAnswers
+                                                      .elementAt(index)
+                                                      .topic
+                                                      .imageUrl
+                                                      .isNotEmpty)
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 16, 0, 0),
+                                                  child: CachedNetworkImage(
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                    imageUrl: viewModel
+                                                        .createAnswers
+                                                        .elementAt(index)
+                                                        .topic
+                                                        .imageUrl,
+                                                    errorWidget: (context, url,
+                                                            dynamic error) =>
+                                                        Image.asset(
+                                                      'assets/icon/no_image.jpg',
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: viewModel.hasNextInCreate
+                                  ? viewModel.createAnswers.length + 1
+                                  : viewModel.createAnswers.length,
+                            ),
+                          ),
+                          RefreshIndicator(
+                            color: const Color(0xFFFFCC00),
+                            onRefresh: () {
+                              return context
+                                  .read(myProfileViewModelProvider(id))
+                                  .refreshFavorAnswerList();
+                            },
+                            child: ListView.builder(
+                              key: const PageStorageKey<String>('favorite'),
+                              itemBuilder: (BuildContext context, int index) {
+                                if (index ==
+                                    viewModel.favorAnswers.length - 3) {
+                                  viewModel.getCreateAnswerList();
+                                }
+                                if (index == viewModel.favorAnswers.length) {
+                                  return const SizedBox(
+                                    height: 62,
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: 30,
+                                        height: 30,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read(myProfileViewModelProvider(id))
+                                        .transitionToAnswerDetail(
+                                          answerId: viewModel.favorAnswers
+                                              .elementAt(index)
+                                              .id,
+                                        );
+                                  },
+                                  child: Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: 44,
+                                                height: 44,
+                                                child: CachedNetworkImage(
+                                                  placeholder: (context, url) =>
+                                                      const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                  imageUrl: viewModel
+                                                      .favorAnswers
+                                                      .elementAt(index)
+                                                      .topic
+                                                      .createdUser
+                                                      .imageUrl,
+                                                  imageBuilder: (context,
+                                                          imageProvider) =>
+                                                      Container(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          dynamic error) =>
+                                                      Image.asset(
+                                                    'assets/icon/no_user.jpg',
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 16,
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      StringExtension
+                                                          .getJPStringFromDateTime(
+                                                        viewModel.favorAnswers
+                                                            .elementAt(index)
+                                                            .topic
+                                                            .createdAt,
+                                                      ),
+                                                      style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16,
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Container(
+                                                            child: Text(
+                                                              viewModel
+                                                                  .favorAnswers
+                                                                  .elementAt(
+                                                                      index)
+                                                                  .topic
+                                                                  .createdUser
+                                                                  .name,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 16,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          child: const Text(
+                                                            ' のお題：',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            height: 16,
+                                          ),
+                                          Text(
+                                            viewModel.favorAnswers
+                                                .elementAt(index)
+                                                .topic
+                                                .text,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 22,
+                                            ),
+                                          ),
+                                          (viewModel.favorAnswers
+                                                          .elementAt(index)
+                                                          .topic
+                                                          .imageUrl !=
+                                                      null &&
+                                                  viewModel.favorAnswers
+                                                      .elementAt(index)
+                                                      .topic
+                                                      .imageUrl
+                                                      .isNotEmpty)
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 16, 0, 0),
+                                                  child: CachedNetworkImage(
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                    imageUrl: viewModel
+                                                        .favorAnswers
+                                                        .elementAt(index)
+                                                        .topic
+                                                        .imageUrl,
+                                                    errorWidget: (context, url,
+                                                            dynamic error) =>
+                                                        Image.asset(
+                                                      'assets/icon/no_image.jpg',
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: viewModel.hasNextInFavor
+                                  ? viewModel.favorAnswers.length + 1
+                                  : viewModel.favorAnswers.length,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

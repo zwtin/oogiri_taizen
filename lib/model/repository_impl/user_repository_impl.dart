@@ -76,50 +76,92 @@ class UserRepositoryImpl implements UserRepository {
     }
     await _firestore.collection('users').doc(user.id).update(data);
   }
-//
-//  @override
-//  Stream<List<CreateAnswerEntity>> getCreateAnswersStream(
-//      {@required String userId}) {
-//    return _firestore
-//        .collection('users')
-//        .document(userId)
-//        .collection('create_answers')
-//        .snapshots()
-//        .map(
-//      (QuerySnapshot querySnapshot) {
-//        return querySnapshot.documents.map(
-//          (DocumentSnapshot documentSnapshot) {
-//            return CreateAnswerEntity(
-//              id: documentSnapshot.data['id'] as String,
-//              createdAt:
-//                  documentSnapshot.data['created_at']?.toDate() as DateTime,
-//            );
-//          },
-//        ).toList();
-//      },
-//    );
-//  }
-//
-//  @override
-//  Stream<List<FavoriteAnswerEntity>> getFavoriteAnswersStream(
-//      {@required String userId}) {
-//    return _firestore
-//        .collection('users')
-//        .document(userId)
-//        .collection('favorite_answers')
-//        .snapshots()
-//        .map(
-//      (QuerySnapshot querySnapshot) {
-//        return querySnapshot.documents.map(
-//          (DocumentSnapshot documentSnapshot) {
-//            return FavoriteAnswerEntity(
-//              id: documentSnapshot.data['id'] as String,
-//              favoredAt:
-//                  documentSnapshot.data['favor_at']?.toDate() as DateTime,
-//            );
-//          },
-//        ).toList();
-//      },
-//    );
-//  }
+
+  @override
+  Future<List<String>> getCreateAnswers({
+    @required String userId,
+    @required DateTime beforeTime,
+    @required int count,
+  }) async {
+    assert(count != null && count > 0);
+
+    try {
+      QuerySnapshot querySnapshot;
+      if (beforeTime != null) {
+        querySnapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('create_answers')
+            .where(
+              'create_at',
+              isLessThan: beforeTime.add(
+                const Duration(
+                  milliseconds: -1,
+                ),
+              ),
+            )
+            .orderBy('create_at', descending: true)
+            .limit(count)
+            .get();
+      } else {
+        querySnapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('create_answers')
+            .orderBy('create_at', descending: true)
+            .limit(count)
+            .get();
+      }
+
+      return querySnapshot.docs.map((DocumentSnapshot documentSnapshot) {
+        return documentSnapshot.data()['id'] as String;
+      }).toList();
+    } on Exception catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<String>> getFavorAnswers({
+    @required String userId,
+    @required DateTime beforeTime,
+    @required int count,
+  }) async {
+    assert(count != null && count > 0);
+
+    try {
+      QuerySnapshot querySnapshot;
+      if (beforeTime != null) {
+        querySnapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('favor_answers')
+            .where(
+              'favor_at',
+              isLessThan: beforeTime.add(
+                const Duration(
+                  milliseconds: -1,
+                ),
+              ),
+            )
+            .orderBy('favor_at', descending: true)
+            .limit(count)
+            .get();
+      } else {
+        querySnapshot = await _firestore
+            .collection('users')
+            .doc(userId)
+            .collection('favor_answers')
+            .orderBy('favor_at', descending: true)
+            .limit(count)
+            .get();
+      }
+
+      return querySnapshot.docs.map((DocumentSnapshot documentSnapshot) {
+        return documentSnapshot.data()['id'] as String;
+      }).toList();
+    } on Exception catch (error) {
+      rethrow;
+    }
+  }
 }
