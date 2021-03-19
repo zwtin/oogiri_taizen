@@ -6,9 +6,11 @@ import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
+import 'package:oogiritaizen/model/use_case/like_use_case.dart';
 import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/answer_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/like_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
@@ -22,6 +24,7 @@ final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
       parameter.answerId,
       ref,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
+      ref.watch(likeUseCaseProvider(parameter.screenId)),
       ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(answerDetailViewModel.disposed);
@@ -44,6 +47,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
     this.answerId,
     this.providerReference,
     this.answerUseCase,
+    this.likeUseCase,
     this.userUseCase,
   ) {
     setup();
@@ -54,6 +58,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
 
   final ProviderReference providerReference;
   final AnswerUseCase answerUseCase;
+  final LikeUseCase likeUseCase;
   final UserUseCase userUseCase;
 
   UserEntity loginUser;
@@ -63,6 +68,32 @@ class AnswerDetailViewModel extends ChangeNotifier {
     loginUser = await userUseCase.getLoginUser();
     answer = await answerUseCase.getAnswer(answerId: answerId);
     notifyListeners();
+  }
+
+  Future<void> likeButtonAction() async {
+    try {
+      if (answer.isLike) {
+        await likeUseCase.unlike(answerId: answer.id);
+        answer
+          ..isLike = false
+          ..likedTime = answer.likedTime - 1;
+      } else {
+        await likeUseCase.like(answerId: answer.id);
+        answer
+          ..isLike = true
+          ..likedTime = answer.likedTime + 1;
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(screenId)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
+    }
   }
 
   Future<void> disposed() async {

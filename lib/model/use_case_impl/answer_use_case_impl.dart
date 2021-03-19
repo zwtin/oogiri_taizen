@@ -4,22 +4,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/answer_list_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
-import 'package:oogiritaizen/model/entity/topic_list_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/model/answer_model.dart';
-import 'package:oogiritaizen/model/model/topic_model.dart';
 import 'package:oogiritaizen/model/repository/answer_repository.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
-import 'package:oogiritaizen/model/repository/storage_repository.dart';
+import 'package:oogiritaizen/model/repository/like_repository.dart';
 import 'package:oogiritaizen/model/repository/topic_repository.dart';
 import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/answer_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
-import 'package:oogiritaizen/model/repository_impl/storage_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/like_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/topic_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
-import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 
 final answerUseCaseProvider =
     Provider.autoDispose.family<AnswerUseCase, String>(
@@ -28,6 +25,7 @@ final answerUseCaseProvider =
       id,
       ref.watch(answerRepositoryProvider),
       ref.watch(authenticationRepositoryProvider),
+      ref.watch(likeRepositoryProvider),
       ref.watch(topicRepositoryProvider),
       ref.watch(userRepositoryProvider),
     );
@@ -41,6 +39,7 @@ class AnswerUseCaseImpl implements AnswerUseCase {
     this.id,
     this.answerRepository,
     this.authenticationRepository,
+    this.likeRepository,
     this.topicRepository,
     this.userRepository,
   );
@@ -48,6 +47,7 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   final String id;
   final AnswerRepository answerRepository;
   final AuthenticationRepository authenticationRepository;
+  final LikeRepository likeRepository;
   final TopicRepository topicRepository;
   final UserRepository userRepository;
 
@@ -55,6 +55,7 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   Future<AnswerEntity> getAnswer({
     @required String answerId,
   }) async {
+    final loginUser = authenticationRepository.getLoginUser();
     final answerModel = await answerRepository.getAnswer(
       answerId: answerId,
     );
@@ -84,10 +85,15 @@ class AnswerUseCaseImpl implements AnswerUseCase {
       ..answeredTime = topicModel.answeredTime
       ..createdAt = topicModel.createdAt
       ..createdUser = topicCreateUserEntity;
+    final isLike = await likeRepository.getLike(
+      userId: loginUser.id,
+      answerId: answerId,
+    );
     final answerEntity = AnswerEntity()
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
+      ..isLike = isLike
       ..likedTime = answerModel.likedTime
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point

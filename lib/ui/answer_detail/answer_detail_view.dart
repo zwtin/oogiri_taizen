@@ -12,11 +12,9 @@ import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class AnswerDetailView extends HookWidget {
-  AnswerDetailView(this.parameter);
+  const AnswerDetailView(this.parameter);
 
   final AnswerDetailViewModelParameter parameter;
-
-  final screenId = StringExtension.randomString(8);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class AnswerDetailView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(screenId),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -57,7 +55,7 @@ class AnswerDetailView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(screenId),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: Scaffold(
           // ナビゲーションバー
           appBar: AppBar(
@@ -415,11 +413,22 @@ class AnswerDetailView extends HookWidget {
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(
-                                          Icons.favorite_outline,
-                                          color: Colors.pink,
-                                        ),
-                                        onPressed: () {},
+                                        icon: viewModel.answer.isLike
+                                            ? Icon(
+                                                Icons.favorite,
+                                                color: Colors.pink,
+                                              )
+                                            : Icon(
+                                                Icons.favorite_outline,
+                                                color: Colors.pink,
+                                              ),
+                                        onPressed: () {
+                                          context
+                                              .read(
+                                                  answerDetailViewModelProvider(
+                                                      parameter))
+                                              .likeButtonAction();
+                                        },
                                       ),
                                       Text(
                                         viewModel.answer.likedTime.toString(),

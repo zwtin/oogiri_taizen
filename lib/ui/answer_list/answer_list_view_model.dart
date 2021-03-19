@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
+import 'package:oogiritaizen/model/use_case/like_use_case.dart';
 import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 
@@ -10,6 +11,7 @@ import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case_impl/answer_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/like_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 
@@ -27,6 +29,7 @@ final answerListViewModelProvider =
       id,
       ref,
       ref.watch(answerUseCaseProvider(id)),
+      ref.watch(likeUseCaseProvider(id)),
       ref.watch(topicUseCaseProvider(id)),
       ref.watch(userUseCaseProvider(id)),
     );
@@ -40,6 +43,7 @@ class AnswerListViewModel extends ChangeNotifier {
     this.id,
     this.providerReference,
     this.answerUseCase,
+    this.likeUseCase,
     this.topicUseCase,
     this.userUseCase,
   ) {
@@ -50,6 +54,7 @@ class AnswerListViewModel extends ChangeNotifier {
   final ProviderReference providerReference;
 
   final AnswerUseCase answerUseCase;
+  final LikeUseCase likeUseCase;
   final TopicUseCase topicUseCase;
   final UserUseCase userUseCase;
 
@@ -99,6 +104,35 @@ class AnswerListViewModel extends ChangeNotifier {
               ..style = null,
           );
       notifyListeners();
+    }
+  }
+
+  Future<void> likeButtonAction({
+    @required int index,
+  }) async {
+    final answerEntity = newAnswers.elementAt(index);
+    try {
+      if (answerEntity.isLike) {
+        await likeUseCase.unlike(answerId: answerEntity.id);
+        answerEntity
+          ..isLike = false
+          ..likedTime = answerEntity.likedTime - 1;
+      } else {
+        await likeUseCase.like(answerId: answerEntity.id);
+        answerEntity
+          ..isLike = true
+          ..likedTime = answerEntity.likedTime + 1;
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(id)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
     }
   }
 

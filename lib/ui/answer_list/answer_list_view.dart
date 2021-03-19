@@ -172,14 +172,6 @@ class AnswerListView extends HookWidget {
                       )
                     ],
                   ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.announcement,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
                 ),
                 body: Stack(
                   children: [
@@ -331,6 +323,64 @@ class AnswerListView extends HookWidget {
                                                 ],
                                               ),
                                             ),
+                                            IconButton(
+                                              icon: Icon(Icons.menu),
+                                              onPressed: () {
+                                                showModalBottomSheet<int>(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext _context) {
+                                                    return Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(0, 8, 0, 8),
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.block),
+                                                            title: const Text(
+                                                                'この投稿をブロックする'),
+                                                            onTap: () {
+                                                              Navigator.of(
+                                                                      _context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.block),
+                                                            title: const Text(
+                                                                'このユーザーの投稿を全てブロックする'),
+                                                            onTap: () {
+                                                              Navigator.of(
+                                                                      _context)
+                                                                  .pop();
+//                                                  context
+//                                                      .read(myProfileViewModelProvider(id))
+//                                                      .transitionToSetting();
+                                                            },
+                                                          ),
+                                                          ListTile(
+                                                            leading: const Icon(
+                                                                Icons.report),
+                                                            title: const Text(
+                                                                'このユーザーを通報する'),
+                                                            onTap: () {
+                                                              Navigator.of(
+                                                                      _context)
+                                                                  .pop();
+//                                                  viewModel.signOut();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ],
                                         ),
                                         Container(
@@ -379,6 +429,75 @@ class AnswerListView extends HookWidget {
                                                 ),
                                               )
                                             : Container(),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon: viewModel.newAnswers
+                                                            .elementAt(index)
+                                                            .isLike
+                                                        ? Icon(
+                                                            Icons.favorite,
+                                                            color: Colors.pink,
+                                                          )
+                                                        : Icon(
+                                                            Icons
+                                                                .favorite_outline,
+                                                            color: Colors.pink,
+                                                          ),
+                                                    onPressed: () {
+                                                      context
+                                                          .read(
+                                                              answerListViewModelProvider(
+                                                                  id))
+                                                          .likeButtonAction(
+                                                              index: index);
+                                                    },
+                                                  ),
+                                                  Text(
+                                                    viewModel.newAnswers
+                                                        .elementAt(index)
+                                                        .likedTime
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 20,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.star_outline,
+                                                      color: Colors.cyan,
+                                                    ),
+                                                    onPressed: () {},
+                                                  ),
+                                                  Text(
+                                                    viewModel.newAnswers
+                                                        .elementAt(index)
+                                                        .favoredTime
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 20,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
