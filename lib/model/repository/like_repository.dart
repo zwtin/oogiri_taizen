@@ -6,6 +6,11 @@ abstract class LikeRepository {
     @required String answerId,
   });
 
+  Stream<bool> getLikeStream({
+    @required String userId,
+    @required String answerId,
+  });
+
   Future<void> like({
     @required String userId,
     @required String answerId,

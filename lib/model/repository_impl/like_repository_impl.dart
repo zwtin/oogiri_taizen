@@ -31,6 +31,27 @@ class LikeRepositoryImpl implements LikeRepository {
   }
 
   @override
+  Stream<bool> getLikeStream({
+    @required String userId,
+    @required String answerId,
+  }) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(answerId != null && answerId.isNotEmpty);
+
+    return _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('like_answers')
+        .doc(answerId)
+        .snapshots()
+        .map(
+      (DocumentSnapshot documentSnapshot) {
+        return documentSnapshot.exists;
+      },
+    );
+  }
+
+  @override
   Future<void> like({
     @required String userId,
     @required String answerId,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/model/login_user_model.dart';
 
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
 import 'package:oogiritaizen/model/repository/like_repository.dart';
@@ -32,16 +33,35 @@ class LikeUseCaseImpl implements LikeUseCase {
   final AuthenticationRepository authenticationRepository;
   final LikeRepository likeRepository;
 
+  List<StreamController<bool>> list = [];
+
   @override
-  Future<bool> getLike({
+  Stream<bool> getLikeStream({
     @required String answerId,
-  }) async {
-    final loginUser = authenticationRepository.getLoginUser();
-    final isLike = await likeRepository.getLike(
-      userId: loginUser.id,
-      answerId: answerId,
+  }) {
+    final likeStream = StreamController<bool>();
+    list.add(likeStream);
+
+    authenticationRepository.getLoginUserStream().listen(
+      (LoginUserModel loginUserModel) {
+        if (loginUserModel == null) {
+          likeStream.sink.add(false);
+        } else {
+          likeRepository
+              .getLikeStream(
+            userId: loginUserModel.id,
+            answerId: answerId,
+          )
+              .listen(
+            (bool isLike) {
+              likeStream.sink.add(isLike);
+            },
+          );
+        }
+      },
     );
-    return isLike;
+
+    return likeStream.stream;
   }
 
   @override
@@ -66,5 +86,9 @@ class LikeUseCaseImpl implements LikeUseCase {
     );
   }
 
-  Future<void> disposed() async {}
+  Future<void> disposed() async {
+    for (final streamController in list) {
+      await streamController.close();
+    }
+  }
 }

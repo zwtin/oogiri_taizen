@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 abstract class LikeUseCase {
-  Future<bool> getLike({
+  Stream<bool> getLikeStream({
     @required String answerId,
   });
 

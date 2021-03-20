@@ -70,6 +70,7 @@ class AnswerListViewModel extends ChangeNotifier {
 
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
+    await refreshNewAnswerList();
     notifyListeners();
   }
 
@@ -89,6 +90,23 @@ class AnswerListViewModel extends ChangeNotifier {
           newAnswers.isNotEmpty ? newAnswers.last.createdAt : null;
       final answerListEntity =
           await answerUseCase.getNewAnswerList(beforeTime: lastAnswerDate);
+      for (final answerEntity in answerListEntity.answers) {
+        likeUseCase
+            .getLikeStream(answerId: answerEntity.id)
+            .listen((bool isLike) {
+          if (answerEntity.isLike == false && isLike == true) {
+            answerEntity
+              ..isLike = true
+              ..likedTime += 1;
+          } else if (answerEntity.isLike == true && isLike == false) {
+            answerEntity
+              ..isLike = false
+              ..likedTime -= 1;
+          }
+
+          notifyListeners();
+        });
+      }
       newAnswers.addAll(answerListEntity.answers);
       hasNextInNew = answerListEntity.hasNext;
       isConnectingInNew = false;
