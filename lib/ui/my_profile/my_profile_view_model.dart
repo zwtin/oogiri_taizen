@@ -175,6 +175,16 @@ class MyProfileViewModel extends ChangeNotifier {
         );
   }
 
+  void transitionToImageDetail({
+    @required String imageUrl,
+    @required String imageTag,
+  }) {
+    providerReference.read(navigatorViewModelProvider('Tab1')).presentImage(
+          imageUrl: imageUrl,
+          imageTag: imageTag,
+        );
+  }
+
   void transitionToSignIn() {
     final parameter = SignInViewModelParameter(
       screenId: StringExtension.randomString(8),

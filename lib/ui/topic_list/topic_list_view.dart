@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
@@ -37,20 +38,40 @@ class TopicListView extends HookWidget {
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
-          if (navigatorViewModel.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
-                .push(
-              MaterialPageRoute<Widget>(
-                builder: (BuildContext context) {
-                  return navigatorViewModel.nextWidget;
-                },
-                fullscreenDialog: navigatorViewModel.fullScreen,
-              ),
-            );
-          } else if (navigatorViewModel.toRoot) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          } else {
-            Navigator.of(context).pop();
+          switch (navigatorViewModel.transitionType) {
+            case TransitionType.push:
+              Navigator.of(context).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                ),
+              );
+              break;
+            case TransitionType.present:
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+              break;
+            case TransitionType.image:
+              Navigator.of(context, rootNavigator: true).push(
+                FadeInRoute(
+                  widget: navigatorViewModel.nextWidget,
+                  opaque: false,
+                ),
+              );
+              break;
+            case TransitionType.pop:
+              Navigator.of(context).pop();
+              break;
+            case TransitionType.popToRoot:
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              break;
           }
         },
         provider: navigatorViewModelProvider(parameter.screenId),

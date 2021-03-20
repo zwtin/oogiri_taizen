@@ -39,24 +39,44 @@ class MyProfileView extends HookWidget {
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
-          if (navigatorViewModel.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
-                .push(
-              MaterialPageRoute<Widget>(
-                builder: (BuildContext context) {
-                  return navigatorViewModel.nextWidget;
-                },
-                fullscreenDialog: navigatorViewModel.fullScreen,
-              ),
-            );
-          } else if (navigatorViewModel.toRoot) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          } else {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            } else {
-              context.read(bottomTabViewModelProvider).tapped(0);
-            }
+          switch (navigatorViewModel.transitionType) {
+            case TransitionType.push:
+              Navigator.of(context).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                ),
+              );
+              break;
+            case TransitionType.present:
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+              break;
+            case TransitionType.image:
+              Navigator.of(context, rootNavigator: true).push(
+                FadeInRoute(
+                  widget: navigatorViewModel.nextWidget,
+                  opaque: false,
+                ),
+              );
+              break;
+            case TransitionType.pop:
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else {
+                context.read(bottomTabViewModelProvider).tapped(0);
+              }
+              break;
+            case TransitionType.popToRoot:
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              break;
           }
         },
         provider: navigatorViewModelProvider('Tab1'),
@@ -252,16 +272,9 @@ class MyProfileView extends HookWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      FadeInRoute(
-                                        widget: ImageDetailView(
-                                          imageUrl:
-                                              viewModel.loginUser.imageUrl,
-                                          imageTag: 'imageHero',
-                                        ),
-                                        opaque: false,
-                                      ),
+                                    viewModel.transitionToImageDetail(
+                                      imageUrl: viewModel.loginUser.imageUrl,
+                                      imageTag: 'imageHero',
                                     );
                                   },
                                   child: Hero(

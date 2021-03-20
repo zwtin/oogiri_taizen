@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 
 final navigatorViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<NavigatorViewModel, String>(
@@ -10,40 +11,55 @@ final navigatorViewModelProvider =
   },
 );
 
+enum TransitionType {
+  push,
+  present,
+  image,
+  pop,
+  popToRoot,
+}
+
 class NavigatorViewModel extends ChangeNotifier {
   NavigatorViewModel(this.id);
 
   String id;
 
+  TransitionType transitionType;
   Widget nextWidget;
-  bool fullScreen;
-  bool toRoot;
 
   void push(Widget nextWidget) {
+    transitionType = TransitionType.push;
     this.nextWidget = nextWidget;
-    fullScreen = false;
-    toRoot = false;
     notifyListeners();
   }
 
   void present(Widget nextWidget) {
+    transitionType = TransitionType.present;
     this.nextWidget = nextWidget;
-    fullScreen = true;
-    toRoot = false;
+    notifyListeners();
+  }
+
+  void presentImage({
+    @required String imageUrl,
+    @required String imageTag,
+  }) {
+    transitionType = TransitionType.image;
+    nextWidget = ImageDetailView(
+      imageUrl: imageUrl,
+      imageTag: imageTag,
+    );
     notifyListeners();
   }
 
   void pop() {
+    transitionType = TransitionType.pop;
     nextWidget = null;
-    fullScreen = false;
-    toRoot = false;
     notifyListeners();
   }
 
   void popToRoot() {
+    transitionType = TransitionType.popToRoot;
     nextWidget = null;
-    fullScreen = false;
-    toRoot = true;
     notifyListeners();
   }
 

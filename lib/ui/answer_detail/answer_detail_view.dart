@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:oogiritaizen/ui/answer_detail/answer_detail_view_model.dart';
+import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:sweetalert/sweetalert.dart';
 
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
@@ -39,20 +40,40 @@ class AnswerDetailView extends HookWidget {
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
-          if (navigatorViewModel.nextWidget != null) {
-            Navigator.of(context, rootNavigator: navigatorViewModel.fullScreen)
-                .push(
-              MaterialPageRoute<Widget>(
-                builder: (BuildContext context) {
-                  return navigatorViewModel.nextWidget;
-                },
-                fullscreenDialog: navigatorViewModel.fullScreen,
-              ),
-            );
-          } else if (navigatorViewModel.toRoot) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          } else {
-            Navigator.of(context).pop();
+          switch (navigatorViewModel.transitionType) {
+            case TransitionType.push:
+              Navigator.of(context).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                ),
+              );
+              break;
+            case TransitionType.present:
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return navigatorViewModel.nextWidget;
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+              break;
+            case TransitionType.image:
+              Navigator.of(context, rootNavigator: true).push(
+                FadeInRoute(
+                  widget: navigatorViewModel.nextWidget,
+                  opaque: false,
+                ),
+              );
+              break;
+            case TransitionType.pop:
+              Navigator.of(context).pop();
+              break;
+            case TransitionType.popToRoot:
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              break;
           }
         },
         provider: navigatorViewModelProvider(parameter.screenId),

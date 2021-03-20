@@ -44,7 +44,7 @@ class BottomTabViewModel extends ChangeNotifier {
           break;
         case 1:
           providerReference
-              .read(navigatorViewModelProvider('Tab0'))
+              .read(navigatorViewModelProvider('Tab1'))
               .popToRoot();
           break;
       }
