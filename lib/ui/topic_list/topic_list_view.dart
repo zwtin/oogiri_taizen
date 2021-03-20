@@ -14,11 +14,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class TopicListView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const TopicListView(this.parameter);
+
+  final TopicListViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(topicListViewModelProvider(id));
+    final viewModel = useProvider(topicListViewModelProvider(parameter));
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -31,7 +33,7 @@ class TopicListView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -51,7 +53,7 @@ class TopicListView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: Scaffold(
           // ナビゲーションバー
           appBar: AppBar(
@@ -80,7 +82,9 @@ class TopicListView extends HookWidget {
               RefreshIndicator(
                 color: const Color(0xFFFFCC00),
                 onRefresh: () async {
-                  await context.read(topicListViewModelProvider(id)).refresh();
+                  await context
+                      .read(topicListViewModelProvider(parameter))
+                      .refresh();
                 },
                 child: ListView.builder(
                   padding: EdgeInsets.only(
@@ -105,7 +109,7 @@ class TopicListView extends HookWidget {
                     return GestureDetector(
                       onTap: () {
                         context
-                            .read(topicListViewModelProvider(id))
+                            .read(topicListViewModelProvider(parameter))
                             .transitionToPostAnswer(
                                 topicId: viewModel.items.elementAt(index).id);
                       },

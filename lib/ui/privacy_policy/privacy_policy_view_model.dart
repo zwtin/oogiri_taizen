@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final privacyPolicyViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<PrivacyPolicyViewModel, String>(
-  (ref, id) {
+final privacyPolicyViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<PrivacyPolicyViewModel, PrivacyPolicyViewModelParameter>(
+  (ref, parameter) {
     final privacyPolicyViewModel = PrivacyPolicyViewModel(
-      id,
+      parameter.screenId,
       ref,
     );
     ref.onDispose(privacyPolicyViewModel.disposed);
     return privacyPolicyViewModel;
   },
 );
+
+class PrivacyPolicyViewModelParameter {
+  PrivacyPolicyViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class PrivacyPolicyViewModel extends ChangeNotifier {
   PrivacyPolicyViewModel(

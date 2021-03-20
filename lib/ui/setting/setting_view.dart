@@ -11,11 +11,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class SettingView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const SettingView(this.parameter);
+
+  final SettingViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(settingViewModelProvider(id));
+    final viewModel = useProvider(settingViewModelProvider(parameter));
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -28,7 +30,7 @@ class SettingView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -48,7 +50,7 @@ class SettingView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: LoadingOverlay(
           isLoading: viewModel.isConnecting,
           color: Colors.grey,
@@ -112,7 +114,7 @@ class SettingView extends HookWidget {
                         RaisedButton(
                           onPressed: () {
                             context
-                                .read(settingViewModelProvider(id))
+                                .read(settingViewModelProvider(parameter))
                                 .transitionToTermsOfService();
                           },
                           child: Text('利用規約'),
@@ -120,7 +122,7 @@ class SettingView extends HookWidget {
                         RaisedButton(
                           onPressed: () {
                             context
-                                .read(settingViewModelProvider(id))
+                                .read(settingViewModelProvider(parameter))
                                 .transitionToPrivacyPolicy();
                           },
                           child: Text('プライバシーポリシー'),
@@ -128,7 +130,7 @@ class SettingView extends HookWidget {
                         RaisedButton(
                           onPressed: () {
                             context
-                                .read(settingViewModelProvider(id))
+                                .read(settingViewModelProvider(parameter))
                                 .transitionToLicense();
                           },
                           child: Text('ライセンス'),

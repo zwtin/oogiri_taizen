@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/license/license_view_model.dart';
+import 'package:oogiritaizen/ui/privacy_policy/privacy_policy_view_model.dart';
 import 'package:oogiritaizen/ui/terms_of_service/terms_of_service_view.dart';
 import 'package:oogiritaizen/ui/privacy_policy/privacy_policy_view.dart';
 import 'package:oogiritaizen/ui/license/license_view.dart';
+import 'package:oogiritaizen/ui/terms_of_service/terms_of_service_view_model.dart';
 
-final settingViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<SettingViewModel, String>(
-  (ref, id) {
+final settingViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<SettingViewModel, SettingViewModelParameter>(
+  (ref, parameter) {
     final settingViewModel = SettingViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(userUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(settingViewModel.disposed);
     return settingViewModel;
   },
 );
+
+class SettingViewModelParameter {
+  SettingViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class SettingViewModel extends ChangeNotifier {
   SettingViewModel(
@@ -43,20 +54,29 @@ class SettingViewModel extends ChangeNotifier {
   }
 
   void transitionToTermsOfService() {
+    final parameter = TermsOfServiceViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider(id)).present(
-          TermsOfServiceView(),
+          TermsOfServiceView(parameter),
         );
   }
 
   void transitionToPrivacyPolicy() {
+    final parameter = PrivacyPolicyViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider(id)).present(
-          PrivacyPolicyView(),
+          PrivacyPolicyView(parameter),
         );
   }
 
   void transitionToLicense() {
+    final parameter = LicenseViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider(id)).present(
-          LicenseView(),
+          LicenseView(parameter),
         );
   }
 

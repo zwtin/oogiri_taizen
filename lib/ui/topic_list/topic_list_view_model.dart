@@ -2,24 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view.dart';
+import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 
-final topicListViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<TopicListViewModel, String>(
-  (ref, id) {
+final topicListViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<TopicListViewModel, TopicListViewModelParameter>(
+  (ref, parameter) {
     final topicListViewModel = TopicListViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(topicUseCaseProvider(id)),
+      ref.watch(topicUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(topicListViewModel.disposed);
     return topicListViewModel;
   },
 );
+
+class TopicListViewModelParameter {
+  TopicListViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class TopicListViewModel extends ChangeNotifier {
   TopicListViewModel(
@@ -76,8 +85,11 @@ class TopicListViewModel extends ChangeNotifier {
   }
 
   void transitionToPostAnswer({@required String topicId}) {
+    final parameter = PostAnswerViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider(id)).push(
-          PostAnswerView(topicId),
+          PostAnswerView(parameter),
         );
   }
 

@@ -2,9 +2,12 @@ import 'package:ff_navigation_bar/ff_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/ui/answer_list/answer_list_view.dart';
+import 'package:oogiritaizen/ui/answer_list/answer_list_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view.dart';
+import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 
 class BottomTabView extends HookWidget {
   final tab0 = Navigator(
@@ -16,8 +19,11 @@ class BottomTabView extends HookWidget {
           Animation<double> animation1,
           Animation<double> animation2,
         ) {
+          final parameter = AnswerListViewModelParameter(
+            screenId: StringExtension.randomString(8),
+          );
           // 中身
-          return AnswerListView();
+          return AnswerListView(parameter);
         },
       );
     },
@@ -32,8 +38,11 @@ class BottomTabView extends HookWidget {
           Animation<double> animation1,
           Animation<double> animation2,
         ) {
+          final parameter = MyProfileViewModelParameter(
+            screenId: StringExtension.randomString(8),
+          );
           // 中身
-          return MyProfileView();
+          return MyProfileView(parameter);
         },
       );
     },

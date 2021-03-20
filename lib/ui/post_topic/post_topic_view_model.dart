@@ -14,19 +14,26 @@ import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 
-final postTopicViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<PostTopicViewModel, String>(
-  (ref, id) {
+final postTopicViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<PostTopicViewModel, PostTopicViewModelParameter>(
+  (ref, parameter) {
     final postTopicViewModel = PostTopicViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(userUseCaseProvider(id)),
-      ref.watch(topicUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
+      ref.watch(topicUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(postTopicViewModel.disposed);
     return postTopicViewModel;
   },
 );
+
+class PostTopicViewModelParameter {
+  PostTopicViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class PostTopicViewModel extends ChangeNotifier {
   PostTopicViewModel(

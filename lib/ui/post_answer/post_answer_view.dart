@@ -11,21 +11,14 @@ import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class PostAnswerView extends HookWidget {
-  PostAnswerView(this.topicId);
+  const PostAnswerView(this.parameter);
 
-  final String topicId;
-
-  final id = StringExtension.randomString(8);
+  final PostAnswerViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(postAnswerViewModelProvider(id));
+    final viewModel = useProvider(postAnswerViewModelProvider(parameter));
     final answerTextController = useTextEditingController();
-
-    if (viewModel.topic.id == null) {
-      viewModel.topic.id = topicId;
-      viewModel.getTopic(topicId: topicId);
-    }
 
     answerTextController.addListener(
       () {
@@ -44,7 +37,7 @@ class PostAnswerView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -64,7 +57,7 @@ class PostAnswerView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: LoadingOverlay(
           isLoading: viewModel.isConnecting,
           color: Colors.grey,
@@ -93,7 +86,9 @@ class PostAnswerView extends HookWidget {
                     Icons.edit,
                   ),
                   onPressed: () {
-                    context.read(postAnswerViewModelProvider(id)).postAnswer();
+                    context
+                        .read(postAnswerViewModelProvider(parameter))
+                        .postAnswer();
                   },
                 ),
               ],

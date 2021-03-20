@@ -15,12 +15,14 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class MyProfileView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const MyProfileView(this.parameter);
+
+  final MyProfileViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
     // ViewModel取得
-    final viewModel = useProvider(myProfileViewModelProvider(id));
+    final viewModel = useProvider(myProfileViewModelProvider(parameter));
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -33,7 +35,7 @@ class MyProfileView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -114,17 +116,10 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignInView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignInView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
+                                    context
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
+                                        .transitionToSignIn();
                                   },
                                 ),
                               ),
@@ -153,17 +148,10 @@ class MyProfileView extends HookWidget {
                                   textColor: Colors.white,
                                   onPressed: () {
                                     // ボタン押下時
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<SignUpView>(
-                                        builder: (BuildContext context) {
-                                          // 複数のProviderを提供
-                                          return SignUpView();
-                                        },
-                                        // 全画面で表示
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
+                                    context
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
+                                        .transitionToSignUp();
                                   },
                                 ),
                               ),
@@ -214,15 +202,10 @@ class MyProfileView extends HookWidget {
                                   title: const Text('プロフィール編集'),
                                   onTap: () {
                                     Navigator.of(_context).pop();
-                                    Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute<EditProfileView>(
-                                        builder: (BuildContext context) {
-                                          return EditProfileView();
-                                        },
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
+                                    context
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
+                                        .transitionToEditProfile();
                                   },
                                 ),
                                 ListTile(
@@ -231,7 +214,8 @@ class MyProfileView extends HookWidget {
                                   onTap: () {
                                     Navigator.of(_context).pop();
                                     context
-                                        .read(myProfileViewModelProvider(id))
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
                                         .transitionToSetting();
                                   },
                                 ),
@@ -396,7 +380,7 @@ class MyProfileView extends HookWidget {
                             color: const Color(0xFFFFCC00),
                             onRefresh: () {
                               return context
-                                  .read(myProfileViewModelProvider(id))
+                                  .read(myProfileViewModelProvider(parameter))
                                   .refreshCreateAnswerList();
                             },
                             child: ListView.builder(
@@ -421,7 +405,8 @@ class MyProfileView extends HookWidget {
                                 return GestureDetector(
                                   onTap: () {
                                     context
-                                        .read(myProfileViewModelProvider(id))
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
                                         .transitionToAnswerDetail(
                                           answerId: viewModel.createAnswers
                                               .elementAt(index)
@@ -603,7 +588,7 @@ class MyProfileView extends HookWidget {
                             color: const Color(0xFFFFCC00),
                             onRefresh: () {
                               return context
-                                  .read(myProfileViewModelProvider(id))
+                                  .read(myProfileViewModelProvider(parameter))
                                   .refreshFavorAnswerList();
                             },
                             child: ListView.builder(
@@ -628,7 +613,8 @@ class MyProfileView extends HookWidget {
                                 return GestureDetector(
                                   onTap: () {
                                     context
-                                        .read(myProfileViewModelProvider(id))
+                                        .read(myProfileViewModelProvider(
+                                            parameter))
                                         .transitionToAnswerDetail(
                                           answerId: viewModel.favorAnswers
                                               .elementAt(index)

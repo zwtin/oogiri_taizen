@@ -8,11 +8,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class TermsOfServiceView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const TermsOfServiceView(this.parameter);
+
+  final TermsOfServiceViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(termsOfServiceViewModelProvider(id));
+    final viewModel = useProvider(termsOfServiceViewModelProvider(parameter));
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -25,7 +27,7 @@ class TermsOfServiceView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -45,7 +47,7 @@ class TermsOfServiceView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: Scaffold(
           // ナビゲーションバー
           appBar: AppBar(

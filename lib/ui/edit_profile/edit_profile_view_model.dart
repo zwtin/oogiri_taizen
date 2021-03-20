@@ -11,18 +11,25 @@ import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
-final editProfileViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, String>(
-  (ref, id) {
+final editProfileViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<EditProfileViewModel, EditProfileViewModelParameter>(
+  (ref, parameter) {
     final editProfileViewModel = EditProfileViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(userUseCaseProvider(id)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(editProfileViewModel.disposed);
     return editProfileViewModel;
   },
 );
+
+class EditProfileViewModelParameter {
+  EditProfileViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(

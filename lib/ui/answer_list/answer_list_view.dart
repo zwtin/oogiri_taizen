@@ -13,7 +13,9 @@ import 'package:oogiritaizen/ui/circular_button.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class AnswerListView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const AnswerListView(this.parameter);
+
+  final AnswerListViewModelParameter parameter;
 
   double getRadiansFromDegree(double degree) {
     const unitRadian = 57.295779513;
@@ -22,7 +24,7 @@ class AnswerListView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(answerListViewModelProvider(id));
+    final viewModel = useProvider(answerListViewModelProvider(parameter));
 
     final controller = useAnimationController(
       duration: const Duration(milliseconds: 250),
@@ -120,7 +122,7 @@ class AnswerListView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -184,7 +186,7 @@ class AnswerListView extends HookWidget {
                           color: const Color(0xFFFFCC00),
                           onRefresh: () async {
                             await context
-                                .read(answerListViewModelProvider(id))
+                                .read(answerListViewModelProvider(parameter))
                                 .refreshNewAnswerList();
                           },
                           child: ListView.builder(
@@ -210,7 +212,8 @@ class AnswerListView extends HookWidget {
                               return GestureDetector(
                                 onTap: () {
                                   context
-                                      .read(answerListViewModelProvider(id))
+                                      .read(answerListViewModelProvider(
+                                          parameter))
                                       .transitionToAnswerDetail(
                                         answerId: viewModel.newAnswers
                                             .elementAt(index)
@@ -451,7 +454,7 @@ class AnswerListView extends HookWidget {
                                                       context
                                                           .read(
                                                               answerListViewModelProvider(
-                                                                  id))
+                                                                  parameter))
                                                           .likeButtonAction(
                                                               index: index);
                                                     },
@@ -490,7 +493,7 @@ class AnswerListView extends HookWidget {
                                                       context
                                                           .read(
                                                               answerListViewModelProvider(
-                                                                  id))
+                                                                  parameter))
                                                           .favorButtonAction(
                                                               index: index);
                                                     },
@@ -571,7 +574,7 @@ class AnswerListView extends HookWidget {
                         ),
                         onClick: () {
                           context
-                              .read(answerListViewModelProvider(id))
+                              .read(answerListViewModelProvider(parameter))
                               .transitionToPostTopic();
                         },
                       ),
@@ -637,7 +640,7 @@ class AnswerListView extends HookWidget {
                         ),
                         onClick: () {
                           context
-                              .read(answerListViewModelProvider(id))
+                              .read(answerListViewModelProvider(parameter))
                               .transitionToTopicList();
                         },
                       ),

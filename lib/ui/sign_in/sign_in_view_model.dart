@@ -6,18 +6,25 @@ import 'package:oogiritaizen/model/use_case_impl/authentication_use_case_impl.da
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
-final signInViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<SignInViewModel, String>(
-  (ref, id) {
+final signInViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<SignInViewModel, SignInViewModelParameter>(
+  (ref, parameter) {
     final signInViewModel = SignInViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(authenticationUseCaseProvider(id)),
+      ref.watch(authenticationUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(signInViewModel.disposed);
     return signInViewModel;
   },
 );
+
+class SignInViewModelParameter {
+  SignInViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class SignInViewModel extends ChangeNotifier {
   SignInViewModel(

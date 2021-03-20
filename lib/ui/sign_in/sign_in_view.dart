@@ -11,11 +11,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class SignInView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const SignInView(this.parameter);
+
+  final SignInViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(signInViewModelProvider(id));
+    final viewModel = useProvider(signInViewModelProvider(parameter));
     final emailTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();
 
@@ -30,7 +32,7 @@ class SignInView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -50,7 +52,7 @@ class SignInView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: LoadingOverlay(
           isLoading: viewModel.isLoading,
           color: Colors.grey,
@@ -183,7 +185,7 @@ class SignInView extends HookWidget {
                           mini: false,
                           onPressed: () {
                             context
-                                .read(signInViewModelProvider(id))
+                                .read(signInViewModelProvider(parameter))
                                 .loginWithEmailAndPassword(
                                   email: emailTextController.text,
                                   password: passwordTextController.text,
@@ -234,7 +236,7 @@ class SignInView extends HookWidget {
                           mini: false,
                           onPressed: () {
                             context
-                                .read(signInViewModelProvider(id))
+                                .read(signInViewModelProvider(parameter))
                                 .loginWithGoogle();
                           },
                         ),

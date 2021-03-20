@@ -18,22 +18,37 @@ import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/answer_detail/answer_detail_view.dart';
 import 'package:oogiritaizen/ui/answer_detail/answer_detail_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
+import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
+import 'package:oogiritaizen/ui/edit_profile/edit_profile_view_model.dart';
+import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 import 'package:oogiritaizen/ui/setting/setting_view.dart';
+import 'package:oogiritaizen/ui/setting/setting_view_model.dart';
+import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
+import 'package:oogiritaizen/ui/sign_in/sign_in_view_model.dart';
+import 'package:oogiritaizen/ui/sign_up/sign_up_view.dart';
+import 'package:oogiritaizen/ui/sign_up/sign_up_view_model.dart';
 
-final myProfileViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<MyProfileViewModel, String>(
-  (ref, id) {
+final myProfileViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<MyProfileViewModel, MyProfileViewModelParameter>(
+  (ref, parameter) {
     final myProfileViewModel = MyProfileViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(authenticationUseCaseProvider(id)),
-      ref.watch(userUseCaseProvider(id)),
-      ref.watch(answerUseCaseProvider(id)),
+      ref.watch(authenticationUseCaseProvider(parameter.screenId)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
+      ref.watch(answerUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(myProfileViewModel.disposed);
     return myProfileViewModel;
   },
 );
+
+class MyProfileViewModelParameter {
+  MyProfileViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
 
 class MyProfileViewModel extends ChangeNotifier {
   MyProfileViewModel(
@@ -160,9 +175,39 @@ class MyProfileViewModel extends ChangeNotifier {
         );
   }
 
-  void transitionToSetting() {
+  void transitionToSignIn() {
+    final parameter = SignInViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider('Tab1')).present(
-          SettingView(),
+          SignInView(parameter),
+        );
+  }
+
+  void transitionToSignUp() {
+    final parameter = SignUpViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
+    providerReference.read(navigatorViewModelProvider('Tab1')).present(
+          SignUpView(parameter),
+        );
+  }
+
+  void transitionToEditProfile() {
+    final parameter = EditProfileViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
+    providerReference.read(navigatorViewModelProvider('Tab1')).present(
+          EditProfileView(parameter),
+        );
+  }
+
+  void transitionToSetting() {
+    final parameter = SettingViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
+    providerReference.read(navigatorViewModelProvider('Tab1')).present(
+          SettingView(parameter),
         );
   }
 

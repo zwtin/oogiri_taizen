@@ -11,11 +11,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class SignUpView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const SignUpView(this.parameter);
+
+  final SignUpViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(signUpViewModelProvider(id));
+    final viewModel = useProvider(signUpViewModelProvider(parameter));
     final emailTextController = useTextEditingController();
 
     return ProviderListener(
@@ -29,7 +31,7 @@ class SignUpView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -49,7 +51,7 @@ class SignUpView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: LoadingOverlay(
           isLoading: viewModel.isLoading,
           color: Colors.grey,
@@ -142,7 +144,7 @@ class SignUpView extends HookWidget {
                           mini: false,
                           onPressed: () {
                             context
-                                .read(signUpViewModelProvider(id))
+                                .read(signUpViewModelProvider(parameter))
                                 .sendLoginEmail(
                                   email: emailTextController.text,
                                 );
@@ -192,7 +194,7 @@ class SignUpView extends HookWidget {
                           mini: false,
                           onPressed: () {
                             context
-                                .read(signUpViewModelProvider(id))
+                                .read(signUpViewModelProvider(parameter))
                                 .loginWithGoogle();
                           },
                         ),

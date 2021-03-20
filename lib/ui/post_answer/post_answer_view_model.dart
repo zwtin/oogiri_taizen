@@ -14,24 +14,35 @@ import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
-final postAnswerViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<PostAnswerViewModel, String>(
-  (ref, id) {
+final postAnswerViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<PostAnswerViewModel, PostAnswerViewModelParameter>(
+  (ref, parameter) {
     final postAnswerViewModel = PostAnswerViewModel(
-      id,
+      parameter.screenId,
+      parameter.topicId,
       ref,
-      ref.watch(answerUseCaseProvider(id)),
-      ref.watch(topicUseCaseProvider(id)),
-      ref.watch(userUseCaseProvider(id)),
+      ref.watch(answerUseCaseProvider(parameter.screenId)),
+      ref.watch(topicUseCaseProvider(parameter.screenId)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(postAnswerViewModel.disposed);
     return postAnswerViewModel;
   },
 );
 
+class PostAnswerViewModelParameter {
+  PostAnswerViewModelParameter({
+    @required this.screenId,
+    @required this.topicId,
+  });
+  final String screenId;
+  final String topicId;
+}
+
 class PostAnswerViewModel extends ChangeNotifier {
   PostAnswerViewModel(
-    this.id,
+    this.screenId,
+    this.topicId,
     this.providerReference,
     this.answerUseCase,
     this.topicUseCase,
@@ -40,25 +51,22 @@ class PostAnswerViewModel extends ChangeNotifier {
     setup();
   }
 
-  final String id;
+  final String screenId;
+  final String topicId;
   final ProviderReference providerReference;
   final AnswerUseCase answerUseCase;
   final TopicUseCase topicUseCase;
   final UserUseCase userUseCase;
 
   bool isConnecting = false;
-  UserEntity loginUser = UserEntity();
-  TopicEntity topic = TopicEntity()..createdUser = UserEntity();
+  UserEntity loginUser;
+  TopicEntity topic;
   AnswerEntity editedAnswer = AnswerEntity()
     ..topic = TopicEntity()
     ..createdUser = UserEntity();
 
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
-    notifyListeners();
-  }
-
-  Future<void> getTopic({@required String topicId}) async {
     topic = await topicUseCase.getTopic(topicId: topicId);
     notifyListeners();
   }
@@ -66,7 +74,7 @@ class PostAnswerViewModel extends ChangeNotifier {
   Future<void> postAnswer() async {
     if (editedAnswer.text.isEmpty) {
       // お題本文入力チェック
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'テキストが未入力です'
@@ -85,13 +93,15 @@ class PostAnswerViewModel extends ChangeNotifier {
         editedAnswer: editedAnswer,
       );
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = '投稿完了'
               ..subtitle = 'ボケを投稿しました'
               ..showCancelButton = false
               ..onPress = ((bool b) {
-                providerReference.read(navigatorViewModelProvider(id)).pop();
+                providerReference
+                    .read(navigatorViewModelProvider(screenId))
+                    .pop();
                 return b;
               })
               ..style = null,
@@ -99,7 +109,7 @@ class PostAnswerViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -112,6 +122,6 @@ class PostAnswerViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

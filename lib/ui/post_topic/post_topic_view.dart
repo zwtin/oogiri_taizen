@@ -10,11 +10,13 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class PostTopicView extends HookWidget {
-  final id = StringExtension.randomString(8);
+  const PostTopicView(this.parameter);
+
+  final PostTopicViewModelParameter parameter;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = useProvider(postTopicViewModelProvider(id));
+    final viewModel = useProvider(postTopicViewModelProvider(parameter));
     final topicTextController = useTextEditingController();
 
     topicTextController.addListener(
@@ -34,7 +36,7 @@ class PostTopicView extends HookWidget {
           style: alertViewModel.alertEntity.style,
         );
       },
-      provider: alertViewModelProvider(id),
+      provider: alertViewModelProvider(parameter.screenId),
       child: ProviderListener(
         onChange:
             (BuildContext context, NavigatorViewModel navigatorViewModel) {
@@ -54,7 +56,7 @@ class PostTopicView extends HookWidget {
             Navigator.of(context).pop();
           }
         },
-        provider: navigatorViewModelProvider(id),
+        provider: navigatorViewModelProvider(parameter.screenId),
         child: LoadingOverlay(
           isLoading: viewModel.isConnecting,
           color: Colors.grey,
@@ -83,7 +85,9 @@ class PostTopicView extends HookWidget {
                     Icons.edit,
                   ),
                   onPressed: () {
-                    context.read(postTopicViewModelProvider(id)).postTopic();
+                    context
+                        .read(postTopicViewModelProvider(parameter))
+                        .postTopic();
                   },
                 ),
               ],
@@ -211,7 +215,8 @@ class PostTopicView extends HookWidget {
                               GestureDetector(
                                 onTap: () {
                                   context
-                                      .read(postTopicViewModelProvider(id))
+                                      .read(
+                                          postTopicViewModelProvider(parameter))
                                       .getImage();
                                 },
                                 child: viewModel.imageFile != null

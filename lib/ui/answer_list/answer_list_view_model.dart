@@ -21,28 +21,37 @@ import 'package:oogiritaizen/ui/answer_detail/answer_detail_view.dart';
 import 'package:oogiritaizen/ui/answer_detail/answer_detail_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view.dart';
+import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view.dart';
+import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
 
-final answerListViewModelProvider =
-    ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, String>(
-  (ref, id) {
+final answerListViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<AnswerListViewModel, AnswerListViewModelParameter>(
+  (ref, parameter) {
     final answerListViewModel = AnswerListViewModel(
-      id,
+      parameter.screenId,
       ref,
-      ref.watch(answerUseCaseProvider(id)),
-      ref.watch(likeUseCaseProvider(id)),
-      ref.watch(favorUseCaseProvider(id)),
-      ref.watch(topicUseCaseProvider(id)),
-      ref.watch(userUseCaseProvider(id)),
+      ref.watch(answerUseCaseProvider(parameter.screenId)),
+      ref.watch(likeUseCaseProvider(parameter.screenId)),
+      ref.watch(favorUseCaseProvider(parameter.screenId)),
+      ref.watch(topicUseCaseProvider(parameter.screenId)),
+      ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(answerListViewModel.disposed);
     return answerListViewModel;
   },
 );
 
+class AnswerListViewModelParameter {
+  AnswerListViewModelParameter({
+    @required this.screenId,
+  });
+  final String screenId;
+}
+
 class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
-    this.id,
+    this.screenId,
     this.providerReference,
     this.answerUseCase,
     this.likeUseCase,
@@ -53,7 +62,7 @@ class AnswerListViewModel extends ChangeNotifier {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
 
   final AnswerUseCase answerUseCase;
@@ -133,7 +142,7 @@ class AnswerListViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnectingInNew = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -163,7 +172,7 @@ class AnswerListViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -192,7 +201,7 @@ class AnswerListViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -214,18 +223,24 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   void transitionToPostTopic() {
+    final parameter = PostTopicViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider('Tab0')).present(
-          PostTopicView(),
+          PostTopicView(parameter),
         );
   }
 
   void transitionToTopicList() {
+    final parameter = TopicListViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
     providerReference.read(navigatorViewModelProvider('Tab0')).present(
-          TopicListView(),
+          TopicListView(parameter),
         );
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }
