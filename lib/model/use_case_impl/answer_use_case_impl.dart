@@ -8,11 +8,13 @@ import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/model/answer_model.dart';
 import 'package:oogiritaizen/model/repository/answer_repository.dart';
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
+import 'package:oogiritaizen/model/repository/favor_repository.dart';
 import 'package:oogiritaizen/model/repository/like_repository.dart';
 import 'package:oogiritaizen/model/repository/topic_repository.dart';
 import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/answer_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/favor_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/like_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/topic_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
@@ -26,6 +28,7 @@ final answerUseCaseProvider =
       ref.watch(answerRepositoryProvider),
       ref.watch(authenticationRepositoryProvider),
       ref.watch(likeRepositoryProvider),
+      ref.watch(favorRepositoryProvider),
       ref.watch(topicRepositoryProvider),
       ref.watch(userRepositoryProvider),
     );
@@ -40,6 +43,7 @@ class AnswerUseCaseImpl implements AnswerUseCase {
     this.answerRepository,
     this.authenticationRepository,
     this.likeRepository,
+    this.favorRepository,
     this.topicRepository,
     this.userRepository,
   );
@@ -48,6 +52,7 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   final AnswerRepository answerRepository;
   final AuthenticationRepository authenticationRepository;
   final LikeRepository likeRepository;
+  final FavorRepository favorRepository;
   final TopicRepository topicRepository;
   final UserRepository userRepository;
 
@@ -89,12 +94,17 @@ class AnswerUseCaseImpl implements AnswerUseCase {
       userId: loginUser.id,
       answerId: answerId,
     );
+    final isFavor = await favorRepository.getFavor(
+      userId: loginUser.id,
+      answerId: answerId,
+    );
     final answerEntity = AnswerEntity()
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
       ..isLike = isLike
       ..likedTime = answerModel.likedTime
+      ..isFavor = isFavor
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point
       ..createdAt = answerModel.createdAt

@@ -6,10 +6,12 @@ import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
+import 'package:oogiritaizen/model/use_case/favor_use_case.dart';
 import 'package:oogiritaizen/model/use_case/like_use_case.dart';
 import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/answer_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/favor_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/like_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
@@ -25,6 +27,7 @@ final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
       ref,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
       ref.watch(likeUseCaseProvider(parameter.screenId)),
+      ref.watch(favorUseCaseProvider(parameter.screenId)),
       ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(answerDetailViewModel.disposed);
@@ -48,6 +51,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
     this.providerReference,
     this.answerUseCase,
     this.likeUseCase,
+    this.favorUseCase,
     this.userUseCase,
   ) {
     setup();
@@ -59,6 +63,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
   final ProviderReference providerReference;
   final AnswerUseCase answerUseCase;
   final LikeUseCase likeUseCase;
+  final FavorUseCase favorUseCase;
   final UserUseCase userUseCase;
 
   UserEntity loginUser;
@@ -82,6 +87,32 @@ class AnswerDetailViewModel extends ChangeNotifier {
         answer
           ..isLike = true
           ..likedTime = answer.likedTime + 1;
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(screenId)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
+    }
+  }
+
+  Future<void> favorButtonAction() async {
+    try {
+      if (answer.isFavor) {
+        await favorUseCase.unfavor(answerId: answer.id);
+        answer
+          ..isFavor = false
+          ..favoredTime = answer.favoredTime - 1;
+      } else {
+        await favorUseCase.favor(answerId: answer.id);
+        answer
+          ..isFavor = true
+          ..favoredTime = answer.favoredTime + 1;
       }
       notifyListeners();
     } on Exception catch (error) {

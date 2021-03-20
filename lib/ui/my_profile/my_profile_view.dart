@@ -593,7 +593,8 @@ class MyProfileView extends HookWidget {
                                   ),
                                 );
                               },
-                              itemCount: viewModel.hasNextInCreate
+                              itemCount: viewModel.hasNextInCreate &&
+                                      viewModel.createAnswers.isNotEmpty
                                   ? viewModel.createAnswers.length + 1
                                   : viewModel.createAnswers.length,
                             ),
@@ -799,7 +800,8 @@ class MyProfileView extends HookWidget {
                                   ),
                                 );
                               },
-                              itemCount: viewModel.hasNextInFavor
+                              itemCount: viewModel.hasNextInFavor &&
+                                      viewModel.favorAnswers.isNotEmpty
                                   ? viewModel.favorAnswers.length + 1
                                   : viewModel.favorAnswers.length,
                             ),

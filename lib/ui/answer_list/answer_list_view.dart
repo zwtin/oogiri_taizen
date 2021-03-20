@@ -475,11 +475,25 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: Icon(
-                                                      Icons.star_outline,
-                                                      color: Colors.cyan,
-                                                    ),
-                                                    onPressed: () {},
+                                                    icon: viewModel.newAnswers
+                                                            .elementAt(index)
+                                                            .isFavor
+                                                        ? Icon(
+                                                            Icons.star,
+                                                            color: Colors.cyan,
+                                                          )
+                                                        : Icon(
+                                                            Icons.star_outline,
+                                                            color: Colors.cyan,
+                                                          ),
+                                                    onPressed: () {
+                                                      context
+                                                          .read(
+                                                              answerListViewModelProvider(
+                                                                  id))
+                                                          .favorButtonAction(
+                                                              index: index);
+                                                    },
                                                   ),
                                                   Text(
                                                     viewModel.newAnswers
@@ -504,7 +518,8 @@ class AnswerListView extends HookWidget {
                                 ),
                               );
                             },
-                            itemCount: viewModel.hasNextInNew
+                            itemCount: viewModel.hasNextInNew &&
+                                    viewModel.newAnswers.isNotEmpty
                                 ? viewModel.newAnswers.length + 1
                                 : viewModel.newAnswers.length,
                           ),

@@ -445,11 +445,22 @@ class AnswerDetailView extends HookWidget {
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(
-                                          Icons.star_outline,
-                                          color: Colors.cyan,
-                                        ),
-                                        onPressed: () {},
+                                        icon: viewModel.answer.isFavor
+                                            ? Icon(
+                                                Icons.star,
+                                                color: Colors.cyan,
+                                              )
+                                            : Icon(
+                                                Icons.star_outline,
+                                                color: Colors.cyan,
+                                              ),
+                                        onPressed: () {
+                                          context
+                                              .read(
+                                                  answerDetailViewModelProvider(
+                                                      parameter))
+                                              .favorButtonAction();
+                                        },
                                       ),
                                       Text(
                                         viewModel.answer.favoredTime.toString(),
