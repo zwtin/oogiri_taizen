@@ -18,8 +18,8 @@ final postTopicViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<PostTopicViewModel, PostTopicViewModelParameter>(
   (ref, parameter) {
     final postTopicViewModel = PostTopicViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(userUseCaseProvider(parameter.screenId)),
       ref.watch(topicUseCaseProvider(parameter.screenId)),
     );
@@ -37,15 +37,15 @@ class PostTopicViewModelParameter {
 
 class PostTopicViewModel extends ChangeNotifier {
   PostTopicViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.userUseCase,
     this.topicUseCase,
   ) {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final UserUseCase userUseCase;
   final TopicUseCase topicUseCase;
@@ -63,7 +63,7 @@ class PostTopicViewModel extends ChangeNotifier {
   Future<void> postTopic() async {
     if (editedTopic.text.isEmpty) {
       // お題本文入力チェック
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'テキストが未入力です'
@@ -82,13 +82,15 @@ class PostTopicViewModel extends ChangeNotifier {
         editedTopic: editedTopic,
       );
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = '投稿完了'
               ..subtitle = 'お題を投稿しました'
               ..showCancelButton = false
               ..onPress = ((bool b) {
-                providerReference.read(navigatorViewModelProvider(id)).pop();
+                providerReference
+                    .read(navigatorViewModelProvider(screenId))
+                    .pop();
                 return b;
               })
               ..style = null,
@@ -96,7 +98,7 @@ class PostTopicViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -145,6 +147,6 @@ class PostTopicViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

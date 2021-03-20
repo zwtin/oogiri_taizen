@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
-import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
 
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
@@ -348,7 +347,7 @@ class AnswerListView extends HookWidget {
                                               ),
                                             ),
                                             IconButton(
-                                              icon: Icon(Icons.menu),
+                                              icon: const Icon(Icons.menu),
                                               onPressed: () {
                                                 showModalBottomSheet<int>(
                                                   context: context,
@@ -462,11 +461,11 @@ class AnswerListView extends HookWidget {
                                                     icon: viewModel.newAnswers
                                                             .elementAt(index)
                                                             .isLike
-                                                        ? Icon(
+                                                        ? const Icon(
                                                             Icons.favorite,
                                                             color: Colors.pink,
                                                           )
-                                                        : Icon(
+                                                        : const Icon(
                                                             Icons
                                                                 .favorite_outline,
                                                             color: Colors.pink,
@@ -502,11 +501,11 @@ class AnswerListView extends HookWidget {
                                                     icon: viewModel.newAnswers
                                                             .elementAt(index)
                                                             .isFavor
-                                                        ? Icon(
+                                                        ? const Icon(
                                                             Icons.star,
                                                             color: Colors.cyan,
                                                           )
-                                                        : Icon(
+                                                        : const Icon(
                                                             Icons.star_outline,
                                                             color: Colors.cyan,
                                                           ),

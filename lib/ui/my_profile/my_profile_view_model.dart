@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
-import 'package:oogiritaizen/model/entity/answer_list_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
@@ -20,7 +19,6 @@ import 'package:oogiritaizen/ui/answer_detail/answer_detail_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
 import 'package:oogiritaizen/ui/edit_profile/edit_profile_view_model.dart';
-import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 import 'package:oogiritaizen/ui/setting/setting_view.dart';
 import 'package:oogiritaizen/ui/setting/setting_view_model.dart';
 import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
@@ -32,8 +30,8 @@ final myProfileViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<MyProfileViewModel, MyProfileViewModelParameter>(
   (ref, parameter) {
     final myProfileViewModel = MyProfileViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(authenticationUseCaseProvider(parameter.screenId)),
       ref.watch(userUseCaseProvider(parameter.screenId)),
       ref.watch(answerUseCaseProvider(parameter.screenId)),
@@ -52,8 +50,8 @@ class MyProfileViewModelParameter {
 
 class MyProfileViewModel extends ChangeNotifier {
   MyProfileViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.authenticationUseCase,
     this.userUseCase,
     this.answerUseCase,
@@ -61,7 +59,7 @@ class MyProfileViewModel extends ChangeNotifier {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
   final UserUseCase userUseCase;
@@ -117,7 +115,7 @@ class MyProfileViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnectingInCreate = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -153,7 +151,7 @@ class MyProfileViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnectingInFavor = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -222,6 +220,6 @@ class MyProfileViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

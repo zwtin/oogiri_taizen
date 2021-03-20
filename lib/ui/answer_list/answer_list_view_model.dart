@@ -29,8 +29,8 @@ final answerListViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<AnswerListViewModel, AnswerListViewModelParameter>(
   (ref, parameter) {
     final answerListViewModel = AnswerListViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
       ref.watch(likeUseCaseProvider(parameter.screenId)),
       ref.watch(favorUseCaseProvider(parameter.screenId)),
@@ -51,8 +51,8 @@ class AnswerListViewModelParameter {
 
 class AnswerListViewModel extends ChangeNotifier {
   AnswerListViewModel(
-    this.screenId,
     this.providerReference,
+    this.screenId,
     this.answerUseCase,
     this.likeUseCase,
     this.favorUseCase,

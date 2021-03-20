@@ -15,8 +15,8 @@ final editProfileViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<EditProfileViewModel, EditProfileViewModelParameter>(
   (ref, parameter) {
     final editProfileViewModel = EditProfileViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(editProfileViewModel.disposed);
@@ -33,14 +33,14 @@ class EditProfileViewModelParameter {
 
 class EditProfileViewModel extends ChangeNotifier {
   EditProfileViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.userUseCase,
   ) {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final UserUseCase userUseCase;
 
@@ -56,7 +56,7 @@ class EditProfileViewModel extends ChangeNotifier {
   Future<void> postUser() async {
     if (editedUser.name.isEmpty) {
       // ユーザー名入力チェック
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '名前が未入力です'
@@ -68,7 +68,7 @@ class EditProfileViewModel extends ChangeNotifier {
     }
     if (editedUser.introduction.isEmpty) {
       // 自己紹介入力チェック
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '自己紹介が未入力です'
@@ -86,13 +86,15 @@ class EditProfileViewModel extends ChangeNotifier {
         editedUser: editedUser,
       );
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = '投稿完了'
               ..subtitle = 'プロフィールを更新しました'
               ..showCancelButton = false
               ..onPress = ((bool b) {
-                providerReference.read(navigatorViewModelProvider(id)).pop();
+                providerReference
+                    .read(navigatorViewModelProvider(screenId))
+                    .pop();
                 return b;
               })
               ..style = null,
@@ -100,7 +102,7 @@ class EditProfileViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -149,6 +151,6 @@ class EditProfileViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

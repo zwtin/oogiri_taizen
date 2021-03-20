@@ -5,8 +5,8 @@ final licenseViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<LicenseViewModel, LicenseViewModelParameter>(
   (ref, parameter) {
     final licenseViewModel = LicenseViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
     );
     ref.onDispose(licenseViewModel.disposed);
     return licenseViewModel;
@@ -22,14 +22,14 @@ class LicenseViewModelParameter {
 
 class LicenseViewModel extends ChangeNotifier {
   LicenseViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
   );
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

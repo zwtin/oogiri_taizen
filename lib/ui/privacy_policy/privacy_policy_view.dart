@@ -5,9 +5,7 @@ import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/privacy_policy/privacy_policy_view_model.dart';
-import 'package:oogiritaizen/ui/terms_of_service/terms_of_service_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class PrivacyPolicyView extends HookWidget {
   const PrivacyPolicyView(this.parameter);

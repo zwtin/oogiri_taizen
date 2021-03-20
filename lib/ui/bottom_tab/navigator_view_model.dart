@@ -4,8 +4,8 @@ import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 
 final navigatorViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<NavigatorViewModel, String>(
-  (ref, id) {
-    final navigatorViewModel = NavigatorViewModel(id);
+  (ref, screenId) {
+    final navigatorViewModel = NavigatorViewModel(screenId);
     ref.onDispose(navigatorViewModel.disposed);
     return navigatorViewModel;
   },
@@ -20,9 +20,9 @@ enum TransitionType {
 }
 
 class NavigatorViewModel extends ChangeNotifier {
-  NavigatorViewModel(this.id);
+  NavigatorViewModel(this.screenId);
 
-  String id;
+  String screenId;
 
   TransitionType transitionType;
   Widget nextWidget;
@@ -64,6 +64,6 @@ class NavigatorViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

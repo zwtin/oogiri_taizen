@@ -10,8 +10,8 @@ final signInViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<SignInViewModel, SignInViewModelParameter>(
   (ref, parameter) {
     final signInViewModel = SignInViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(authenticationUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(signInViewModel.disposed);
@@ -28,12 +28,12 @@ class SignInViewModelParameter {
 
 class SignInViewModel extends ChangeNotifier {
   SignInViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.authenticationUseCase,
   );
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
 
@@ -44,7 +44,7 @@ class SignInViewModel extends ChangeNotifier {
     @required String password,
   }) async {
     if (email.isEmpty) {
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'メールアドレスを入力してください'
@@ -54,7 +54,7 @@ class SignInViewModel extends ChangeNotifier {
           );
       return;
     } else if (password.isEmpty) {
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'パスワードを入力してください'
@@ -71,10 +71,10 @@ class SignInViewModel extends ChangeNotifier {
         email: email,
         password: password,
       );
-      providerReference.read(navigatorViewModelProvider(id)).pop();
+      providerReference.read(navigatorViewModelProvider(screenId)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'メールアドレスまたはパスワードが間違っています'
@@ -91,10 +91,10 @@ class SignInViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await authenticationUseCase.loginWithGoogle();
-      providerReference.read(navigatorViewModelProvider(id)).pop();
+      providerReference.read(navigatorViewModelProvider(screenId)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'ログインに失敗しました'
@@ -107,6 +107,6 @@ class SignInViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

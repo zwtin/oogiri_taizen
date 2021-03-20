@@ -3,7 +3,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:oogiritaizen/constants.dart';
-import 'package:oogiritaizen/model/model/user_model.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import 'package:oogiritaizen/model/model/login_user_model.dart';

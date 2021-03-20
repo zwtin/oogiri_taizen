@@ -5,8 +5,8 @@ final termsOfServiceViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<TermsOfServiceViewModel, TermsOfServiceViewModelParameter>(
   (ref, parameter) {
     final termsOfServiceViewModel = TermsOfServiceViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
     );
     ref.onDispose(termsOfServiceViewModel.disposed);
     return termsOfServiceViewModel;
@@ -22,14 +22,14 @@ class TermsOfServiceViewModelParameter {
 
 class TermsOfServiceViewModel extends ChangeNotifier {
   TermsOfServiceViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
   );
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

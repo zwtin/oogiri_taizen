@@ -3,28 +3,24 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
-import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
 import 'package:oogiritaizen/model/use_case/favor_use_case.dart';
 import 'package:oogiritaizen/model/use_case/like_use_case.dart';
-import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/model/use_case_impl/answer_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/favor_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/like_use_case_impl.dart';
-import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
-import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 
 final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<AnswerDetailViewModel, AnswerDetailViewModelParameter>(
   (ref, parameter) {
     final answerDetailViewModel = AnswerDetailViewModel(
+      ref,
       parameter.screenId,
       parameter.answerId,
-      ref,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
       ref.watch(likeUseCaseProvider(parameter.screenId)),
       ref.watch(favorUseCaseProvider(parameter.screenId)),
@@ -46,9 +42,9 @@ class AnswerDetailViewModelParameter {
 
 class AnswerDetailViewModel extends ChangeNotifier {
   AnswerDetailViewModel(
+    this.providerReference,
     this.screenId,
     this.answerId,
-    this.providerReference,
     this.answerUseCase,
     this.likeUseCase,
     this.favorUseCase,

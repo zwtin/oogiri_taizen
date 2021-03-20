@@ -5,8 +5,8 @@ final privacyPolicyViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<PrivacyPolicyViewModel, PrivacyPolicyViewModelParameter>(
   (ref, parameter) {
     final privacyPolicyViewModel = PrivacyPolicyViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
     );
     ref.onDispose(privacyPolicyViewModel.disposed);
     return privacyPolicyViewModel;
@@ -22,14 +22,14 @@ class PrivacyPolicyViewModelParameter {
 
 class PrivacyPolicyViewModel extends ChangeNotifier {
   PrivacyPolicyViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
   );
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

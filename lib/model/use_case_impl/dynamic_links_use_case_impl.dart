@@ -5,7 +5,6 @@ import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/dynamic_links_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
-import 'package:oogiritaizen/model/use_case/authentication_use_case.dart';
 import 'package:oogiritaizen/model/use_case/dynamic_links_use_case.dart';
 
 final dynamicLinksUseCaseProvider =

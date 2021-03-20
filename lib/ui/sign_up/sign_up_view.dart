@@ -9,7 +9,6 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/sign_up/sign_up_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
 
 class SignUpView extends HookWidget {
   const SignUpView(this.parameter);
@@ -156,7 +155,7 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250,
                         height: 44,
                         child: SignInButton(
@@ -207,7 +206,7 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250,
                         height: 44,
                         child: SignInButton(
@@ -223,7 +222,7 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250,
                         height: 44,
                         child: SignInButton(
@@ -235,7 +234,7 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250,
                         height: 44,
                         child: SignInButton(
@@ -247,7 +246,7 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250,
                         height: 44,
                         child: SignInButton(

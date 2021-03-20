@@ -14,8 +14,8 @@ final topicListViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<TopicListViewModel, TopicListViewModelParameter>(
   (ref, parameter) {
     final topicListViewModel = TopicListViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(topicUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(topicListViewModel.disposed);
@@ -32,14 +32,14 @@ class TopicListViewModelParameter {
 
 class TopicListViewModel extends ChangeNotifier {
   TopicListViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.topicUseCase,
   ) {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final TopicUseCase topicUseCase;
 
@@ -72,7 +72,7 @@ class TopicListViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isConnecting = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = '通信エラーが発生しました'
@@ -86,14 +86,15 @@ class TopicListViewModel extends ChangeNotifier {
 
   void transitionToPostAnswer({@required String topicId}) {
     final parameter = PostAnswerViewModelParameter(
+      topicId: topicId,
       screenId: StringExtension.randomString(8),
     );
-    providerReference.read(navigatorViewModelProvider(id)).push(
+    providerReference.read(navigatorViewModelProvider(screenId)).push(
           PostAnswerView(parameter),
         );
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

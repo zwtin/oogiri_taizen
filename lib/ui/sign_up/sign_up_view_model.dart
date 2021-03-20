@@ -12,8 +12,8 @@ final signUpViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<SignUpViewModel, SignUpViewModelParameter>(
   (ref, parameter) {
     final signUpViewModel = SignUpViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(authenticationUseCaseProvider(parameter.screenId)),
       ref.watch(userUseCaseProvider(parameter.screenId)),
     );
@@ -31,13 +31,13 @@ class SignUpViewModelParameter {
 
 class SignUpViewModel extends ChangeNotifier {
   SignUpViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.authenticationUseCase,
     this.userUseCase,
   );
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final AuthenticationUseCase authenticationUseCase;
   final UserUseCase userUseCase;
@@ -49,10 +49,10 @@ class SignUpViewModel extends ChangeNotifier {
       isLoading = true;
       notifyListeners();
       await authenticationUseCase.loginWithGoogle();
-      providerReference.read(navigatorViewModelProvider(id)).pop();
+      providerReference.read(navigatorViewModelProvider(screenId)).pop();
     } on Exception catch (error) {
       isLoading = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'ログインに失敗しました'
@@ -69,7 +69,7 @@ class SignUpViewModel extends ChangeNotifier {
   }) async {
     assert(email != null);
     if (email.isEmpty) {
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'メールアドレスを入力してください'
@@ -86,7 +86,7 @@ class SignUpViewModel extends ChangeNotifier {
         email: email,
       );
       isLoading = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = '完了'
               ..subtitle = '確認メールを送信しました'
@@ -97,7 +97,7 @@ class SignUpViewModel extends ChangeNotifier {
       notifyListeners();
     } on Exception catch (error) {
       isLoading = false;
-      providerReference.read(alertViewModelProvider(id)).show(
+      providerReference.read(alertViewModelProvider(screenId)).show(
             alertEntity: AlertEntity()
               ..title = 'エラー'
               ..subtitle = 'メールの送信に失敗しました'
@@ -110,6 +110,6 @@ class SignUpViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

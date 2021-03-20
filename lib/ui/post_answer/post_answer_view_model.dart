@@ -18,9 +18,9 @@ final postAnswerViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<PostAnswerViewModel, PostAnswerViewModelParameter>(
   (ref, parameter) {
     final postAnswerViewModel = PostAnswerViewModel(
+      ref,
       parameter.screenId,
       parameter.topicId,
-      ref,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
       ref.watch(topicUseCaseProvider(parameter.screenId)),
       ref.watch(userUseCaseProvider(parameter.screenId)),
@@ -41,9 +41,9 @@ class PostAnswerViewModelParameter {
 
 class PostAnswerViewModel extends ChangeNotifier {
   PostAnswerViewModel(
+    this.providerReference,
     this.screenId,
     this.topicId,
-    this.providerReference,
     this.answerUseCase,
     this.topicUseCase,
     this.userUseCase,

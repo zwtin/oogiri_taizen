@@ -16,8 +16,8 @@ final settingViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<SettingViewModel, SettingViewModelParameter>(
   (ref, parameter) {
     final settingViewModel = SettingViewModel(
-      parameter.screenId,
       ref,
+      parameter.screenId,
       ref.watch(userUseCaseProvider(parameter.screenId)),
     );
     ref.onDispose(settingViewModel.disposed);
@@ -34,14 +34,14 @@ class SettingViewModelParameter {
 
 class SettingViewModel extends ChangeNotifier {
   SettingViewModel(
-    this.id,
     this.providerReference,
+    this.screenId,
     this.userUseCase,
   ) {
     setup();
   }
 
-  final String id;
+  final String screenId;
   final ProviderReference providerReference;
   final UserUseCase userUseCase;
 
@@ -57,7 +57,7 @@ class SettingViewModel extends ChangeNotifier {
     final parameter = TermsOfServiceViewModelParameter(
       screenId: StringExtension.randomString(8),
     );
-    providerReference.read(navigatorViewModelProvider(id)).present(
+    providerReference.read(navigatorViewModelProvider(screenId)).present(
           TermsOfServiceView(parameter),
         );
   }
@@ -66,7 +66,7 @@ class SettingViewModel extends ChangeNotifier {
     final parameter = PrivacyPolicyViewModelParameter(
       screenId: StringExtension.randomString(8),
     );
-    providerReference.read(navigatorViewModelProvider(id)).present(
+    providerReference.read(navigatorViewModelProvider(screenId)).present(
           PrivacyPolicyView(parameter),
         );
   }
@@ -75,12 +75,12 @@ class SettingViewModel extends ChangeNotifier {
     final parameter = LicenseViewModelParameter(
       screenId: StringExtension.randomString(8),
     );
-    providerReference.read(navigatorViewModelProvider(id)).present(
+    providerReference.read(navigatorViewModelProvider(screenId)).present(
           LicenseView(parameter),
         );
   }
 
   Future<void> disposed() async {
-    debugPrint(id);
+    debugPrint(screenId);
   }
 }

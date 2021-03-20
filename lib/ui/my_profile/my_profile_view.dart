@@ -5,12 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
-import 'package:oogiritaizen/ui/edit_profile/edit_profile_view.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
-import 'package:oogiritaizen/ui/image_detail/image_detail_view.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
-import 'package:oogiritaizen/ui/sign_in/sign_in_view.dart';
-import 'package:oogiritaizen/ui/sign_up/sign_up_view.dart';
 import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 
