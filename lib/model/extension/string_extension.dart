@@ -1,8 +1,5 @@
 import 'dart:math';
 
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-
 extension StringExtension on String {
   static String randomString(int length) {
     const _randomChars =
@@ -18,12 +15,5 @@ extension StringExtension on String {
       },
     );
     return String.fromCharCodes(codeUnits);
-  }
-
-  static String getJPStringFromDateTime(DateTime dateTime) {
-    initializeDateFormatting('ja_JP');
-    final formatter = DateFormat('yyyy/MM/dd HH:mm', 'ja_JP');
-    final formatted = formatter.format(dateTime); // DateからString
-    return formatted;
   }
 }

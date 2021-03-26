@@ -7,7 +7,7 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/topic_list/topic_list_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class TopicListView extends HookWidget {
   const TopicListView(this.parameter);
@@ -179,12 +179,10 @@ class TopicListView extends HookWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          StringExtension
-                                              .getJPStringFromDateTime(
-                                            viewModel.items
-                                                .elementAt(index)
-                                                .createdAt,
-                                          ),
+                                          viewModel.items
+                                              .elementAt(index)
+                                              .createdAt
+                                              .toJPString(),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,

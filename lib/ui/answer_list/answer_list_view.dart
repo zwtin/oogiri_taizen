@@ -10,7 +10,7 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/answer_list/answer_list_view_model.dart';
 import 'package:oogiritaizen/ui/circular_button.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class AnswerListView extends HookWidget {
   const AnswerListView(this.parameter);
@@ -295,13 +295,11 @@ class AnswerListView extends HookWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    StringExtension
-                                                        .getJPStringFromDateTime(
-                                                      viewModel.newAnswers
-                                                          .elementAt(index)
-                                                          .topic
-                                                          .createdAt,
-                                                    ),
+                                                    viewModel.newAnswers
+                                                        .elementAt(index)
+                                                        .topic
+                                                        .createdAt
+                                                        .toJPString(),
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 16,

@@ -8,7 +8,7 @@ import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/post_topic/post_topic_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class PostTopicView extends HookWidget {
   const PostTopicView(this.parameter);
@@ -172,10 +172,7 @@ class PostTopicView extends HookWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          StringExtension
-                                              .getJPStringFromDateTime(
-                                            DateTime.now(),
-                                          ),
+                                          DateTime.now().toJPString(),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,

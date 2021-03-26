@@ -8,7 +8,7 @@ import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
 import 'package:oogiritaizen/ui/image_detail/fade_in_route.dart';
 import 'package:oogiritaizen/ui/my_profile/my_profile_view_model.dart';
 import 'package:sweetalert/sweetalert.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class MyProfileView extends HookWidget {
   const MyProfileView(this.parameter);
@@ -478,13 +478,11 @@ class MyProfileView extends HookWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      StringExtension
-                                                          .getJPStringFromDateTime(
-                                                        viewModel.createAnswers
-                                                            .elementAt(index)
-                                                            .topic
-                                                            .createdAt,
-                                                      ),
+                                                      viewModel.createAnswers
+                                                          .elementAt(index)
+                                                          .topic
+                                                          .createdAt
+                                                          .toJPString(),
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 16,
@@ -686,13 +684,11 @@ class MyProfileView extends HookWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      StringExtension
-                                                          .getJPStringFromDateTime(
-                                                        viewModel.favorAnswers
-                                                            .elementAt(index)
-                                                            .topic
-                                                            .createdAt,
-                                                      ),
+                                                      viewModel.favorAnswers
+                                                          .elementAt(index)
+                                                          .topic
+                                                          .createdAt
+                                                          .toJPString(),
                                                       style: const TextStyle(
                                                         color: Colors.black,
                                                         fontSize: 16,

@@ -8,7 +8,8 @@ import 'package:sweetalert/sweetalert.dart';
 
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/int_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class AnswerDetailView extends HookWidget {
   const AnswerDetailView(this.parameter);
@@ -151,9 +152,8 @@ class AnswerDetailView extends HookWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        StringExtension.getJPStringFromDateTime(
-                                          viewModel.answer.topic.createdAt,
-                                        ),
+                                        viewModel.answer.topic.createdAt
+                                            .toJPString(),
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
@@ -325,9 +325,7 @@ class AnswerDetailView extends HookWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        StringExtension.getJPStringFromDateTime(
-                                          viewModel.answer.createdAt,
-                                        ),
+                                        viewModel.answer.createdAt.toJPString(),
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 16,
@@ -450,7 +448,8 @@ class AnswerDetailView extends HookWidget {
                                         },
                                       ),
                                       Text(
-                                        viewModel.answer.likedTime.toString(),
+                                        viewModel.answer.likedTime
+                                            .toStringOverTenThousand(),
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 20,
@@ -482,7 +481,8 @@ class AnswerDetailView extends HookWidget {
                                         },
                                       ),
                                       Text(
-                                        viewModel.answer.favoredTime.toString(),
+                                        viewModel.answer.favoredTime
+                                            .toStringOverTenThousand(),
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 20,

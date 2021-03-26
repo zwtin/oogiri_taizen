@@ -9,7 +9,7 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/post_answer/post_answer_view_model.dart';
-import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class PostAnswerView extends HookWidget {
   const PostAnswerView(this.parameter);
@@ -182,11 +182,8 @@ class PostAnswerView extends HookWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          StringExtension
-                                              .getJPStringFromDateTime(
-                                            viewModel.topic.createdAt ??
-                                                DateTime.now(),
-                                          ),
+                                          viewModel.topic.createdAt
+                                              .toJPString(),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
@@ -310,10 +307,7 @@ class PostAnswerView extends HookWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          StringExtension
-                                              .getJPStringFromDateTime(
-                                            DateTime.now(),
-                                          ),
+                                          DateTime.now().toJPString(),
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
