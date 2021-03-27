@@ -51,7 +51,7 @@ dependencies:
   pedantic_mono: ^1.10.0+3
 
   # For Key-Value local storage
-  shared_preferences: ^0.5.12+4
+  streaming_shared_preferences: ^1.0.2
 
   # Convert between Enum and String
   enum_to_string: ^1.0.14

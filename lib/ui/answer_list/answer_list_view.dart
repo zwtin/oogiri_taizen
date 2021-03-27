@@ -10,6 +10,8 @@ import 'package:sweetalert/sweetalert.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/answer_list/answer_list_view_model.dart';
 import 'package:oogiritaizen/ui/circular_button.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
+import 'package:oogiritaizen/model/extension/int_extension.dart';
 import 'package:oogiritaizen/model/extension/date_time_extension.dart';
 
 class AnswerListView extends HookWidget {
@@ -108,8 +110,12 @@ class AnswerListView extends HookWidget {
         Tween(begin: beginRotationValue2, end: endRotationValue2)
             .animate(controller);
 
-    final backgroundColorOpacityAnimation =
-        Tween(begin: 0.0, end: 0.5).animate(controller);
+    const backgroundColorOpacityStartValue = 0.0;
+    const backgroundColorOpacityEndValue = 0.5;
+    final backgroundColorOpacityAnimation = Tween(
+      begin: backgroundColorOpacityStartValue,
+      end: backgroundColorOpacityEndValue,
+    ).animate(controller);
 
     return ProviderListener(
       onChange: (BuildContext context, AlertViewModel alertViewModel) {
@@ -481,7 +487,7 @@ class AnswerListView extends HookWidget {
                                                     viewModel.newAnswers
                                                         .elementAt(index)
                                                         .likedTime
-                                                        .toString(),
+                                                        .toStringOverTenThousand(),
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 20,
@@ -520,7 +526,7 @@ class AnswerListView extends HookWidget {
                                                     viewModel.newAnswers
                                                         .elementAt(index)
                                                         .favoredTime
-                                                        .toString(),
+                                                        .toStringOverTenThousand(),
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 20,
@@ -559,9 +565,16 @@ class AnswerListView extends HookWidget {
               builder: (BuildContext context, Widget child) {
                 return IgnorePointer(
                   ignoring: !controller.isCompleted || controller.isAnimating,
-                  child: Container(
-                    color: Colors.black
-                        .withOpacity(backgroundColorOpacityAnimation.value),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (controller.isCompleted) {
+                        controller.reverse();
+                      }
+                    },
+                    child: Container(
+                      color: Colors.black
+                          .withOpacity(backgroundColorOpacityAnimation.value),
+                    ),
                   ),
                 );
               },
@@ -594,6 +607,9 @@ class AnswerListView extends HookWidget {
                           context
                               .read(answerListViewModelProvider(parameter))
                               .transitionToPostTopic();
+                          if (controller.isCompleted) {
+                            controller.reverse();
+                          }
                         },
                       ),
                     ),
@@ -660,6 +676,9 @@ class AnswerListView extends HookWidget {
                           context
                               .read(answerListViewModelProvider(parameter))
                               .transitionToTopicList();
+                          if (controller.isCompleted) {
+                            controller.reverse();
+                          }
                         },
                       ),
                     ),

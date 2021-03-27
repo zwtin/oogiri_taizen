@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/ui/alert/alert_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/bottom_tab_view_model.dart';
@@ -266,43 +267,52 @@ class MyProfileView extends HookWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    viewModel.transitionToImageDetail(
-                                      imageUrl: viewModel.loginUser.imageUrl,
-                                      imageTag: 'imageHero',
-                                    );
-                                  },
-                                  child: Hero(
-                                    tag: 'imageHero',
-                                    child: SizedBox(
-                                      width: 120,
-                                      height: 120,
-                                      child: CachedNetworkImage(
-                                        placeholder: (context, url) =>
-                                            const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        imageUrl: viewModel.loginUser.imageUrl,
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
+                                Builder(
+                                  builder: (BuildContext context) {
+                                    final imageTag =
+                                        StringExtension.randomString(8);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        viewModel.transitionToImageDetail(
+                                          imageUrl:
+                                              viewModel.loginUser.imageUrl,
+                                          imageTag: imageTag,
+                                        );
+                                      },
+                                      child: Hero(
+                                        tag: imageTag,
+                                        child: SizedBox(
+                                          width: 120,
+                                          height: 120,
+                                          child: CachedNetworkImage(
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            imageUrl:
+                                                viewModel.loginUser.imageUrl,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, dynamic error) =>
+                                                    Image.asset(
+                                              'assets/icon/no_user.jpg',
                                             ),
                                           ),
                                         ),
-                                        errorWidget:
-                                            (context, url, dynamic error) =>
-                                                Image.asset(
-                                          'assets/icon/no_user.jpg',
-                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 ),
                                 Container(
                                   width: 16,

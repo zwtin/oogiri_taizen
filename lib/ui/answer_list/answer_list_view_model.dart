@@ -212,6 +212,16 @@ class AnswerListViewModel extends ChangeNotifier {
     }
   }
 
+  void transitionToImageDetail({
+    @required String imageUrl,
+    @required String imageTag,
+  }) {
+    providerReference.read(navigatorViewModelProvider('Tab0')).presentImage(
+          imageUrl: imageUrl,
+          imageTag: imageTag,
+        );
+  }
+
   void transitionToAnswerDetail({@required String answerId}) {
     final parameter = AnswerDetailViewModelParameter(
       screenId: StringExtension.randomString(8),
