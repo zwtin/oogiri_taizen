@@ -80,14 +80,43 @@ class BlockListViewModel extends ChangeNotifier {
   UserEntity loginUser;
 
   List<TopicEntity> blockTopics = [];
-
   List<AnswerEntity> blockAnswers = [];
-
   List<UserEntity> blockUsers = [];
 
-  Future<void> setup() async {}
+  Future<void> setup() async {
+    blockUseCase.getBlockUsersListStream().listen(
+      (List<UserEntity> blockUserList) {
+        blockUsers = blockUserList;
+        notifyListeners();
+      },
+    );
 
-  Future<void> refreshNewAnswerList() async {}
+    blockUseCase.getBlockAnswersListStream().listen(
+      (List<AnswerEntity> blockAnswerList) {
+        blockAnswers = blockAnswerList;
+        notifyListeners();
+      },
+    );
+
+    blockUseCase.getBlockTopicsListStream().listen(
+      (List<TopicEntity> blockTopicList) {
+        blockTopics = blockTopicList;
+        notifyListeners();
+      },
+    );
+  }
+
+  Future<void> removeBlockTopic({@required String topicId}) async {
+    await blockUseCase.removeBlockTopic(topicId: topicId);
+  }
+
+  Future<void> removeBlockAnswer({@required String answerId}) async {
+    await blockUseCase.removeBlockAnswer(answerId: answerId);
+  }
+
+  Future<void> removeBlockUser({@required String userId}) async {
+    await blockUseCase.removeBlockUser(userId: userId);
+  }
 
   Future<void> disposed() async {
     debugPrint(screenId);

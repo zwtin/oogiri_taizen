@@ -111,65 +111,71 @@ class BlockListView extends HookWidget {
                 ),
                 TabBarView(
                   children: [
-                    RefreshIndicator(
-                      color: const Color(0xFFFFCC00),
-                      onRefresh: () async {},
-                      child: ListView.builder(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).padding.bottom,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text('$index'),
-                                ),
-                              ),
-                            );
+                    ListView.builder(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            viewModel.removeBlockTopic(
+                                topicId:
+                                    viewModel.blockTopics.elementAt(index).id);
                           },
-                          itemCount: 100),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                  viewModel.blockTopics.elementAt(index).id),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: viewModel.blockTopics.length,
                     ),
-                    RefreshIndicator(
-                      color: const Color(0xFFFFCC00),
-                      onRefresh: () async {},
-                      child: ListView.builder(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).padding.bottom,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text('$index'),
-                                ),
-                              ),
-                            );
+                    ListView.builder(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            viewModel.removeBlockAnswer(
+                                answerId:
+                                    viewModel.blockAnswers.elementAt(index).id);
                           },
-                          itemCount: 100),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                  viewModel.blockAnswers.elementAt(index).id),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: viewModel.blockAnswers.length,
                     ),
-                    RefreshIndicator(
-                      color: const Color(0xFFFFCC00),
-                      onRefresh: () async {},
-                      child: ListView.builder(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).padding.bottom,
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text('$index'),
-                                ),
-                              ),
-                            );
+                    ListView.builder(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            viewModel.removeBlockUser(
+                                userId:
+                                    viewModel.blockUsers.elementAt(index).id);
                           },
-                          itemCount: 100),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Text(
+                                  viewModel.blockUsers.elementAt(index).id),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: viewModel.blockUsers.length,
                     ),
                   ],
                 ),
