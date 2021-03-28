@@ -4,6 +4,8 @@ import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case_impl/user_use_case_impl.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/user_use_case.dart';
+import 'package:oogiritaizen/ui/block_list/block_list_view.dart';
+import 'package:oogiritaizen/ui/block_list/block_list_view_model.dart';
 import 'package:oogiritaizen/ui/bottom_tab/navigator_view_model.dart';
 import 'package:oogiritaizen/ui/license/license_view_model.dart';
 import 'package:oogiritaizen/ui/privacy_policy/privacy_policy_view_model.dart';
@@ -51,6 +53,15 @@ class SettingViewModel extends ChangeNotifier {
   Future<void> setup() async {
     loginUser = await userUseCase.getLoginUser();
     notifyListeners();
+  }
+
+  void transitionToBlockList() {
+    final parameter = BlockListViewModelParameter(
+      screenId: StringExtension.randomString(8),
+    );
+    providerReference.read(navigatorViewModelProvider(screenId)).present(
+          BlockListView(parameter),
+        );
   }
 
   void transitionToTermsOfService() {

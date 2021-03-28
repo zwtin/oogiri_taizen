@@ -110,8 +110,12 @@ class SettingView extends HookWidget {
                           child: Text('閲覧履歴'),
                         ),
                         RaisedButton(
-                          onPressed: () {},
-                          child: Text('ブロックリスト'),
+                          child: Text('ブロック一覧'),
+                          onPressed: () {
+                            context
+                                .read(settingViewModelProvider(parameter))
+                                .transitionToBlockList();
+                          },
                         ),
                         RaisedButton(
                           onPressed: () {},

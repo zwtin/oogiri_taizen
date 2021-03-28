@@ -207,6 +207,10 @@ class AnswerDetailView extends HookWidget {
                                                 title:
                                                     const Text('この投稿をブロックする'),
                                                 onTap: () {
+                                                  viewModel.addBlockTopic(
+                                                    topicId: viewModel
+                                                        .answer.topic.id,
+                                                  );
                                                   Navigator.of(_context).pop();
                                                 },
                                               ),
@@ -216,10 +220,11 @@ class AnswerDetailView extends HookWidget {
                                                 title: const Text(
                                                     'このユーザーの投稿を全てブロックする'),
                                                 onTap: () {
+                                                  viewModel.addBlockUser(
+                                                    userId: viewModel.answer
+                                                        .topic.createdUser.id,
+                                                  );
                                                   Navigator.of(_context).pop();
-//                                                  context
-//                                                      .read(myProfileViewModelProvider(id))
-//                                                      .transitionToSetting();
                                                 },
                                               ),
                                               ListTile(
@@ -379,6 +384,10 @@ class AnswerDetailView extends HookWidget {
                                                 title:
                                                     const Text('この投稿をブロックする'),
                                                 onTap: () {
+                                                  viewModel.addBlockAnswer(
+                                                    answerId:
+                                                        viewModel.answer.id,
+                                                  );
                                                   Navigator.of(_context).pop();
                                                 },
                                               ),
@@ -388,10 +397,11 @@ class AnswerDetailView extends HookWidget {
                                                 title: const Text(
                                                     'このユーザーの投稿を全てブロックする'),
                                                 onTap: () {
+                                                  viewModel.addBlockUser(
+                                                    userId: viewModel
+                                                        .answer.createdUser.id,
+                                                  );
                                                   Navigator.of(_context).pop();
-//                                                  context
-//                                                      .read(myProfileViewModelProvider(id))
-//                                                      .transitionToSetting();
                                                 },
                                               ),
                                               ListTile(
