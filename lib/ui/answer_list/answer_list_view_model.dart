@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
+import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
 import 'package:oogiritaizen/model/use_case/block_use_case.dart';
@@ -95,24 +96,52 @@ class AnswerListViewModel extends ChangeNotifier {
     );
 
     blockUseCase.getBlockUsersListStream().listen(
-      (List<String> blockUserIds) {
-        for (final answer in newAnswers) {
-          if (blockUserIds.contains(answer.createdUser.id) ||
-              blockUserIds.contains(answer.topic.createdUser.id)) {
-            newAnswers.remove(answer);
-          }
-        }
+      (List<UserEntity> blockUsers) {
+        final filteredList = List<AnswerEntity>.from(
+          newAnswers.where(
+            (AnswerEntity answer) {
+              return !(blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.createdUser.id) ||
+                  blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.topic.createdUser.id));
+            },
+          ),
+        );
+        newAnswers = filteredList;
         notifyListeners();
       },
     );
 
     blockUseCase.getBlockAnswersListStream().listen(
-      (List<String> blockAnswerIds) {
-        for (final answer in newAnswers) {
-          if (blockAnswerIds.contains(answer.id)) {
-            newAnswers.remove(answer);
-          }
-        }
+      (List<AnswerEntity> blockAnswers) {
+        final filteredList = List<AnswerEntity>.from(
+          newAnswers.where(
+            (AnswerEntity answer) {
+              return !blockAnswers
+                  .map((answer) => answer.id)
+                  .contains(answer.id);
+            },
+          ),
+        );
+        newAnswers = filteredList;
+        notifyListeners();
+      },
+    );
+
+    blockUseCase.getBlockTopicsListStream().listen(
+      (List<TopicEntity> blockTopics) {
+        final filteredList = List<AnswerEntity>.from(
+          newAnswers.where(
+            (AnswerEntity answer) {
+              return !blockTopics
+                  .map((topic) => topic.id)
+                  .contains(answer.topic.id);
+            },
+          ),
+        );
+        newAnswers = filteredList;
         notifyListeners();
       },
     );
@@ -182,15 +211,19 @@ class AnswerListViewModel extends ChangeNotifier {
         });
       }
 
-      final blockUserIds = blockUseCase.getBlockUsersList();
-      final blockAnswerIds = blockUseCase.getBlockAnswersList();
+      final blockUsers = await blockUseCase.getBlockUsersList();
+      final blockAnswers = await blockUseCase.getBlockAnswersList();
 
       final filteredList = List<AnswerEntity>.from(
         answerListEntity.answers.where(
           (AnswerEntity answer) {
-            return !(blockUserIds.contains(answer.createdUser.id) ||
-                blockUserIds.contains(answer.topic.createdUser.id) ||
-                blockAnswerIds.contains(answer.id));
+            return !(blockUsers
+                    .map((user) => user.id)
+                    .contains(answer.createdUser.id) ||
+                blockUsers
+                    .map((user) => user.id)
+                    .contains(answer.topic.createdUser.id) ||
+                blockAnswers.map((answer) => answer.id).contains(answer.id));
           },
         ),
       );
