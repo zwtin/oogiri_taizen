@@ -44,6 +44,21 @@ class BlockUseCaseImpl implements BlockUseCase {
   }
 
   @override
+  List<String> getBlockUsersList() {
+    return blockRepository.getBlockUsersList();
+  }
+
+  @override
+  List<String> getBlockAnswersList() {
+    return blockRepository.getBlockAnswersList();
+  }
+
+  @override
+  List<String> getBlockTopicsList() {
+    return blockRepository.getBlockTopicsList();
+  }
+
+  @override
   Future<void> addBlockUser({@required String userId}) async {
     await blockRepository.addBlockUser(userId: userId);
   }

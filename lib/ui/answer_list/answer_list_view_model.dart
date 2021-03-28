@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
+import 'package:oogiritaizen/model/use_case/block_use_case.dart';
 import 'package:oogiritaizen/model/use_case/favor_use_case.dart';
 import 'package:oogiritaizen/model/use_case/like_use_case.dart';
 import 'package:oogiritaizen/model/use_case/topic_use_case.dart';
@@ -11,6 +12,7 @@ import 'package:oogiritaizen/model/use_case/user_use_case.dart';
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case_impl/answer_use_case_impl.dart';
+import 'package:oogiritaizen/model/use_case_impl/block_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/favor_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/like_use_case_impl.dart';
 import 'package:oogiritaizen/model/use_case_impl/topic_use_case_impl.dart';
@@ -32,6 +34,7 @@ final answerListViewModelProvider = ChangeNotifierProvider.autoDispose
       ref,
       parameter.screenId,
       ref.watch(answerUseCaseProvider(parameter.screenId)),
+      ref.watch(blockUseCaseProvider(parameter.screenId)),
       ref.watch(likeUseCaseProvider(parameter.screenId)),
       ref.watch(favorUseCaseProvider(parameter.screenId)),
       ref.watch(topicUseCaseProvider(parameter.screenId)),
@@ -54,6 +57,7 @@ class AnswerListViewModel extends ChangeNotifier {
     this.providerReference,
     this.screenId,
     this.answerUseCase,
+    this.blockUseCase,
     this.likeUseCase,
     this.favorUseCase,
     this.topicUseCase,
@@ -66,12 +70,13 @@ class AnswerListViewModel extends ChangeNotifier {
   final ProviderReference providerReference;
 
   final AnswerUseCase answerUseCase;
+  final BlockUseCase blockUseCase;
   final LikeUseCase likeUseCase;
   final FavorUseCase favorUseCase;
   final TopicUseCase topicUseCase;
   final UserUseCase userUseCase;
 
-  UserEntity loginUser = UserEntity();
+  UserEntity loginUser;
 
   bool isConnectingInNew = false;
   List<AnswerEntity> newAnswers = [];
@@ -82,9 +87,46 @@ class AnswerListViewModel extends ChangeNotifier {
   bool hasNextInPopular = false;
 
   Future<void> setup() async {
-    loginUser = await userUseCase.getLoginUser();
+    userUseCase.getLoginUserStream().listen(
+      (UserEntity userEntity) {
+        loginUser = userEntity;
+        notifyListeners();
+      },
+    );
+
+    blockUseCase.getBlockUsersListStream().listen(
+      (List<String> blockUserIds) {
+        for (final answer in newAnswers) {
+          if (blockUserIds.contains(answer.createdUser.id) ||
+              blockUserIds.contains(answer.topic.createdUser.id)) {
+            newAnswers.remove(answer);
+          }
+        }
+        notifyListeners();
+      },
+    );
+
+    blockUseCase.getBlockAnswersListStream().listen(
+      (List<String> blockAnswerIds) {
+        for (final answer in newAnswers) {
+          if (blockAnswerIds.contains(answer.id)) {
+            newAnswers.remove(answer);
+          }
+        }
+        notifyListeners();
+      },
+    );
+
     await refreshNewAnswerList();
     notifyListeners();
+  }
+
+  Future<void> addBlockUser({@required String userId}) async {
+    await blockUseCase.addBlockUser(userId: userId);
+  }
+
+  Future<void> addBlockAnswer({@required String answerId}) async {
+    await blockUseCase.addBlockAnswer(answerId: answerId);
   }
 
   Future<void> refreshNewAnswerList() async {
@@ -103,7 +145,10 @@ class AnswerListViewModel extends ChangeNotifier {
           newAnswers.isNotEmpty ? newAnswers.last.createdAt : null;
       final answerListEntity =
           await answerUseCase.getNewAnswerList(beforeTime: lastAnswerDate);
-      for (final answerEntity in answerListEntity.answers) {
+
+      final answerEntityList = answerListEntity.answers;
+
+      for (final answerEntity in answerEntityList) {
         likeUseCase
             .getLikeStream(answerId: answerEntity.id)
             .listen((bool isLike) {
@@ -136,7 +181,21 @@ class AnswerListViewModel extends ChangeNotifier {
           notifyListeners();
         });
       }
-      newAnswers.addAll(answerListEntity.answers);
+
+      final blockUserIds = blockUseCase.getBlockUsersList();
+      final blockAnswerIds = blockUseCase.getBlockAnswersList();
+
+      final filteredList = List<AnswerEntity>.from(
+        answerListEntity.answers.where(
+          (AnswerEntity answer) {
+            return !(blockUserIds.contains(answer.createdUser.id) ||
+                blockUserIds.contains(answer.topic.createdUser.id) ||
+                blockAnswerIds.contains(answer.id));
+          },
+        ),
+      );
+
+      newAnswers.addAll(filteredList);
       hasNextInNew = answerListEntity.hasNext;
       isConnectingInNew = false;
       notifyListeners();

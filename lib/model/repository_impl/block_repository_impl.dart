@@ -51,6 +51,21 @@ class BlockRepositoryImpl implements BlockRepository {
   }
 
   @override
+  List<String> getBlockUsersList() {
+    return blockUsersListStream.getValue();
+  }
+
+  @override
+  List<String> getBlockAnswersList() {
+    return blockAnswersListStream.getValue();
+  }
+
+  @override
+  List<String> getBlockTopicsList() {
+    return blockTopicsListStream.getValue();
+  }
+
+  @override
   Future<void> addBlockUser({@required String userId}) async {
     final blockUsersList = blockUsersListStream.getValue();
     if (!blockUsersList.contains(userId)) {

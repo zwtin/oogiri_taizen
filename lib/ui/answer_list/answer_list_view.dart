@@ -370,6 +370,14 @@ class AnswerListView extends HookWidget {
                                                             title: const Text(
                                                                 'この投稿をブロックする'),
                                                             onTap: () {
+                                                              viewModel
+                                                                  .addBlockAnswer(
+                                                                answerId: viewModel
+                                                                    .newAnswers
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .id,
+                                                              );
                                                               Navigator.of(
                                                                       _context)
                                                                   .pop();
@@ -381,12 +389,18 @@ class AnswerListView extends HookWidget {
                                                             title: const Text(
                                                                 'このユーザーの投稿を全てブロックする'),
                                                             onTap: () {
+                                                              viewModel
+                                                                  .addBlockUser(
+                                                                userId: viewModel
+                                                                    .newAnswers
+                                                                    .elementAt(
+                                                                        index)
+                                                                    .createdUser
+                                                                    .id,
+                                                              );
                                                               Navigator.of(
                                                                       _context)
                                                                   .pop();
-//                                                  context
-//                                                      .read(myProfileViewModelProvider(id))
-//                                                      .transitionToSetting();
                                                             },
                                                           ),
                                                           ListTile(
