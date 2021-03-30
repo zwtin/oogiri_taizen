@@ -81,10 +81,12 @@ class AnswerListViewModel extends ChangeNotifier {
 
   bool isConnectingInNew = false;
   List<AnswerEntity> newAnswers = [];
+  List<AnswerEntity> showingNewAnswers = [];
   bool hasNextInNew = false;
 
   bool isConnectingInPopular = false;
   List<AnswerEntity> popularAnswers = [];
+  List<AnswerEntity> showingPopularAnswers = [];
   bool hasNextInPopular = false;
 
   Future<void> setup() async {
@@ -96,7 +98,9 @@ class AnswerListViewModel extends ChangeNotifier {
     );
 
     blockUseCase.getBlockUsersListStream().listen(
-      (List<UserEntity> blockUsers) {
+      (List<UserEntity> blockUsers) async {
+        final blockAnswers = await blockUseCase.getBlockAnswersList();
+        final blockTopics = await blockUseCase.getBlockTopicsList();
         final filteredList = List<AnswerEntity>.from(
           newAnswers.where(
             (AnswerEntity answer) {
@@ -105,43 +109,65 @@ class AnswerListViewModel extends ChangeNotifier {
                       .contains(answer.createdUser.id) ||
                   blockUsers
                       .map((user) => user.id)
-                      .contains(answer.topic.createdUser.id));
+                      .contains(answer.topic.createdUser.id) ||
+                  blockAnswers.map((answer) => answer.id).contains(answer.id) ||
+                  blockTopics
+                      .map((topic) => topic.id)
+                      .contains(answer.topic.id));
             },
           ),
         );
-        newAnswers = filteredList;
+        showingNewAnswers = filteredList;
         notifyListeners();
       },
     );
 
     blockUseCase.getBlockAnswersListStream().listen(
-      (List<AnswerEntity> blockAnswers) {
+      (List<AnswerEntity> blockAnswers) async {
+        final blockUsers = await blockUseCase.getBlockUsersList();
+        final blockTopics = await blockUseCase.getBlockTopicsList();
         final filteredList = List<AnswerEntity>.from(
           newAnswers.where(
             (AnswerEntity answer) {
-              return !blockAnswers
-                  .map((answer) => answer.id)
-                  .contains(answer.id);
+              return !(blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.createdUser.id) ||
+                  blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.topic.createdUser.id) ||
+                  blockAnswers.map((answer) => answer.id).contains(answer.id) ||
+                  blockTopics
+                      .map((topic) => topic.id)
+                      .contains(answer.topic.id));
             },
           ),
         );
-        newAnswers = filteredList;
+        showingNewAnswers = filteredList;
         notifyListeners();
       },
     );
 
     blockUseCase.getBlockTopicsListStream().listen(
-      (List<TopicEntity> blockTopics) {
+      (List<TopicEntity> blockTopics) async {
+        final blockAnswers = await blockUseCase.getBlockAnswersList();
+        final blockUsers = await blockUseCase.getBlockUsersList();
         final filteredList = List<AnswerEntity>.from(
           newAnswers.where(
             (AnswerEntity answer) {
-              return !blockTopics
-                  .map((topic) => topic.id)
-                  .contains(answer.topic.id);
+              return !(blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.createdUser.id) ||
+                  blockUsers
+                      .map((user) => user.id)
+                      .contains(answer.topic.createdUser.id) ||
+                  blockAnswers.map((answer) => answer.id).contains(answer.id) ||
+                  blockTopics
+                      .map((topic) => topic.id)
+                      .contains(answer.topic.id));
             },
           ),
         );
-        newAnswers = filteredList;
+        showingNewAnswers = filteredList;
         notifyListeners();
       },
     );
@@ -175,9 +201,7 @@ class AnswerListViewModel extends ChangeNotifier {
       final answerListEntity =
           await answerUseCase.getNewAnswerList(beforeTime: lastAnswerDate);
 
-      final answerEntityList = answerListEntity.answers;
-
-      for (final answerEntity in answerEntityList) {
+      for (final answerEntity in answerListEntity.answers) {
         likeUseCase
             .getLikeStream(answerId: answerEntity.id)
             .listen((bool isLike) {
@@ -211,11 +235,13 @@ class AnswerListViewModel extends ChangeNotifier {
         });
       }
 
+      newAnswers.addAll(answerListEntity.answers);
+
       final blockUsers = await blockUseCase.getBlockUsersList();
       final blockAnswers = await blockUseCase.getBlockAnswersList();
 
       final filteredList = List<AnswerEntity>.from(
-        answerListEntity.answers.where(
+        newAnswers.where(
           (AnswerEntity answer) {
             return !(blockUsers
                     .map((user) => user.id)
@@ -228,7 +254,7 @@ class AnswerListViewModel extends ChangeNotifier {
         ),
       );
 
-      newAnswers.addAll(filteredList);
+      showingNewAnswers = filteredList;
       hasNextInNew = answerListEntity.hasNext;
       isConnectingInNew = false;
       notifyListeners();

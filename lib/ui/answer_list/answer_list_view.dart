@@ -220,10 +220,10 @@ class AnswerListView extends HookWidget {
                               bottom: MediaQuery.of(context).padding.bottom,
                             ),
                             itemBuilder: (BuildContext context, int index) {
-                              if (index == viewModel.newAnswers.length - 3) {
+                              if (index == viewModel.showingNewAnswers.length - 3) {
                                 viewModel.getNewAnswerList();
                               }
-                              if (index == viewModel.newAnswers.length) {
+                              if (index == viewModel.showingNewAnswers.length) {
                                 return const SizedBox(
                                   height: 62,
                                   child: Center(
@@ -241,7 +241,7 @@ class AnswerListView extends HookWidget {
                                       .read(answerListViewModelProvider(
                                           parameter))
                                       .transitionToAnswerDetail(
-                                        answerId: viewModel.newAnswers
+                                        answerId: viewModel.showingNewAnswers
                                             .elementAt(index)
                                             .id,
                                       );
@@ -267,7 +267,7 @@ class AnswerListView extends HookWidget {
                                                   child:
                                                       CircularProgressIndicator(),
                                                 ),
-                                                imageUrl: viewModel.newAnswers
+                                                imageUrl: viewModel.showingNewAnswers
                                                     .elementAt(index)
                                                     .topic
                                                     .createdUser
@@ -301,7 +301,7 @@ class AnswerListView extends HookWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    viewModel.newAnswers
+                                                    viewModel.showingNewAnswers
                                                         .elementAt(index)
                                                         .topic
                                                         .createdAt
@@ -318,7 +318,7 @@ class AnswerListView extends HookWidget {
                                                       Flexible(
                                                         child: Container(
                                                           child: Text(
-                                                            viewModel.newAnswers
+                                                            viewModel.showingNewAnswers
                                                                 .elementAt(
                                                                     index)
                                                                 .topic
@@ -373,7 +373,7 @@ class AnswerListView extends HookWidget {
                                                               viewModel
                                                                   .addBlockAnswer(
                                                                 answerId: viewModel
-                                                                    .newAnswers
+                                                                    .showingNewAnswers
                                                                     .elementAt(
                                                                         index)
                                                                     .id,
@@ -392,7 +392,7 @@ class AnswerListView extends HookWidget {
                                                               viewModel
                                                                   .addBlockUser(
                                                                 userId: viewModel
-                                                                    .newAnswers
+                                                                    .showingNewAnswers
                                                                     .elementAt(
                                                                         index)
                                                                     .createdUser
@@ -428,7 +428,7 @@ class AnswerListView extends HookWidget {
                                           height: 16,
                                         ),
                                         Text(
-                                          viewModel.newAnswers
+                                          viewModel.showingNewAnswers
                                               .elementAt(index)
                                               .topic
                                               .text,
@@ -438,12 +438,12 @@ class AnswerListView extends HookWidget {
                                             fontSize: 22,
                                           ),
                                         ),
-                                        (viewModel.newAnswers
+                                        (viewModel.showingNewAnswers
                                                         .elementAt(index)
                                                         .topic
                                                         .imageUrl !=
                                                     null &&
-                                                viewModel.newAnswers
+                                                viewModel.showingNewAnswers
                                                     .elementAt(index)
                                                     .topic
                                                     .imageUrl
@@ -458,7 +458,7 @@ class AnswerListView extends HookWidget {
                                                     child:
                                                         CircularProgressIndicator(),
                                                   ),
-                                                  imageUrl: viewModel.newAnswers
+                                                  imageUrl: viewModel.showingNewAnswers
                                                       .elementAt(index)
                                                       .topic
                                                       .imageUrl,
@@ -476,7 +476,7 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: viewModel.newAnswers
+                                                    icon: viewModel.showingNewAnswers
                                                             .elementAt(index)
                                                             .isLike
                                                         ? const Icon(
@@ -498,7 +498,7 @@ class AnswerListView extends HookWidget {
                                                     },
                                                   ),
                                                   Text(
-                                                    viewModel.newAnswers
+                                                    viewModel.showingNewAnswers
                                                         .elementAt(index)
                                                         .likedTime
                                                         .toStringOverTenThousand(),
@@ -516,7 +516,7 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: viewModel.newAnswers
+                                                    icon: viewModel.showingNewAnswers
                                                             .elementAt(index)
                                                             .isFavor
                                                         ? const Icon(
@@ -537,7 +537,7 @@ class AnswerListView extends HookWidget {
                                                     },
                                                   ),
                                                   Text(
-                                                    viewModel.newAnswers
+                                                    viewModel.showingNewAnswers
                                                         .elementAt(index)
                                                         .favoredTime
                                                         .toStringOverTenThousand(),
@@ -560,9 +560,9 @@ class AnswerListView extends HookWidget {
                               );
                             },
                             itemCount: viewModel.hasNextInNew &&
-                                    viewModel.newAnswers.isNotEmpty
-                                ? viewModel.newAnswers.length + 1
-                                : viewModel.newAnswers.length,
+                                    viewModel.showingNewAnswers.isNotEmpty
+                                ? viewModel.showingNewAnswers.length + 1
+                                : viewModel.showingNewAnswers.length,
                           ),
                         ),
                         Container(
