@@ -60,7 +60,6 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   Future<AnswerEntity> getAnswer({
     @required String answerId,
   }) async {
-    final loginUser = authenticationRepository.getLoginUser();
     final answerModel = await answerRepository.getAnswer(
       answerId: answerId,
     );
@@ -90,21 +89,11 @@ class AnswerUseCaseImpl implements AnswerUseCase {
       ..answeredTime = topicModel.answeredTime
       ..createdAt = topicModel.createdAt
       ..createdUser = topicCreateUserEntity;
-    final isLike = await likeRepository.getLike(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
-    final isFavor = await favorRepository.getFavor(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
     final answerEntity = AnswerEntity()
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
-      ..isLike = isLike
       ..likedTime = answerModel.likedTime
-      ..isFavor = isFavor
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point
       ..createdAt = answerModel.createdAt

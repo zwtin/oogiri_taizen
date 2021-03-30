@@ -201,39 +201,39 @@ class AnswerListViewModel extends ChangeNotifier {
       final answerListEntity =
           await answerUseCase.getNewAnswerList(beforeTime: lastAnswerDate);
 
-      for (final answerEntity in answerListEntity.answers) {
-        likeUseCase
-            .getLikeStream(answerId: answerEntity.id)
-            .listen((bool isLike) {
-          if (answerEntity.isLike == false && isLike == true) {
-            answerEntity
-              ..isLike = true
-              ..likedTime += 1;
-          } else if (answerEntity.isLike == true && isLike == false) {
-            answerEntity
-              ..isLike = false
-              ..likedTime -= 1;
-          }
-
-          notifyListeners();
-        });
-
-        favorUseCase
-            .getFavorStream(answerId: answerEntity.id)
-            .listen((bool isFavor) {
-          if (answerEntity.isFavor == false && isFavor == true) {
-            answerEntity
-              ..isFavor = true
-              ..favoredTime += 1;
-          } else if (answerEntity.isFavor == true && isFavor == false) {
-            answerEntity
-              ..isFavor = false
-              ..favoredTime -= 1;
-          }
-
-          notifyListeners();
-        });
-      }
+//      for (final answerEntity in answerListEntity.answers) {
+//        likeUseCase
+//            .getLikeStream(answerId: answerEntity.id)
+//            .listen((bool isLike) {
+//          if (answerEntity.isLike == false && isLike == true) {
+//            answerEntity
+//              ..isLike = true
+//              ..likedTime += 1;
+//          } else if (answerEntity.isLike == true && isLike == false) {
+//            answerEntity
+//              ..isLike = false
+//              ..likedTime -= 1;
+//          }
+//
+//          notifyListeners();
+//        });
+//
+//        favorUseCase
+//            .getFavorStream(answerId: answerEntity.id)
+//            .listen((bool isFavor) {
+//          if (answerEntity.isFavor == false && isFavor == true) {
+//            answerEntity
+//              ..isFavor = true
+//              ..favoredTime += 1;
+//          } else if (answerEntity.isFavor == true && isFavor == false) {
+//            answerEntity
+//              ..isFavor = false
+//              ..favoredTime -= 1;
+//          }
+//
+//          notifyListeners();
+//        });
+//      }
 
       newAnswers.addAll(answerListEntity.answers);
 
@@ -275,59 +275,59 @@ class AnswerListViewModel extends ChangeNotifier {
   Future<void> likeButtonAction({
     @required int index,
   }) async {
-    final answerEntity = newAnswers.elementAt(index);
-    try {
-      if (answerEntity.isLike) {
-        await likeUseCase.unlike(answerId: answerEntity.id);
-        answerEntity
-          ..isLike = false
-          ..likedTime = answerEntity.likedTime - 1;
-      } else {
-        await likeUseCase.like(answerId: answerEntity.id);
-        answerEntity
-          ..isLike = true
-          ..likedTime = answerEntity.likedTime + 1;
-      }
-      notifyListeners();
-    } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(screenId)).show(
-            alertEntity: AlertEntity()
-              ..title = 'エラー'
-              ..subtitle = '通信エラーが発生しました'
-              ..showCancelButton = false
-              ..onPress = null
-              ..style = null,
-          );
-    }
+//    final answerEntity = newAnswers.elementAt(index);
+//    try {
+//      if (answerEntity.isLike) {
+//        await likeUseCase.unlike(answerId: answerEntity.id);
+//        answerEntity
+//          ..isLike = false
+//          ..likedTime = answerEntity.likedTime - 1;
+//      } else {
+//        await likeUseCase.like(answerId: answerEntity.id);
+//        answerEntity
+//          ..isLike = true
+//          ..likedTime = answerEntity.likedTime + 1;
+//      }
+//      notifyListeners();
+//    } on Exception catch (error) {
+//      providerReference.read(alertViewModelProvider(screenId)).show(
+//            alertEntity: AlertEntity()
+//              ..title = 'エラー'
+//              ..subtitle = '通信エラーが発生しました'
+//              ..showCancelButton = false
+//              ..onPress = null
+//              ..style = null,
+//          );
+//    }
   }
 
   Future<void> favorButtonAction({
     @required int index,
   }) async {
-    final answerEntity = newAnswers.elementAt(index);
-    try {
-      if (answerEntity.isFavor) {
-        await favorUseCase.unfavor(answerId: answerEntity.id);
-        answerEntity
-          ..isFavor = false
-          ..favoredTime = answerEntity.favoredTime - 1;
-      } else {
-        await favorUseCase.favor(answerId: answerEntity.id);
-        answerEntity
-          ..isFavor = true
-          ..favoredTime = answerEntity.favoredTime + 1;
-      }
-      notifyListeners();
-    } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(screenId)).show(
-            alertEntity: AlertEntity()
-              ..title = 'エラー'
-              ..subtitle = '通信エラーが発生しました'
-              ..showCancelButton = false
-              ..onPress = null
-              ..style = null,
-          );
-    }
+//    final answerEntity = newAnswers.elementAt(index);
+//    try {
+//      if (answerEntity.isFavor) {
+//        await favorUseCase.unfavor(answerId: answerEntity.id);
+//        answerEntity
+//          ..isFavor = false
+//          ..favoredTime = answerEntity.favoredTime - 1;
+//      } else {
+//        await favorUseCase.favor(answerId: answerEntity.id);
+//        answerEntity
+//          ..isFavor = true
+//          ..favoredTime = answerEntity.favoredTime + 1;
+//      }
+//      notifyListeners();
+//    } on Exception catch (error) {
+//      providerReference.read(alertViewModelProvider(screenId)).show(
+//            alertEntity: AlertEntity()
+//              ..title = 'エラー'
+//              ..subtitle = '通信エラーが発生しました'
+//              ..showCancelButton = false
+//              ..onPress = null
+//              ..style = null,
+//          );
+//    }
   }
 
   void transitionToImageDetail({

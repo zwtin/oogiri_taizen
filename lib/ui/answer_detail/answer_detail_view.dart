@@ -440,15 +440,19 @@ class AnswerDetailView extends HookWidget {
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        icon: viewModel.answer.isLike
-                                            ? const Icon(
-                                                Icons.favorite,
-                                                color: Colors.pink,
-                                              )
-                                            : const Icon(
-                                                Icons.favorite_outline,
-                                                color: Colors.pink,
-                                              ),
+//                                        icon: viewModel.answer.isLike
+//                                            ? const Icon(
+//                                                Icons.favorite,
+//                                                color: Colors.pink,
+//                                              )
+//                                            : const Icon(
+//                                                Icons.favorite_outline,
+//                                                color: Colors.pink,
+//                                              ),
+                                        icon: const Icon(
+                                          Icons.favorite_outline,
+                                          color: Colors.pink,
+                                        ),
                                         onPressed: () {
                                           context
                                               .read(
@@ -473,15 +477,19 @@ class AnswerDetailView extends HookWidget {
                                   child: Row(
                                     children: [
                                       IconButton(
-                                        icon: viewModel.answer.isFavor
-                                            ? const Icon(
-                                                Icons.star,
-                                                color: Colors.cyan,
-                                              )
-                                            : const Icon(
-                                                Icons.star_outline,
-                                                color: Colors.cyan,
-                                              ),
+//                                        icon: viewModel.answer.isFavor
+//                                            ? const Icon(
+//                                                Icons.star,
+//                                                color: Colors.cyan,
+//                                              )
+//                                            : const Icon(
+//                                                Icons.star_outline,
+//                                                color: Colors.cyan,
+//                                              ),
+                                        icon: const Icon(
+                                          Icons.star_outline,
+                                          color: Colors.cyan,
+                                        ),
                                         onPressed: () {
                                           context
                                               .read(

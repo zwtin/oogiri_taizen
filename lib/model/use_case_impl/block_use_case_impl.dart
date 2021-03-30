@@ -221,9 +221,7 @@ class BlockUseCaseImpl implements BlockUseCase {
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
-      ..isLike = true
       ..likedTime = answerModel.likedTime
-      ..isFavor = true
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point
       ..createdAt = answerModel.createdAt

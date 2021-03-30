@@ -113,55 +113,55 @@ class AnswerDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> likeButtonAction() async {
-    try {
-      if (answer.isLike) {
-        await likeUseCase.unlike(answerId: answer.id);
-        answer
-          ..isLike = false
-          ..likedTime = answer.likedTime - 1;
-      } else {
-        await likeUseCase.like(answerId: answer.id);
-        answer
-          ..isLike = true
-          ..likedTime = answer.likedTime + 1;
-      }
-      notifyListeners();
-    } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(screenId)).show(
-            alertEntity: AlertEntity()
-              ..title = 'エラー'
-              ..subtitle = '通信エラーが発生しました'
-              ..showCancelButton = false
-              ..onPress = null
-              ..style = null,
-          );
-    }
+//    try {
+//      if (answer.isLike) {
+//        await likeUseCase.unlike(answerId: answer.id);
+//        answer
+//          ..isLike = false
+//          ..likedTime = answer.likedTime - 1;
+//      } else {
+//        await likeUseCase.like(answerId: answer.id);
+//        answer
+//          ..isLike = true
+//          ..likedTime = answer.likedTime + 1;
+//      }
+//      notifyListeners();
+//    } on Exception catch (error) {
+//      providerReference.read(alertViewModelProvider(screenId)).show(
+//            alertEntity: AlertEntity()
+//              ..title = 'エラー'
+//              ..subtitle = '通信エラーが発生しました'
+//              ..showCancelButton = false
+//              ..onPress = null
+//              ..style = null,
+//          );
+//    }
   }
 
   Future<void> favorButtonAction() async {
-    try {
-      if (answer.isFavor) {
-        await favorUseCase.unfavor(answerId: answer.id);
-        answer
-          ..isFavor = false
-          ..favoredTime = answer.favoredTime - 1;
-      } else {
-        await favorUseCase.favor(answerId: answer.id);
-        answer
-          ..isFavor = true
-          ..favoredTime = answer.favoredTime + 1;
-      }
-      notifyListeners();
-    } on Exception catch (error) {
-      providerReference.read(alertViewModelProvider(screenId)).show(
-            alertEntity: AlertEntity()
-              ..title = 'エラー'
-              ..subtitle = '通信エラーが発生しました'
-              ..showCancelButton = false
-              ..onPress = null
-              ..style = null,
-          );
-    }
+//    try {
+//      if (answer.isFavor) {
+//        await favorUseCase.unfavor(answerId: answer.id);
+//        answer
+//          ..isFavor = false
+//          ..favoredTime = answer.favoredTime - 1;
+//      } else {
+//        await favorUseCase.favor(answerId: answer.id);
+//        answer
+//          ..isFavor = true
+//          ..favoredTime = answer.favoredTime + 1;
+//      }
+//      notifyListeners();
+//    } on Exception catch (error) {
+//      providerReference.read(alertViewModelProvider(screenId)).show(
+//            alertEntity: AlertEntity()
+//              ..title = 'エラー'
+//              ..subtitle = '通信エラーが発生しました'
+//              ..showCancelButton = false
+//              ..onPress = null
+//              ..style = null,
+//          );
+//    }
   }
 
   Future<void> disposed() async {

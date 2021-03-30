@@ -220,7 +220,8 @@ class AnswerListView extends HookWidget {
                               bottom: MediaQuery.of(context).padding.bottom,
                             ),
                             itemBuilder: (BuildContext context, int index) {
-                              if (index == viewModel.showingNewAnswers.length - 3) {
+                              if (index ==
+                                  viewModel.showingNewAnswers.length - 3) {
                                 viewModel.getNewAnswerList();
                               }
                               if (index == viewModel.showingNewAnswers.length) {
@@ -267,9 +268,9 @@ class AnswerListView extends HookWidget {
                                                   child:
                                                       CircularProgressIndicator(),
                                                 ),
-                                                imageUrl: viewModel.showingNewAnswers
+                                                imageUrl: viewModel
+                                                    .showingNewAnswers
                                                     .elementAt(index)
-                                                    .topic
                                                     .createdUser
                                                     .imageUrl,
                                                 imageBuilder:
@@ -303,7 +304,6 @@ class AnswerListView extends HookWidget {
                                                   Text(
                                                     viewModel.showingNewAnswers
                                                         .elementAt(index)
-                                                        .topic
                                                         .createdAt
                                                         .toJPString(),
                                                     style: const TextStyle(
@@ -318,10 +318,10 @@ class AnswerListView extends HookWidget {
                                                       Flexible(
                                                         child: Container(
                                                           child: Text(
-                                                            viewModel.showingNewAnswers
+                                                            viewModel
+                                                                .showingNewAnswers
                                                                 .elementAt(
                                                                     index)
-                                                                .topic
                                                                 .createdUser
                                                                 .name,
                                                             style:
@@ -338,7 +338,7 @@ class AnswerListView extends HookWidget {
                                                       ),
                                                       Container(
                                                         child: const Text(
-                                                          ' のお題：',
+                                                          ' のボケ：',
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 16,
@@ -458,7 +458,8 @@ class AnswerListView extends HookWidget {
                                                     child:
                                                         CircularProgressIndicator(),
                                                   ),
-                                                  imageUrl: viewModel.showingNewAnswers
+                                                  imageUrl: viewModel
+                                                      .showingNewAnswers
                                                       .elementAt(index)
                                                       .topic
                                                       .imageUrl,
@@ -476,18 +477,22 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: viewModel.showingNewAnswers
-                                                            .elementAt(index)
-                                                            .isLike
-                                                        ? const Icon(
-                                                            Icons.favorite,
-                                                            color: Colors.pink,
-                                                          )
-                                                        : const Icon(
-                                                            Icons
-                                                                .favorite_outline,
-                                                            color: Colors.pink,
-                                                          ),
+//                                                    icon: viewModel.showingNewAnswers
+//                                                            .elementAt(index)
+//                                                            .isLike
+//                                                        ? const Icon(
+//                                                            Icons.favorite,
+//                                                            color: Colors.pink,
+//                                                          )
+//                                                        : const Icon(
+//                                                            Icons
+//                                                                .favorite_outline,
+//                                                            color: Colors.pink,
+//                                                          ),
+                                                    icon: const Icon(
+                                                      Icons.favorite_outline,
+                                                      color: Colors.pink,
+                                                    ),
                                                     onPressed: () {
                                                       context
                                                           .read(
@@ -516,17 +521,21 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-                                                    icon: viewModel.showingNewAnswers
-                                                            .elementAt(index)
-                                                            .isFavor
-                                                        ? const Icon(
-                                                            Icons.star,
-                                                            color: Colors.cyan,
-                                                          )
-                                                        : const Icon(
-                                                            Icons.star_outline,
-                                                            color: Colors.cyan,
-                                                          ),
+//                                                    icon: viewModel.showingNewAnswers
+//                                                            .elementAt(index)
+//                                                            .isFavor
+//                                                        ? const Icon(
+//                                                            Icons.star,
+//                                                            color: Colors.cyan,
+//                                                          )
+//                                                        : const Icon(
+//                                                            Icons.star_outline,
+//                                                            color: Colors.cyan,
+//                                                          ),
+                                                    icon: const Icon(
+                                                      Icons.star_outline,
+                                                      color: Colors.cyan,
+                                                    ),
                                                     onPressed: () {
                                                       context
                                                           .read(
