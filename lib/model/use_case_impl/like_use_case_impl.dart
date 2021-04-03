@@ -71,10 +71,13 @@ class LikeUseCaseImpl implements LikeUseCase {
     @required String answerId,
   }) async {
     final loginUser = authenticationRepository.getLoginUser();
-    await likeRepository.like(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
+
+    try {
+      await likeRepository.like(
+        userId: loginUser.id,
+        answerId: answerId,
+      );
+    } on Exception catch (error) {}
   }
 
   @override
@@ -82,10 +85,13 @@ class LikeUseCaseImpl implements LikeUseCase {
     @required String answerId,
   }) async {
     final loginUser = authenticationRepository.getLoginUser();
-    await likeRepository.unlike(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
+
+    try {
+      await likeRepository.unlike(
+        userId: loginUser.id,
+        answerId: answerId,
+      );
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {

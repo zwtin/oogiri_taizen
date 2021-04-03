@@ -13,7 +13,6 @@ final answerRepositoryProvider = Provider<AnswerRepository>(
 
 class AnswerRepositoryImpl implements AnswerRepository {
   final _firestore = FirebaseFirestore.instance;
-  final Map<String, AnswerModel> _cache = {};
 
   @override
   Future<AnswerModel> getAnswer({
@@ -21,9 +20,6 @@ class AnswerRepositoryImpl implements AnswerRepository {
   }) async {
     assert(answerId != null && answerId.isNotEmpty);
 
-    if (_cache[answerId] != null) {
-      return _cache[answerId];
-    }
     try {
       final documentSnapshot =
           await _firestore.collection('answers').doc(answerId).get();
@@ -39,7 +35,6 @@ class AnswerRepositoryImpl implements AnswerRepository {
             (documentSnapshot.data()['created_at'] as Timestamp).toDate()
         ..topic = documentSnapshot.data()['topic'] as String
         ..createdUser = documentSnapshot.data()['created_user'] as String;
-      _cache[answerId] = answerModel;
       return answerModel;
     } on Exception catch (error) {
       rethrow;

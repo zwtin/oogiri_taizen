@@ -25,27 +25,31 @@ class StorageRepositoryImpl implements StorageRepository {
     final imageName = StringExtension.randomString(16);
     final imagePath = '$path/$imageName';
 
-    final result = await FlutterImageCompress.compressWithFile(
-      file.absolute.path,
-      minHeight: 500,
-      minWidth: 500,
-      quality: 85,
-    );
+    try {
+      final result = await FlutterImageCompress.compressWithFile(
+        file.absolute.path,
+        minHeight: 500,
+        minWidth: 500,
+        quality: 85,
+      );
 
-    final ref = _firebaseStorage.ref().child(imagePath);
+      final ref = _firebaseStorage.ref().child(imagePath);
 
-    final metaData = SettableMetadata(contentType: 'image/jpeg');
-    final uploadTask = ref.putData(result, metaData);
-    await Future.value(uploadTask);
-    final url = await ref.getDownloadURL();
-    return url;
+      final metaData = SettableMetadata(contentType: 'image/jpeg');
+      final uploadTask = ref.putData(result, metaData);
+      await Future.value(uploadTask);
+      final url = await ref.getDownloadURL();
+      return url;
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> delete({
     @required String url,
   }) async {
-    final ref = _firebaseStorage.refFromURL(url);
-    await ref.delete();
+    try {
+      final ref = _firebaseStorage.refFromURL(url);
+      await ref.delete();
+    } on Exception catch (error) {}
   }
 }

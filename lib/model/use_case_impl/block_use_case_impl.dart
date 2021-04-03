@@ -123,154 +123,181 @@ class BlockUseCaseImpl implements BlockUseCase {
   Future<List<TopicEntity>> getBlockTopicsList() async {
     final blockTopicIds = blockRepository.getBlockTopicsList();
     final blockTopicList = <TopicEntity>[];
-    for (final blockTopicId in blockTopicIds) {
-      final topicEntity = await getTopic(topicId: blockTopicId);
-      blockTopicList.add(topicEntity);
-    }
-    return blockTopicList;
+
+    try {
+      for (final blockTopicId in blockTopicIds) {
+        final topicEntity = await getTopic(topicId: blockTopicId);
+        blockTopicList.add(topicEntity);
+      }
+      return blockTopicList;
+    } on Exception catch (error) {}
   }
 
   @override
   Future<List<AnswerEntity>> getBlockAnswersList() async {
     final blockAnswerIds = blockRepository.getBlockAnswersList();
     final blockAnswerList = <AnswerEntity>[];
-    for (final blockAnswerId in blockAnswerIds) {
-      final answerEntity = await getAnswer(answerId: blockAnswerId);
-      blockAnswerList.add(answerEntity);
-    }
-    return blockAnswerList;
+
+    try {
+      for (final blockAnswerId in blockAnswerIds) {
+        final answerEntity = await getAnswer(answerId: blockAnswerId);
+        blockAnswerList.add(answerEntity);
+      }
+      return blockAnswerList;
+    } on Exception catch (error) {}
   }
 
   @override
   Future<List<UserEntity>> getBlockUsersList() async {
     final blockUserIds = blockRepository.getBlockUsersList();
     final blockUserList = <UserEntity>[];
-    for (final blockUserId in blockUserIds) {
-      final userEntity = await getUser(userId: blockUserId);
-      blockUserList.add(userEntity);
-    }
-    return blockUserList;
+
+    try {
+      for (final blockUserId in blockUserIds) {
+        final userEntity = await getUser(userId: blockUserId);
+        blockUserList.add(userEntity);
+      }
+      return blockUserList;
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> addBlockTopic({@required String topicId}) async {
-    await blockRepository.addBlockTopic(topicId: topicId);
+    try {
+      await blockRepository.addBlockTopic(topicId: topicId);
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> addBlockAnswer({@required String answerId}) async {
-    await blockRepository.addBlockAnswer(answerId: answerId);
+    try {
+      await blockRepository.addBlockAnswer(answerId: answerId);
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> addBlockUser({@required String userId}) async {
-    await blockRepository.addBlockUser(userId: userId);
+    try {
+      await blockRepository.addBlockUser(userId: userId);
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> removeBlockTopic({@required String topicId}) async {
-    await blockRepository.removeBlockTopic(topicId: topicId);
+    try {
+      await blockRepository.removeBlockTopic(topicId: topicId);
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> removeBlockAnswer({@required String answerId}) async {
-    await blockRepository.removeBlockAnswer(answerId: answerId);
+    try {
+      await blockRepository.removeBlockAnswer(answerId: answerId);
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> removeBlockUser({@required String userId}) async {
-    await blockRepository.removeBlockUser(userId: userId);
+    try {
+      await blockRepository.removeBlockUser(userId: userId);
+    } on Exception catch (error) {}
   }
 
   Future<TopicEntity> getTopic({
     @required String topicId,
   }) async {
-    final topicModel = await topicRepository.getTopic(topicId: topicId);
-    final createUserModel =
-        await userRepository.getUser(userId: topicModel.createdUser);
-    final createUserEntity = UserEntity()
-      ..id = createUserModel.id
-      ..name = createUserModel.name
-      ..introduction = createUserModel.introduction
-      ..imageUrl = createUserModel.imageUrl;
-    final topicEntity = TopicEntity()
-      ..id = topicModel.id
-      ..text = topicModel.text
-      ..imageUrl = topicModel.imageUrl
-      ..answeredTime = topicModel.answeredTime
-      ..createdAt = topicModel.createdAt
-      ..createdUser = createUserEntity;
-    return topicEntity;
+    try {
+      final topicModel = await topicRepository.getTopic(topicId: topicId);
+      final createUserModel =
+          await userRepository.getUser(userId: topicModel.createdUser);
+      final createUserEntity = UserEntity()
+        ..id = createUserModel.id
+        ..name = createUserModel.name
+        ..introduction = createUserModel.introduction
+        ..imageUrl = createUserModel.imageUrl;
+      final topicEntity = TopicEntity()
+        ..id = topicModel.id
+        ..text = topicModel.text
+        ..imageUrl = topicModel.imageUrl
+        ..answeredTime = topicModel.answeredTime
+        ..createdAt = topicModel.createdAt
+        ..createdUser = createUserEntity;
+      return topicEntity;
+    } on Exception catch (error) {}
   }
 
   Future<AnswerEntity> getAnswer({
     @required String answerId,
   }) async {
-    final answerModel = await answerRepository.getAnswer(
-      answerId: answerId,
-    );
-    final createUserModel = await userRepository.getUser(
-      userId: answerModel.createdUser,
-    );
-    final createUserEntity = UserEntity()
-      ..id = createUserModel.id
-      ..name = createUserModel.name
-      ..introduction = createUserModel.introduction
-      ..imageUrl = createUserModel.imageUrl;
-    final topicModel = await topicRepository.getTopic(
-      topicId: answerModel.topic,
-    );
-    final topicCreateUserModel = await userRepository.getUser(
-      userId: topicModel.createdUser,
-    );
-    final topicCreateUserEntity = UserEntity()
-      ..id = topicCreateUserModel.id
-      ..name = topicCreateUserModel.name
-      ..introduction = topicCreateUserModel.introduction
-      ..imageUrl = topicCreateUserModel.imageUrl;
-    final topicEntity = TopicEntity()
-      ..id = topicModel.id
-      ..text = topicModel.text
-      ..imageUrl = topicModel.imageUrl
-      ..answeredTime = topicModel.answeredTime
-      ..createdAt = topicModel.createdAt
-      ..createdUser = topicCreateUserEntity;
-    final loginUserModel = authenticationRepository.getLoginUser();
-    final isLikeModel = await likeRepository.getLike(
-      userId: loginUserModel.id,
-      answerId: answerModel.id,
-    );
-    final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
-    final isFavorModel = await favorRepository.getFavor(
-      userId: loginUserModel.id,
-      answerId: answerModel.id,
-    );
-    final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
-    final answerEntity = AnswerEntity()
-      ..id = answerModel.id
-      ..text = answerModel.text
-      ..viewedTime = answerModel.viewedTime
-      ..isLike = isLikeEntity
-      ..likedTime = answerModel.likedTime
-      ..isFavor = isFavorEntity
-      ..favoredTime = answerModel.favoredTime
-      ..point = answerModel.point
-      ..createdAt = answerModel.createdAt
-      ..topic = topicEntity
-      ..createdUser = createUserEntity;
-    return answerEntity;
+    try {
+      final answerModel = await answerRepository.getAnswer(
+        answerId: answerId,
+      );
+      final createUserModel = await userRepository.getUser(
+        userId: answerModel.createdUser,
+      );
+      final createUserEntity = UserEntity()
+        ..id = createUserModel.id
+        ..name = createUserModel.name
+        ..introduction = createUserModel.introduction
+        ..imageUrl = createUserModel.imageUrl;
+      final topicModel = await topicRepository.getTopic(
+        topicId: answerModel.topic,
+      );
+      final topicCreateUserModel = await userRepository.getUser(
+        userId: topicModel.createdUser,
+      );
+      final topicCreateUserEntity = UserEntity()
+        ..id = topicCreateUserModel.id
+        ..name = topicCreateUserModel.name
+        ..introduction = topicCreateUserModel.introduction
+        ..imageUrl = topicCreateUserModel.imageUrl;
+      final topicEntity = TopicEntity()
+        ..id = topicModel.id
+        ..text = topicModel.text
+        ..imageUrl = topicModel.imageUrl
+        ..answeredTime = topicModel.answeredTime
+        ..createdAt = topicModel.createdAt
+        ..createdUser = topicCreateUserEntity;
+      final loginUserModel = authenticationRepository.getLoginUser();
+      final isLikeModel = await likeRepository.getLike(
+        userId: loginUserModel.id,
+        answerId: answerModel.id,
+      );
+      final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+      final isFavorModel = await favorRepository.getFavor(
+        userId: loginUserModel.id,
+        answerId: answerModel.id,
+      );
+      final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
+      final answerEntity = AnswerEntity()
+        ..id = answerModel.id
+        ..text = answerModel.text
+        ..viewedTime = answerModel.viewedTime
+        ..isLike = isLikeEntity
+        ..likedTime = answerModel.likedTime
+        ..isFavor = isFavorEntity
+        ..favoredTime = answerModel.favoredTime
+        ..point = answerModel.point
+        ..createdAt = answerModel.createdAt
+        ..topic = topicEntity
+        ..createdUser = createUserEntity;
+      return answerEntity;
+    } on Exception catch (error) {}
   }
 
   Future<UserEntity> getUser({
     @required String userId,
   }) async {
-    final userModel = await userRepository.getUser(userId: userId);
-    final userEntity = UserEntity()
-      ..id = userModel.id
-      ..name = userModel.name
-      ..introduction = userModel.introduction
-      ..imageUrl = userModel.imageUrl;
-    return userEntity;
+    try {
+      final userModel = await userRepository.getUser(userId: userId);
+      final userEntity = UserEntity()
+        ..id = userModel.id
+        ..name = userModel.name
+        ..introduction = userModel.introduction
+        ..imageUrl = userModel.imageUrl;
+      return userEntity;
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {

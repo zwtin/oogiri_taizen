@@ -13,7 +13,6 @@ final topicRepositoryProvider = Provider<TopicRepository>(
 
 class TopicRepositoryImpl implements TopicRepository {
   final _firestore = FirebaseFirestore.instance;
-  final Map<String, TopicModel> _cache = {};
 
   @override
   Future<TopicModel> getTopic({
@@ -21,9 +20,6 @@ class TopicRepositoryImpl implements TopicRepository {
   }) async {
     assert(topicId != null && topicId.isNotEmpty);
 
-    if (_cache[topicId] != null) {
-      return _cache[topicId];
-    }
     try {
       final documentSnapshot =
           await _firestore.collection('topics').doc(topicId).get();
@@ -36,7 +32,6 @@ class TopicRepositoryImpl implements TopicRepository {
         ..createdAt =
             (documentSnapshot.data()['created_at'] as Timestamp).toDate()
         ..createdUser = documentSnapshot.data()['created_user'] as String;
-      _cache[topicId] = topicModel;
       return topicModel;
     } on Exception catch (error) {
       rethrow;

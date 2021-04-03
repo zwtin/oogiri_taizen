@@ -31,15 +31,19 @@ class AuthenticationUseCaseImpl implements AuthenticationUseCase {
     @required String email,
     @required String password,
   }) async {
-    await authenticationRepository.loginWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      await authenticationRepository.loginWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> loginWithGoogle() async {
-    await authenticationRepository.loginWithGoogle();
+    try {
+      await authenticationRepository.loginWithGoogle();
+    } on Exception catch (error) {}
   }
 
   @override
@@ -47,7 +51,9 @@ class AuthenticationUseCaseImpl implements AuthenticationUseCase {
     @required String email,
     @required String password,
   }) async {
-    await authenticationRepository.sendEmailVerification();
+    try {
+      await authenticationRepository.sendEmailVerification();
+    } on Exception catch (error) {}
   }
 
   @override

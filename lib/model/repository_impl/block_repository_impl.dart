@@ -26,13 +26,15 @@ class BlockRepositoryImpl implements BlockRepository {
 
   Future<void> setup() async {
     WidgetsFlutterBinding.ensureInitialized();
-    final preferences = await StreamingSharedPreferences.instance;
-    blockUsersListStream =
-        preferences.getStringList('blockUsersListStream', defaultValue: []);
-    blockAnswersListStream =
-        preferences.getStringList('blockAnswersListStream', defaultValue: []);
-    blockTopicsListStream =
-        preferences.getStringList('blockTopicsListStream', defaultValue: []);
+    try {
+      final preferences = await StreamingSharedPreferences.instance;
+      blockUsersListStream =
+          preferences.getStringList('blockUsersListStream', defaultValue: []);
+      blockAnswersListStream =
+          preferences.getStringList('blockAnswersListStream', defaultValue: []);
+      blockTopicsListStream =
+          preferences.getStringList('blockTopicsListStream', defaultValue: []);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -71,7 +73,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (!blockUsersList.contains(userId)) {
       blockUsersList.add(userId);
     }
-    await blockUsersListStream.setValue(blockUsersList);
+    try {
+      await blockUsersListStream.setValue(blockUsersList);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -80,7 +84,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (!blockAnswersList.contains(answerId)) {
       blockAnswersList.add(answerId);
     }
-    await blockAnswersListStream.setValue(blockAnswersList);
+    try {
+      await blockAnswersListStream.setValue(blockAnswersList);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -89,7 +95,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (!blockTopicsList.contains(topicId)) {
       blockTopicsList.add(topicId);
     }
-    await blockTopicsListStream.setValue(blockTopicsList);
+    try {
+      await blockTopicsListStream.setValue(blockTopicsList);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -98,7 +106,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (blockUsersList.contains(userId)) {
       blockUsersList.remove(userId);
     }
-    await blockUsersListStream.setValue(blockUsersList);
+    try {
+      await blockUsersListStream.setValue(blockUsersList);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -107,7 +117,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (blockAnswersList.contains(answerId)) {
       blockAnswersList.remove(answerId);
     }
-    await blockAnswersListStream.setValue(blockAnswersList);
+    try {
+      await blockAnswersListStream.setValue(blockAnswersList);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -116,7 +128,9 @@ class BlockRepositoryImpl implements BlockRepository {
     if (blockTopicsList.contains(topicId)) {
       blockTopicsList.remove(topicId);
     }
-    await blockTopicsListStream.setValue(blockTopicsList);
+    try {
+      await blockTopicsListStream.setValue(blockTopicsList);
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {}

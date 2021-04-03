@@ -72,10 +72,13 @@ class FavorUseCaseImpl implements FavorUseCase {
     @required String answerId,
   }) async {
     final loginUser = authenticationRepository.getLoginUser();
-    await favorRepository.favor(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
+
+    try {
+      await favorRepository.favor(
+        userId: loginUser.id,
+        answerId: answerId,
+      );
+    } on Exception catch (error) {}
   }
 
   @override
@@ -83,10 +86,13 @@ class FavorUseCaseImpl implements FavorUseCase {
     @required String answerId,
   }) async {
     final loginUser = authenticationRepository.getLoginUser();
-    await favorRepository.unfavor(
-      userId: loginUser.id,
-      answerId: answerId,
-    );
+
+    try {
+      await favorRepository.unfavor(
+        userId: loginUser.id,
+        answerId: answerId,
+      );
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {

@@ -26,13 +26,15 @@ class LikeRepositoryImpl implements LikeRepository {
       return null;
     }
 
-    final documentSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('like_answers')
-        .doc(answerId)
-        .get();
-    return IsLikeModel()..isLike = documentSnapshot.exists;
+    try {
+      final documentSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('like_answers')
+          .doc(answerId)
+          .get();
+      return IsLikeModel()..isLike = documentSnapshot.exists;
+    } on Exception catch (error) {}
   }
 
   @override

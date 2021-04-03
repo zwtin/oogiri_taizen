@@ -25,7 +25,10 @@ class UserRepositoryImpl implements UserRepository {
     data['name'] = '名無し';
     data['introduction'] = 'よろしくお願いします。';
     data['image_url'] = '';
-    await _firestore.collection('users').doc(userId).set(data);
+
+    try {
+      await _firestore.collection('users').doc(userId).set(data);
+    } on Exception catch (error) {}
   }
 
   @override
@@ -74,7 +77,9 @@ class UserRepositoryImpl implements UserRepository {
     if (user.imageUrl != null) {
       data['image_url'] = user.imageUrl;
     }
-    await _firestore.collection('users').doc(user.id).update(data);
+    try {
+      await _firestore.collection('users').doc(user.id).update(data);
+    } on Exception catch (error) {}
   }
 
   @override

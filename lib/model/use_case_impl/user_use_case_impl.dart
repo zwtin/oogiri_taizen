@@ -75,13 +75,15 @@ class UserUseCaseImpl implements UserUseCase {
 
   @override
   Future<UserEntity> getLoginUser() async {
-    final loginUserModel = authenticationRepository.getLoginUser();
-    final loginUser = await userRepository.getUser(userId: loginUserModel.id);
-    return UserEntity()
-      ..id = loginUser.id
-      ..name = loginUser.name
-      ..introduction = loginUser.introduction
-      ..imageUrl = loginUser.imageUrl;
+    try {
+      final loginUserModel = authenticationRepository.getLoginUser();
+      final loginUser = await userRepository.getUser(userId: loginUserModel.id);
+      return UserEntity()
+        ..id = loginUser.id
+        ..name = loginUser.name
+        ..introduction = loginUser.introduction
+        ..imageUrl = loginUser.imageUrl;
+    } on Exception catch (error) {}
   }
 
   @override
@@ -89,33 +91,37 @@ class UserUseCaseImpl implements UserUseCase {
     @required File imageFile,
     @required UserEntity editedUser,
   }) async {
-    var uploadedUrl = '';
-    if (imageFile != null) {
-      uploadedUrl = await storageRepository.upload(
-        path: 'images/users',
-        file: imageFile,
+    try {
+      var uploadedUrl = '';
+      if (imageFile != null) {
+        uploadedUrl = await storageRepository.upload(
+          path: 'images/users',
+          file: imageFile,
+        );
+      }
+      await userRepository.updateUser(
+        user: UserModel()
+          ..id = authenticationRepository.getLoginUser().id
+          ..name = editedUser.name
+          ..introduction = editedUser.introduction
+          ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
       );
-    }
-    await userRepository.updateUser(
-      user: UserModel()
-        ..id = authenticationRepository.getLoginUser().id
-        ..name = editedUser.name
-        ..introduction = editedUser.introduction
-        ..imageUrl = uploadedUrl.isEmpty ? null : uploadedUrl,
-    );
+    } on Exception catch (error) {}
   }
 
   @override
   Future<void> registerUser({
     @required String email,
   }) async {
-    final password = StringExtension.randomString(8);
-    await authenticationRepository.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await authenticationRepository.sendEmailVerification();
-    await authenticationRepository.logout();
+    try {
+      final password = StringExtension.randomString(8);
+      await authenticationRepository.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await authenticationRepository.sendEmailVerification();
+      await authenticationRepository.logout();
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {

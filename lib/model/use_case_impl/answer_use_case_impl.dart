@@ -62,59 +62,61 @@ class AnswerUseCaseImpl implements AnswerUseCase {
   Future<AnswerEntity> getAnswer({
     @required String answerId,
   }) async {
-    final answerModel = await answerRepository.getAnswer(
-      answerId: answerId,
-    );
-    final createUserModel = await userRepository.getUser(
-      userId: answerModel.createdUser,
-    );
-    final createUserEntity = UserEntity()
-      ..id = createUserModel.id
-      ..name = createUserModel.name
-      ..introduction = createUserModel.introduction
-      ..imageUrl = createUserModel.imageUrl;
-    final topicModel = await topicRepository.getTopic(
-      topicId: answerModel.topic,
-    );
-    final topicCreateUserModel = await userRepository.getUser(
-      userId: topicModel.createdUser,
-    );
-    final topicCreateUserEntity = UserEntity()
-      ..id = topicCreateUserModel.id
-      ..name = topicCreateUserModel.name
-      ..introduction = topicCreateUserModel.introduction
-      ..imageUrl = topicCreateUserModel.imageUrl;
-    final topicEntity = TopicEntity()
-      ..id = topicModel.id
-      ..text = topicModel.text
-      ..imageUrl = topicModel.imageUrl
-      ..answeredTime = topicModel.answeredTime
-      ..createdAt = topicModel.createdAt
-      ..createdUser = topicCreateUserEntity;
-    final loginUserModel = authenticationRepository.getLoginUser();
-    final isLikeModel = await likeRepository.getLike(
-      userId: loginUserModel.id,
-      answerId: answerModel.id,
-    );
-    final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
-    final isFavorModel = await favorRepository.getFavor(
-      userId: loginUserModel.id,
-      answerId: answerModel.id,
-    );
-    final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
-    final answerEntity = AnswerEntity()
-      ..id = answerModel.id
-      ..text = answerModel.text
-      ..viewedTime = answerModel.viewedTime
-      ..isLike = isLikeEntity
-      ..likedTime = answerModel.likedTime
-      ..isFavor = isFavorEntity
-      ..favoredTime = answerModel.favoredTime
-      ..point = answerModel.point
-      ..createdAt = answerModel.createdAt
-      ..topic = topicEntity
-      ..createdUser = createUserEntity;
-    return answerEntity;
+    try {
+      final answerModel = await answerRepository.getAnswer(
+        answerId: answerId,
+      );
+      final createUserModel = await userRepository.getUser(
+        userId: answerModel.createdUser,
+      );
+      final createUserEntity = UserEntity()
+        ..id = createUserModel.id
+        ..name = createUserModel.name
+        ..introduction = createUserModel.introduction
+        ..imageUrl = createUserModel.imageUrl;
+      final topicModel = await topicRepository.getTopic(
+        topicId: answerModel.topic,
+      );
+      final topicCreateUserModel = await userRepository.getUser(
+        userId: topicModel.createdUser,
+      );
+      final topicCreateUserEntity = UserEntity()
+        ..id = topicCreateUserModel.id
+        ..name = topicCreateUserModel.name
+        ..introduction = topicCreateUserModel.introduction
+        ..imageUrl = topicCreateUserModel.imageUrl;
+      final topicEntity = TopicEntity()
+        ..id = topicModel.id
+        ..text = topicModel.text
+        ..imageUrl = topicModel.imageUrl
+        ..answeredTime = topicModel.answeredTime
+        ..createdAt = topicModel.createdAt
+        ..createdUser = topicCreateUserEntity;
+      final loginUserModel = authenticationRepository.getLoginUser();
+      final isLikeModel = await likeRepository.getLike(
+        userId: loginUserModel.id,
+        answerId: answerModel.id,
+      );
+      final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+      final isFavorModel = await favorRepository.getFavor(
+        userId: loginUserModel.id,
+        answerId: answerModel.id,
+      );
+      final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
+      final answerEntity = AnswerEntity()
+        ..id = answerModel.id
+        ..text = answerModel.text
+        ..viewedTime = answerModel.viewedTime
+        ..isLike = isLikeEntity
+        ..likedTime = answerModel.likedTime
+        ..isFavor = isFavorEntity
+        ..favoredTime = answerModel.favoredTime
+        ..point = answerModel.point
+        ..createdAt = answerModel.createdAt
+        ..topic = topicEntity
+        ..createdUser = createUserEntity;
+      return answerEntity;
+    } on Exception catch (error) {}
   }
 
   @override
@@ -122,35 +124,39 @@ class AnswerUseCaseImpl implements AnswerUseCase {
     @required String topicId,
     @required AnswerEntity editedAnswer,
   }) async {
-    await answerRepository.postAnswer(
-      userId: authenticationRepository.getLoginUser().id,
-      topicId: topicId,
-      answer: AnswerModel()..text = editedAnswer.text,
-    );
+    try {
+      await answerRepository.postAnswer(
+        userId: authenticationRepository.getLoginUser().id,
+        topicId: topicId,
+        answer: AnswerModel()..text = editedAnswer.text,
+      );
+    } on Exception catch (error) {}
   }
 
   @override
   Future<AnswerListEntity> getNewAnswerList({
     @required DateTime beforeTime,
   }) async {
-    final answerModelList = await answerRepository.getNewAnswerList(
-      beforeTime: beforeTime,
-      count: 11,
-    );
-    final answerListEntity = AnswerListEntity();
-    if (answerModelList.length == 11) {
-      answerModelList.removeLast();
-      answerListEntity.hasNext = true;
-    } else {
-      answerListEntity.hasNext = false;
-    }
-    final answerEntityList = <AnswerEntity>[];
-    for (final answerModel in answerModelList) {
-      final answerEntity = await getAnswer(answerId: answerModel.id);
-      answerEntityList.add(answerEntity);
-    }
-    answerListEntity.answers = answerEntityList;
-    return answerListEntity;
+    try {
+      final answerModelList = await answerRepository.getNewAnswerList(
+        beforeTime: beforeTime,
+        count: 11,
+      );
+      final answerListEntity = AnswerListEntity();
+      if (answerModelList.length == 11) {
+        answerModelList.removeLast();
+        answerListEntity.hasNext = true;
+      } else {
+        answerListEntity.hasNext = false;
+      }
+      final answerEntityList = <AnswerEntity>[];
+      for (final answerModel in answerModelList) {
+        final answerEntity = await getAnswer(answerId: answerModel.id);
+        answerEntityList.add(answerEntity);
+      }
+      answerListEntity.answers = answerEntityList;
+      return answerListEntity;
+    } on Exception catch (error) {}
   }
 
   @override
@@ -158,25 +164,27 @@ class AnswerUseCaseImpl implements AnswerUseCase {
     @required String userId,
     @required DateTime beforeTime,
   }) async {
-    final createAnswerIds = await userRepository.getCreateAnswers(
-      userId: userId,
-      beforeTime: beforeTime,
-      count: 11,
-    );
-    final answerListEntity = AnswerListEntity();
-    if (createAnswerIds.length == 11) {
-      createAnswerIds.removeLast();
-      answerListEntity.hasNext = true;
-    } else {
-      answerListEntity.hasNext = false;
-    }
-    final answerEntityList = <AnswerEntity>[];
-    for (final createAnswerId in createAnswerIds) {
-      final answerEntity = await getAnswer(answerId: createAnswerId);
-      answerEntityList.add(answerEntity);
-    }
-    answerListEntity.answers = answerEntityList;
-    return answerListEntity;
+    try {
+      final createAnswerIds = await userRepository.getCreateAnswers(
+        userId: userId,
+        beforeTime: beforeTime,
+        count: 11,
+      );
+      final answerListEntity = AnswerListEntity();
+      if (createAnswerIds.length == 11) {
+        createAnswerIds.removeLast();
+        answerListEntity.hasNext = true;
+      } else {
+        answerListEntity.hasNext = false;
+      }
+      final answerEntityList = <AnswerEntity>[];
+      for (final createAnswerId in createAnswerIds) {
+        final answerEntity = await getAnswer(answerId: createAnswerId);
+        answerEntityList.add(answerEntity);
+      }
+      answerListEntity.answers = answerEntityList;
+      return answerListEntity;
+    } on Exception catch (error) {}
   }
 
   @override
@@ -184,25 +192,27 @@ class AnswerUseCaseImpl implements AnswerUseCase {
     @required String userId,
     @required DateTime beforeTime,
   }) async {
-    final createAnswerIds = await userRepository.getFavorAnswers(
-      userId: userId,
-      beforeTime: beforeTime,
-      count: 11,
-    );
-    final answerListEntity = AnswerListEntity();
-    if (createAnswerIds.length == 11) {
-      createAnswerIds.removeLast();
-      answerListEntity.hasNext = true;
-    } else {
-      answerListEntity.hasNext = false;
-    }
-    final answerEntityList = <AnswerEntity>[];
-    for (final createAnswerId in createAnswerIds) {
-      final answerEntity = await getAnswer(answerId: createAnswerId);
-      answerEntityList.add(answerEntity);
-    }
-    answerListEntity.answers = answerEntityList;
-    return answerListEntity;
+    try {
+      final createAnswerIds = await userRepository.getFavorAnswers(
+        userId: userId,
+        beforeTime: beforeTime,
+        count: 11,
+      );
+      final answerListEntity = AnswerListEntity();
+      if (createAnswerIds.length == 11) {
+        createAnswerIds.removeLast();
+        answerListEntity.hasNext = true;
+      } else {
+        answerListEntity.hasNext = false;
+      }
+      final answerEntityList = <AnswerEntity>[];
+      for (final createAnswerId in createAnswerIds) {
+        final answerEntity = await getAnswer(answerId: createAnswerId);
+        answerEntityList.add(answerEntity);
+      }
+      answerListEntity.answers = answerEntityList;
+      return answerListEntity;
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {}

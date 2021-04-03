@@ -50,22 +50,24 @@ class TopicUseCaseImpl implements TopicUseCase {
   Future<TopicEntity> getTopic({
     @required String topicId,
   }) async {
-    final topicModel = await topicRepository.getTopic(topicId: topicId);
-    final createUserModel =
-        await userRepository.getUser(userId: topicModel.createdUser);
-    final createUserEntity = UserEntity()
-      ..id = createUserModel.id
-      ..name = createUserModel.name
-      ..introduction = createUserModel.introduction
-      ..imageUrl = createUserModel.imageUrl;
-    final topicEntity = TopicEntity()
-      ..id = topicModel.id
-      ..text = topicModel.text
-      ..imageUrl = topicModel.imageUrl
-      ..answeredTime = topicModel.answeredTime
-      ..createdAt = topicModel.createdAt
-      ..createdUser = createUserEntity;
-    return topicEntity;
+    try {
+      final topicModel = await topicRepository.getTopic(topicId: topicId);
+      final createUserModel =
+          await userRepository.getUser(userId: topicModel.createdUser);
+      final createUserEntity = UserEntity()
+        ..id = createUserModel.id
+        ..name = createUserModel.name
+        ..introduction = createUserModel.introduction
+        ..imageUrl = createUserModel.imageUrl;
+      final topicEntity = TopicEntity()
+        ..id = topicModel.id
+        ..text = topicModel.text
+        ..imageUrl = topicModel.imageUrl
+        ..answeredTime = topicModel.answeredTime
+        ..createdAt = topicModel.createdAt
+        ..createdUser = createUserEntity;
+      return topicEntity;
+    } on Exception catch (error) {}
   }
 
   @override
@@ -73,57 +75,61 @@ class TopicUseCaseImpl implements TopicUseCase {
     @required File imageFile,
     @required TopicEntity editedTopic,
   }) async {
-    var uploadedUrl = '';
-    if (imageFile != null) {
-      uploadedUrl = await storageRepository.upload(
-        path: 'images/topics',
-        file: imageFile,
+    try {
+      var uploadedUrl = '';
+      if (imageFile != null) {
+        uploadedUrl = await storageRepository.upload(
+          path: 'images/topics',
+          file: imageFile,
+        );
+      }
+      await topicRepository.postTopic(
+        userId: authenticationRepository.getLoginUser().id,
+        topic: TopicModel()
+          ..text = editedTopic.text
+          ..imageUrl = uploadedUrl,
       );
-    }
-    await topicRepository.postTopic(
-      userId: authenticationRepository.getLoginUser().id,
-      topic: TopicModel()
-        ..text = editedTopic.text
-        ..imageUrl = uploadedUrl,
-    );
+    } on Exception catch (error) {}
   }
 
   @override
   Future<TopicListEntity> getNewTopicList({
     @required DateTime beforeTime,
   }) async {
-    final topicModelList = await topicRepository.getNewTopicList(
-      beforeTime: beforeTime,
-      count: 11,
-    );
-    final topicListEntity = TopicListEntity();
-    if (topicModelList.length == 11) {
-      topicModelList.removeLast();
-      topicListEntity.hasNext = true;
-    } else {
-      topicListEntity.hasNext = false;
-    }
-    final topicEntityList = <TopicEntity>[];
-    for (final topicModel in topicModelList) {
-      final userModel = await userRepository.getUser(
-        userId: topicModel.createdUser,
+    try {
+      final topicModelList = await topicRepository.getNewTopicList(
+        beforeTime: beforeTime,
+        count: 11,
       );
-      final userEntity = UserEntity()
-        ..id = userModel.id
-        ..name = userModel.name
-        ..introduction = userModel.introduction
-        ..imageUrl = userModel.imageUrl;
-      final topicEntity = TopicEntity()
-        ..id = topicModel.id
-        ..text = topicModel.text
-        ..imageUrl = topicModel.imageUrl
-        ..answeredTime = topicModel.answeredTime
-        ..createdAt = topicModel.createdAt
-        ..createdUser = userEntity;
-      topicEntityList.add(topicEntity);
-    }
-    topicListEntity.topics = topicEntityList;
-    return topicListEntity;
+      final topicListEntity = TopicListEntity();
+      if (topicModelList.length == 11) {
+        topicModelList.removeLast();
+        topicListEntity.hasNext = true;
+      } else {
+        topicListEntity.hasNext = false;
+      }
+      final topicEntityList = <TopicEntity>[];
+      for (final topicModel in topicModelList) {
+        final userModel = await userRepository.getUser(
+          userId: topicModel.createdUser,
+        );
+        final userEntity = UserEntity()
+          ..id = userModel.id
+          ..name = userModel.name
+          ..introduction = userModel.introduction
+          ..imageUrl = userModel.imageUrl;
+        final topicEntity = TopicEntity()
+          ..id = topicModel.id
+          ..text = topicModel.text
+          ..imageUrl = topicModel.imageUrl
+          ..answeredTime = topicModel.answeredTime
+          ..createdAt = topicModel.createdAt
+          ..createdUser = userEntity;
+        topicEntityList.add(topicEntity);
+      }
+      topicListEntity.topics = topicEntityList;
+      return topicListEntity;
+    } on Exception catch (error) {}
   }
 
   Future<void> disposed() async {}

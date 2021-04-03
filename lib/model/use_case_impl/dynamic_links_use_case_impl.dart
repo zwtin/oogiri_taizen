@@ -36,29 +36,31 @@ class DynamicLinksUseCaseImpl implements DynamicLinksUseCase {
 
   @override
   Future<void> setupDynamicLinks() async {
-    await dynamicLinksRepository.setupDynamicLinks();
-    dynamicLinksRepository.getDynamicLinksStream().listen(
-      (Uri uri) async {
-        final apiKey = uri.queryParameters['apiKey'];
-        final mode = uri.queryParameters['mode'];
-        final oobCode = uri.queryParameters['oobCode'];
-        final continueUrl = uri.queryParameters['continueUrl'];
-        final lang = uri.queryParameters['lang'];
+    try {
+      await dynamicLinksRepository.setupDynamicLinks();
+      dynamicLinksRepository.getDynamicLinksStream().listen(
+        (Uri uri) async {
+          final apiKey = uri.queryParameters['apiKey'];
+          final mode = uri.queryParameters['mode'];
+          final oobCode = uri.queryParameters['oobCode'];
+          final continueUrl = uri.queryParameters['continueUrl'];
+          final lang = uri.queryParameters['lang'];
 
-        if (oobCode != null) {
-          await authenticationRepository.applyActionCode(
-            actionCode: oobCode,
-          );
-        }
-        if (mode == 'verifyEmail' && continueUrl != null) {
-          final continueUri = Uri.parse(continueUrl);
-          final token = continueUri.queryParameters['token'];
-          await authenticationRepository.loginWithCustomToken(token: token);
-          final user = authenticationRepository.getLoginUser();
-          await userRepository.createUser(userId: user.id);
-        }
-      },
-    );
+          if (oobCode != null) {
+            await authenticationRepository.applyActionCode(
+              actionCode: oobCode,
+            );
+          }
+          if (mode == 'verifyEmail' && continueUrl != null) {
+            final continueUri = Uri.parse(continueUrl);
+            final token = continueUri.queryParameters['token'];
+            await authenticationRepository.loginWithCustomToken(token: token);
+            final user = authenticationRepository.getLoginUser();
+            await userRepository.createUser(userId: user.id);
+          }
+        },
+      );
+    } on Exception catch (error) {}
   }
 
   @override

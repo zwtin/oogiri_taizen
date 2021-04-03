@@ -25,13 +25,15 @@ class FavorRepositoryImpl implements FavorRepository {
       return null;
     }
 
-    final documentSnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('favor_answers')
-        .doc(answerId)
-        .get();
-    return IsFavorModel()..isFavor = documentSnapshot.exists;
+    try {
+      final documentSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('favor_answers')
+          .doc(answerId)
+          .get();
+      return IsFavorModel()..isFavor = documentSnapshot.exists;
+    } on Exception catch (error) {}
   }
 
   @override
