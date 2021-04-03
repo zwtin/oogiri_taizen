@@ -4,12 +4,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
+import 'package:oogiritaizen/model/entity/is_favor_entity.dart';
+import 'package:oogiritaizen/model/entity/is_like_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
+import 'package:oogiritaizen/model/model/is_favor_model.dart';
 import 'package:oogiritaizen/model/repository/answer_repository.dart';
+import 'package:oogiritaizen/model/repository/authentication_repository.dart';
+import 'package:oogiritaizen/model/repository/favor_repository.dart';
+import 'package:oogiritaizen/model/repository/like_repository.dart';
 import 'package:oogiritaizen/model/repository/topic_repository.dart';
 import 'package:oogiritaizen/model/repository/user_repository.dart';
 import 'package:oogiritaizen/model/repository_impl/answer_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/authentication_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/favor_repository_impl.dart';
+import 'package:oogiritaizen/model/repository_impl/like_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/topic_repository_impl.dart';
 import 'package:oogiritaizen/model/repository_impl/user_repository_impl.dart';
 import 'package:oogiritaizen/model/use_case/block_use_case.dart';
@@ -21,8 +30,11 @@ final blockUseCaseProvider = Provider.autoDispose.family<BlockUseCase, String>(
   (ref, id) {
     final blockUseCase = BlockUseCaseImpl(
       id,
+      ref.watch(authenticationRepositoryProvider),
       ref.watch(answerRepositoryProvider),
       ref.watch(blockRepositoryProvider),
+      ref.watch(likeRepositoryProvider),
+      ref.watch(favorRepositoryProvider),
       ref.watch(topicRepositoryProvider),
       ref.watch(userRepositoryProvider),
     );
@@ -34,8 +46,11 @@ final blockUseCaseProvider = Provider.autoDispose.family<BlockUseCase, String>(
 class BlockUseCaseImpl implements BlockUseCase {
   BlockUseCaseImpl(
     this.id,
+    this.authenticationRepository,
     this.answerRepository,
     this.blockRepository,
+    this.likeRepository,
+    this.favorRepository,
     this.topicRepository,
     this.userRepository,
   ) {
@@ -74,8 +89,11 @@ class BlockUseCaseImpl implements BlockUseCase {
   }
 
   final String id;
+  final AuthenticationRepository authenticationRepository;
   final AnswerRepository answerRepository;
   final BlockRepository blockRepository;
+  final LikeRepository likeRepository;
+  final FavorRepository favorRepository;
   final TopicRepository topicRepository;
   final UserRepository userRepository;
 
@@ -217,11 +235,24 @@ class BlockUseCaseImpl implements BlockUseCase {
       ..answeredTime = topicModel.answeredTime
       ..createdAt = topicModel.createdAt
       ..createdUser = topicCreateUserEntity;
+    final loginUserModel = authenticationRepository.getLoginUser();
+    final isLikeModel = await likeRepository.getLike(
+      userId: loginUserModel.id,
+      answerId: answerModel.id,
+    );
+    final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+    final isFavorModel = await favorRepository.getFavor(
+      userId: loginUserModel.id,
+      answerId: answerModel.id,
+    );
+    final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
     final answerEntity = AnswerEntity()
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
+      ..isLike = isLikeEntity
       ..likedTime = answerModel.likedTime
+      ..isFavor = isFavorEntity
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point
       ..createdAt = answerModel.createdAt

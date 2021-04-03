@@ -1,12 +1,13 @@
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/model/model/is_like_model.dart';
 
 abstract class LikeRepository {
-  Future<bool> getLike({
+  Future<IsLikeModel> getLike({
     @required String userId,
     @required String answerId,
   });
 
-  Stream<bool> getLikeStream({
+  Stream<IsLikeModel> getLikeStream({
     @required String userId,
     @required String answerId,
   });

@@ -156,7 +156,7 @@ class AnswerDetailView extends HookWidget {
                                             .toJPString(),
                                         style: const TextStyle(
                                           color: Colors.black,
-                                          fontSize: 16,
+                                          fontSize: 15,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -169,7 +169,7 @@ class AnswerDetailView extends HookWidget {
                                                     .createdUser.name,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 16,
+                                                  fontSize: 15,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -180,7 +180,7 @@ class AnswerDetailView extends HookWidget {
                                               ' のお題：',
                                               style: TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 16,
+                                                fontSize: 15,
                                               ),
                                             ),
                                           ),
@@ -333,7 +333,7 @@ class AnswerDetailView extends HookWidget {
                                         viewModel.answer.createdAt.toJPString(),
                                         style: const TextStyle(
                                           color: Colors.black,
-                                          fontSize: 16,
+                                          fontSize: 15,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -346,7 +346,7 @@ class AnswerDetailView extends HookWidget {
                                                     .answer.createdUser.name,
                                                 style: const TextStyle(
                                                   color: Colors.black,
-                                                  fontSize: 16,
+                                                  fontSize: 15,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -357,7 +357,7 @@ class AnswerDetailView extends HookWidget {
                                               ' のボケ：',
                                               style: TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 16,
+                                                fontSize: 15,
                                               ),
                                             ),
                                           ),

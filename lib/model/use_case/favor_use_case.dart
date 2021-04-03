@@ -1,7 +1,8 @@
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/model/entity/is_favor_entity.dart';
 
 abstract class FavorUseCase {
-  Stream<bool> getFavorStream({
+  Stream<IsFavorEntity> getFavorStream({
     @required String answerId,
   });
 

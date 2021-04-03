@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/model/model/is_like_model.dart';
 
 import 'package:oogiritaizen/model/repository/like_repository.dart';
 
@@ -14,12 +15,16 @@ class LikeRepositoryImpl implements LikeRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<bool> getLike({
+  Future<IsLikeModel> getLike({
     @required String userId,
     @required String answerId,
   }) async {
-    assert(userId != null && userId.isNotEmpty);
-    assert(answerId != null && answerId.isNotEmpty);
+    if (userId == null ||
+        userId.isEmpty ||
+        answerId == null ||
+        answerId.isEmpty) {
+      return null;
+    }
 
     final documentSnapshot = await _firestore
         .collection('users')
@@ -27,16 +32,20 @@ class LikeRepositoryImpl implements LikeRepository {
         .collection('like_answers')
         .doc(answerId)
         .get();
-    return documentSnapshot.exists;
+    return IsLikeModel()..isLike = documentSnapshot.exists;
   }
 
   @override
-  Stream<bool> getLikeStream({
+  Stream<IsLikeModel> getLikeStream({
     @required String userId,
     @required String answerId,
   }) {
-    assert(userId != null && userId.isNotEmpty);
-    assert(answerId != null && answerId.isNotEmpty);
+    if (userId == null ||
+        userId.isEmpty ||
+        answerId == null ||
+        answerId.isEmpty) {
+      return null;
+    }
 
     return _firestore
         .collection('users')
@@ -46,7 +55,7 @@ class LikeRepositoryImpl implements LikeRepository {
         .snapshots()
         .map(
       (DocumentSnapshot documentSnapshot) {
-        return documentSnapshot.exists;
+        return IsLikeModel()..isLike = documentSnapshot.exists;
       },
     );
   }

@@ -1,0 +1,3 @@
+class IsFavorModel {
+  bool isFavor;
+}

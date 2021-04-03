@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/entity/is_like_entity.dart';
+import 'package:oogiritaizen/model/model/is_like_model.dart';
 import 'package:oogiritaizen/model/model/login_user_model.dart';
 
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
@@ -33,19 +35,19 @@ class LikeUseCaseImpl implements LikeUseCase {
   final AuthenticationRepository authenticationRepository;
   final LikeRepository likeRepository;
 
-  List<StreamController<bool>> list = [];
+  List<StreamController<IsLikeEntity>> list = [];
 
   @override
-  Stream<bool> getLikeStream({
+  Stream<IsLikeEntity> getLikeStream({
     @required String answerId,
   }) {
-    final likeStream = StreamController<bool>();
+    final likeStream = StreamController<IsLikeEntity>();
     list.add(likeStream);
 
     authenticationRepository.getLoginUserStream().listen(
       (LoginUserModel loginUserModel) {
         if (loginUserModel == null) {
-          likeStream.sink.add(false);
+          likeStream.sink.add(null);
         } else {
           likeRepository
               .getLikeStream(
@@ -53,8 +55,8 @@ class LikeUseCaseImpl implements LikeUseCase {
             answerId: answerId,
           )
               .listen(
-            (bool isLike) {
-              likeStream.sink.add(isLike);
+            (IsLikeModel isLikeModel) {
+              likeStream.sink.add(IsLikeEntity()..isLike = isLikeModel.isLike);
             },
           );
         }

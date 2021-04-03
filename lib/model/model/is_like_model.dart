@@ -1,0 +1,3 @@
+class IsLikeModel {
+  bool isLike;
+}

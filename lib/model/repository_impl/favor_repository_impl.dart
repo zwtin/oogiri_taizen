@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/model/model/is_favor_model.dart';
 import 'package:oogiritaizen/model/repository/favor_repository.dart';
 
 final favorRepositoryProvider = Provider<FavorRepository>(
@@ -13,12 +14,16 @@ class FavorRepositoryImpl implements FavorRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<bool> getFavor({
+  Future<IsFavorModel> getFavor({
     @required String userId,
     @required String answerId,
   }) async {
-    assert(userId != null && userId.isNotEmpty);
-    assert(answerId != null && answerId.isNotEmpty);
+    if (userId == null ||
+        userId.isEmpty ||
+        answerId == null ||
+        answerId.isEmpty) {
+      return null;
+    }
 
     final documentSnapshot = await _firestore
         .collection('users')
@@ -26,16 +31,20 @@ class FavorRepositoryImpl implements FavorRepository {
         .collection('favor_answers')
         .doc(answerId)
         .get();
-    return documentSnapshot.exists;
+    return IsFavorModel()..isFavor = documentSnapshot.exists;
   }
 
   @override
-  Stream<bool> getFavorStream({
+  Stream<IsFavorModel> getFavorStream({
     @required String userId,
     @required String answerId,
   }) {
-    assert(userId != null && userId.isNotEmpty);
-    assert(answerId != null && answerId.isNotEmpty);
+    if (userId == null ||
+        userId.isEmpty ||
+        answerId == null ||
+        answerId.isEmpty) {
+      return null;
+    }
 
     return _firestore
         .collection('users')
@@ -45,7 +54,7 @@ class FavorRepositoryImpl implements FavorRepository {
         .snapshots()
         .map(
       (DocumentSnapshot documentSnapshot) {
-        return documentSnapshot.exists;
+        return IsFavorModel()..isFavor = documentSnapshot.exists;
       },
     );
   }

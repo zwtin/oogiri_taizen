@@ -1,0 +1,3 @@
+class IsFavorEntity {
+  bool isFavor;
+}

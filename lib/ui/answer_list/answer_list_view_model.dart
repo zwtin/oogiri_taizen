@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
+import 'package:oogiritaizen/model/entity/is_like_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/extension/string_extension.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
@@ -185,6 +186,10 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshNewAnswerList() async {
+    for (final answer in newAnswers) {
+      await answer.likeSubscription.cancel();
+      await answer.favorSubscription.cancel();
+    }
     newAnswers = [];
     await getNewAnswerList();
   }
@@ -201,23 +206,40 @@ class AnswerListViewModel extends ChangeNotifier {
       final answerListEntity =
           await answerUseCase.getNewAnswerList(beforeTime: lastAnswerDate);
 
-//      for (final answerEntity in answerListEntity.answers) {
-//        likeUseCase
-//            .getLikeStream(answerId: answerEntity.id)
-//            .listen((bool isLike) {
-//          if (answerEntity.isLike == false && isLike == true) {
-//            answerEntity
-//              ..isLike = true
-//              ..likedTime += 1;
-//          } else if (answerEntity.isLike == true && isLike == false) {
-//            answerEntity
-//              ..isLike = false
-//              ..likedTime -= 1;
-//          }
-//
-//          notifyListeners();
-//        });
-//
+      for (final answerEntity in answerListEntity.answers) {
+        answerEntity.likeSubscription = likeUseCase
+            .getLikeStream(answerId: answerEntity.id)
+            .listen((IsLikeEntity isLikeEntity) {
+          if (answerEntity.isLike == null) {
+            if (isLikeEntity == null) {
+            } else if (isLikeEntity.isLike) {
+              answerEntity.isLike = IsLikeEntity()..isLike = true;
+            } else if (!isLikeEntity.isLike) {
+              answerEntity.isLike = IsLikeEntity()..isLike = false;
+            }
+          } else if (answerEntity.isLike.isLike) {
+            if (isLikeEntity == null) {
+              answerEntity.isLike = null;
+            } else if (isLikeEntity.isLike) {
+            } else if (!isLikeEntity.isLike) {
+              final isLike = IsLikeEntity()..isLike = false;
+              answerEntity
+                ..likedTime = answerEntity.likedTime - 1
+                ..isLike = isLike;
+            }
+          } else if (!answerEntity.isLike.isLike) {
+            if (isLikeEntity == null) {
+              answerEntity.isLike = null;
+            } else if (isLikeEntity.isLike) {
+              final isLike = IsLikeEntity()..isLike = true;
+              answerEntity
+                ..likedTime = answerEntity.likedTime + 1
+                ..isLike = isLike;
+            } else if (!isLikeEntity.isLike) {}
+          }
+          notifyListeners();
+        });
+
 //        favorUseCase
 //            .getFavorStream(answerId: answerEntity.id)
 //            .listen((bool isFavor) {
@@ -233,12 +255,13 @@ class AnswerListViewModel extends ChangeNotifier {
 //
 //          notifyListeners();
 //        });
-//      }
+      }
 
       newAnswers.addAll(answerListEntity.answers);
 
       final blockUsers = await blockUseCase.getBlockUsersList();
       final blockAnswers = await blockUseCase.getBlockAnswersList();
+      final blockTopics = await blockUseCase.getBlockTopicsList();
 
       final filteredList = List<AnswerEntity>.from(
         newAnswers.where(
@@ -249,7 +272,8 @@ class AnswerListViewModel extends ChangeNotifier {
                 blockUsers
                     .map((user) => user.id)
                     .contains(answer.topic.createdUser.id) ||
-                blockAnswers.map((answer) => answer.id).contains(answer.id));
+                blockAnswers.map((answer) => answer.id).contains(answer.id) ||
+                blockTopics.map((topic) => topic.id).contains(answer.topic.id));
           },
         ),
       );
@@ -273,32 +297,34 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   Future<void> likeButtonAction({
-    @required int index,
+    @required AnswerEntity answerEntity,
   }) async {
-//    final answerEntity = newAnswers.elementAt(index);
-//    try {
-//      if (answerEntity.isLike) {
-//        await likeUseCase.unlike(answerId: answerEntity.id);
-//        answerEntity
-//          ..isLike = false
-//          ..likedTime = answerEntity.likedTime - 1;
-//      } else {
-//        await likeUseCase.like(answerId: answerEntity.id);
-//        answerEntity
-//          ..isLike = true
-//          ..likedTime = answerEntity.likedTime + 1;
-//      }
-//      notifyListeners();
-//    } on Exception catch (error) {
-//      providerReference.read(alertViewModelProvider(screenId)).show(
-//            alertEntity: AlertEntity()
-//              ..title = 'エラー'
-//              ..subtitle = '通信エラーが発生しました'
-//              ..showCancelButton = false
-//              ..onPress = null
-//              ..style = null,
-//          );
-//    }
+    try {
+      if (answerEntity.isLike == null) {
+        providerReference.read(alertViewModelProvider(screenId)).show(
+              alertEntity: AlertEntity()
+                ..title = 'エラー'
+                ..subtitle = 'ログインしてください'
+                ..showCancelButton = false
+                ..onPress = null
+                ..style = null,
+            );
+      } else if (answerEntity.isLike.isLike) {
+        await likeUseCase.unlike(answerId: answerEntity.id);
+      } else if (!answerEntity.isLike.isLike) {
+        await likeUseCase.like(answerId: answerEntity.id);
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(screenId)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
+    }
   }
 
   Future<void> favorButtonAction({
@@ -369,6 +395,10 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
+    for (final answer in newAnswers) {
+      await answer.likeSubscription.cancel();
+      await answer.favorSubscription.cancel();
+    }
     debugPrint(screenId);
   }
 }

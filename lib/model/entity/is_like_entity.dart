@@ -1,0 +1,3 @@
+class IsLikeEntity {
+  bool isLike;
+}

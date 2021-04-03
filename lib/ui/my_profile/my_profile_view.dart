@@ -282,8 +282,8 @@ class MyProfileView extends HookWidget {
                                       child: Hero(
                                         tag: imageTag,
                                         child: SizedBox(
-                                          width: 120,
-                                          height: 120,
+                                          width: 100,
+                                          height: 100,
                                           child: CachedNetworkImage(
                                             placeholder: (context, url) =>
                                                 const Center(
@@ -359,7 +359,7 @@ class MyProfileView extends HookWidget {
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                        fontSize: 17,
                                       ),
                                     ),
                                   ],

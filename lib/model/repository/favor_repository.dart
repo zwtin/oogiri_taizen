@@ -1,12 +1,13 @@
 import 'package:meta/meta.dart';
+import 'package:oogiritaizen/model/model/is_favor_model.dart';
 
 abstract class FavorRepository {
-  Future<bool> getFavor({
+  Future<IsFavorModel> getFavor({
     @required String userId,
     @required String answerId,
   });
 
-  Stream<bool> getFavorStream({
+  Stream<IsFavorModel> getFavorStream({
     @required String userId,
     @required String answerId,
   });

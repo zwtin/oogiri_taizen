@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
 import 'package:oogiritaizen/model/entity/answer_list_entity.dart';
+import 'package:oogiritaizen/model/entity/is_favor_entity.dart';
+import 'package:oogiritaizen/model/entity/is_like_entity.dart';
 import 'package:oogiritaizen/model/entity/topic_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/model/answer_model.dart';
@@ -89,11 +91,24 @@ class AnswerUseCaseImpl implements AnswerUseCase {
       ..answeredTime = topicModel.answeredTime
       ..createdAt = topicModel.createdAt
       ..createdUser = topicCreateUserEntity;
+    final loginUserModel = authenticationRepository.getLoginUser();
+    final isLikeModel = await likeRepository.getLike(
+      userId: loginUserModel.id,
+      answerId: answerModel.id,
+    );
+    final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+    final isFavorModel = await favorRepository.getFavor(
+      userId: loginUserModel.id,
+      answerId: answerModel.id,
+    );
+    final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
     final answerEntity = AnswerEntity()
       ..id = answerModel.id
       ..text = answerModel.text
       ..viewedTime = answerModel.viewedTime
+      ..isLike = isLikeEntity
       ..likedTime = answerModel.likedTime
+      ..isFavor = isFavorEntity
       ..favoredTime = answerModel.favoredTime
       ..point = answerModel.point
       ..createdAt = answerModel.createdAt

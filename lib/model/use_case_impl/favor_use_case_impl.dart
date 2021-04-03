@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiritaizen/model/entity/is_favor_entity.dart';
+import 'package:oogiritaizen/model/model/is_favor_model.dart';
 import 'package:oogiritaizen/model/model/login_user_model.dart';
 
 import 'package:oogiritaizen/model/repository/authentication_repository.dart';
@@ -33,19 +35,19 @@ class FavorUseCaseImpl implements FavorUseCase {
   final AuthenticationRepository authenticationRepository;
   final FavorRepository favorRepository;
 
-  List<StreamController<bool>> list = [];
+  List<StreamController<IsFavorEntity>> list = [];
 
   @override
-  Stream<bool> getFavorStream({
+  Stream<IsFavorEntity> getFavorStream({
     @required String answerId,
   }) {
-    final favorStream = StreamController<bool>();
+    final favorStream = StreamController<IsFavorEntity>();
     list.add(favorStream);
 
     authenticationRepository.getLoginUserStream().listen(
       (LoginUserModel loginUserModel) {
         if (loginUserModel == null) {
-          favorStream.sink.add(false);
+          favorStream.sink.add(null);
         } else {
           favorRepository
               .getFavorStream(
@@ -53,8 +55,9 @@ class FavorUseCaseImpl implements FavorUseCase {
             answerId: answerId,
           )
               .listen(
-            (bool isLike) {
-              favorStream.sink.add(isLike);
+            (IsFavorModel isFavorModel) {
+              favorStream.sink
+                  .add(IsFavorEntity()..isFavor = isFavorModel.isFavor);
             },
           );
         }

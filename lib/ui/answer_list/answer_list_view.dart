@@ -216,6 +216,7 @@ class AnswerListView extends HookWidget {
                                 .refreshNewAnswerList();
                           },
                           child: ListView.builder(
+                            key: const PageStorageKey<String>('new'),
                             padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).padding.bottom,
                             ),
@@ -308,7 +309,7 @@ class AnswerListView extends HookWidget {
                                                         .toJPString(),
                                                     style: const TextStyle(
                                                       color: Colors.black,
-                                                      fontSize: 16,
+                                                      fontSize: 15,
                                                     ),
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -328,7 +329,7 @@ class AnswerListView extends HookWidget {
                                                                 const TextStyle(
                                                               color:
                                                                   Colors.black,
-                                                              fontSize: 16,
+                                                              fontSize: 15,
                                                             ),
                                                             overflow:
                                                                 TextOverflow
@@ -341,7 +342,7 @@ class AnswerListView extends HookWidget {
                                                           ' のボケ：',
                                                           style: TextStyle(
                                                             color: Colors.black,
-                                                            fontSize: 16,
+                                                            fontSize: 15,
                                                           ),
                                                         ),
                                                       ),
@@ -477,29 +478,29 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-//                                                    icon: viewModel.showingNewAnswers
-//                                                            .elementAt(index)
-//                                                            .isLike
-//                                                        ? const Icon(
-//                                                            Icons.favorite,
-//                                                            color: Colors.pink,
-//                                                          )
-//                                                        : const Icon(
-//                                                            Icons
-//                                                                .favorite_outline,
-//                                                            color: Colors.pink,
-//                                                          ),
-                                                    icon: const Icon(
-                                                      Icons.favorite_outline,
-                                                      color: Colors.pink,
-                                                    ),
+                                                    icon: (viewModel
+                                                                .showingNewAnswers
+                                                                .elementAt(
+                                                                    index)
+                                                                .isLike
+                                                                .isLike ??
+                                                            false)
+                                                        ? const Icon(
+                                                            Icons.favorite,
+                                                            color: Colors.pink,
+                                                          )
+                                                        : const Icon(
+                                                            Icons
+                                                                .favorite_outline,
+                                                            color: Colors.pink,
+                                                          ),
                                                     onPressed: () {
-                                                      context
-                                                          .read(
-                                                              answerListViewModelProvider(
-                                                                  parameter))
+                                                      viewModel
                                                           .likeButtonAction(
-                                                              index: index);
+                                                        answerEntity: viewModel
+                                                            .showingNewAnswers
+                                                            .elementAt(index),
+                                                      );
                                                     },
                                                   ),
                                                   Text(
