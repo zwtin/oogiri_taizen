@@ -36,7 +36,11 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   @override
   LoginUserModel getLoginUser() {
     try {
-      return LoginUserModel()..id = _firebaseAuth.currentUser.uid;
+      if (_firebaseAuth.currentUser == null) {
+        return null;
+      } else {
+        return LoginUserModel()..id = _firebaseAuth.currentUser.uid;
+      }
     } on Exception catch (error) {
       rethrow;
     }

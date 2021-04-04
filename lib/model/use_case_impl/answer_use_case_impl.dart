@@ -94,15 +94,21 @@ class AnswerUseCaseImpl implements AnswerUseCase {
         ..createdUser = topicCreateUserEntity;
       final loginUserModel = authenticationRepository.getLoginUser();
       final isLikeModel = await likeRepository.getLike(
-        userId: loginUserModel.id,
+        userId: loginUserModel?.id,
         answerId: answerModel.id,
       );
-      final isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+      IsLikeEntity isLikeEntity;
+      if (isLikeModel != null) {
+        isLikeEntity = IsLikeEntity()..isLike = isLikeModel.isLike;
+      }
       final isFavorModel = await favorRepository.getFavor(
-        userId: loginUserModel.id,
+        userId: loginUserModel?.id,
         answerId: answerModel.id,
       );
-      final isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
+      IsFavorEntity isFavorEntity;
+      if (isFavorModel != null) {
+        isFavorEntity = IsFavorEntity()..isFavor = isFavorModel.isFavor;
+      }
       final answerEntity = AnswerEntity()
         ..id = answerModel.id
         ..text = answerModel.text

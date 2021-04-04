@@ -186,10 +186,6 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshNewAnswerList() async {
-    for (final answer in newAnswers) {
-      await answer.likeSubscription.cancel();
-      await answer.favorSubscription.cancel();
-    }
     newAnswers = [];
     await getNewAnswerList();
   }
@@ -395,10 +391,6 @@ class AnswerListViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
-    for (final answer in newAnswers) {
-      await answer.likeSubscription.cancel();
-      await answer.favorSubscription.cancel();
-    }
     debugPrint(screenId);
   }
 }

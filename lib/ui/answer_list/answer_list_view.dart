@@ -483,7 +483,7 @@ class AnswerListView extends HookWidget {
                                                                 .elementAt(
                                                                     index)
                                                                 .isLike
-                                                                .isLike ??
+                                                                ?.isLike ??
                                                             false)
                                                         ? const Icon(
                                                             Icons.favorite,

@@ -79,8 +79,10 @@ class MyProfileViewModel extends ChangeNotifier {
     userUseCase.getLoginUserStream().listen(
       (UserEntity userEntity) {
         loginUser = userEntity;
-        refreshCreateAnswerList();
-        refreshFavorAnswerList();
+        if (userEntity != null) {
+          refreshCreateAnswerList();
+          refreshFavorAnswerList();
+        }
         notifyListeners();
       },
     );
