@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiritaizen/model/entity/alert_entity.dart';
 
 import 'package:oogiritaizen/model/entity/answer_entity.dart';
+import 'package:oogiritaizen/model/entity/is_favor_entity.dart';
+import 'package:oogiritaizen/model/entity/is_like_entity.dart';
 import 'package:oogiritaizen/model/entity/user_entity.dart';
 import 'package:oogiritaizen/model/use_case/answer_use_case.dart';
 import 'package:oogiritaizen/model/use_case/block_use_case.dart';
@@ -71,8 +73,78 @@ class AnswerDetailViewModel extends ChangeNotifier {
   AnswerEntity answer;
 
   Future<void> setup() async {
-    loginUser = await userUseCase.getLoginUser();
+    userUseCase.getLoginUserStream().listen(
+      (UserEntity userEntity) {
+        loginUser = userEntity;
+        notifyListeners();
+      },
+    );
     answer = await answerUseCase.getAnswer(answerId: answerId);
+    answer
+      ..likeSubscription = likeUseCase
+          .getLikeStream(answerId: answer.id)
+          .listen((IsLikeEntity isLikeEntity) {
+        if (answer.isLike == null) {
+          if (isLikeEntity == null) {
+          } else if (isLikeEntity.isLike) {
+            answer.isLike = IsLikeEntity()..isLike = true;
+          } else if (!isLikeEntity.isLike) {
+            answer.isLike = IsLikeEntity()..isLike = false;
+          }
+        } else if (answer.isLike.isLike) {
+          if (isLikeEntity == null) {
+            answer.isLike = null;
+          } else if (isLikeEntity.isLike) {
+          } else if (!isLikeEntity.isLike) {
+            final isLike = IsLikeEntity()..isLike = false;
+            answer
+              ..likedTime = answer.likedTime - 1
+              ..isLike = isLike;
+          }
+        } else if (!answer.isLike.isLike) {
+          if (isLikeEntity == null) {
+            answer.isLike = null;
+          } else if (isLikeEntity.isLike) {
+            final isLike = IsLikeEntity()..isLike = true;
+            answer
+              ..likedTime = answer.likedTime + 1
+              ..isLike = isLike;
+          } else if (!isLikeEntity.isLike) {}
+        }
+        notifyListeners();
+      })
+      ..favorSubscription = favorUseCase
+          .getFavorStream(answerId: answer.id)
+          .listen((IsFavorEntity isFavorEntity) {
+        if (answer.isFavor == null) {
+          if (isFavorEntity == null) {
+          } else if (isFavorEntity.isFavor) {
+            answer.isFavor = IsFavorEntity()..isFavor = true;
+          } else if (!isFavorEntity.isFavor) {
+            answer.isFavor = IsFavorEntity()..isFavor = false;
+          }
+        } else if (answer.isFavor.isFavor) {
+          if (isFavorEntity == null) {
+            answer.isFavor = null;
+          } else if (isFavorEntity.isFavor) {
+          } else if (!isFavorEntity.isFavor) {
+            final isFavor = IsFavorEntity()..isFavor = false;
+            answer
+              ..favoredTime = answer.favoredTime - 1
+              ..isFavor = isFavor;
+          }
+        } else if (!answer.isFavor.isFavor) {
+          if (isFavorEntity == null) {
+            answer.isFavor = null;
+          } else if (isFavorEntity.isFavor) {
+            final isFavor = IsFavorEntity()..isFavor = true;
+            answer
+              ..favoredTime = answer.favoredTime + 1
+              ..isFavor = isFavor;
+          } else if (!isFavorEntity.isFavor) {}
+        }
+        notifyListeners();
+      });
     notifyListeners();
   }
 
@@ -113,55 +185,61 @@ class AnswerDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> likeButtonAction() async {
-//    try {
-//      if (answer.isLike) {
-//        await likeUseCase.unlike(answerId: answer.id);
-//        answer
-//          ..isLike = false
-//          ..likedTime = answer.likedTime - 1;
-//      } else {
-//        await likeUseCase.like(answerId: answer.id);
-//        answer
-//          ..isLike = true
-//          ..likedTime = answer.likedTime + 1;
-//      }
-//      notifyListeners();
-//    } on Exception catch (error) {
-//      providerReference.read(alertViewModelProvider(screenId)).show(
-//            alertEntity: AlertEntity()
-//              ..title = 'エラー'
-//              ..subtitle = '通信エラーが発生しました'
-//              ..showCancelButton = false
-//              ..onPress = null
-//              ..style = null,
-//          );
-//    }
+    try {
+      if (answer.isLike == null) {
+        providerReference.read(alertViewModelProvider(screenId)).show(
+              alertEntity: AlertEntity()
+                ..title = 'エラー'
+                ..subtitle = 'ログインしてください'
+                ..showCancelButton = false
+                ..onPress = null
+                ..style = null,
+            );
+      } else if (answer.isLike.isLike) {
+        await likeUseCase.unlike(answerId: answer.id);
+      } else if (!answer.isLike.isLike) {
+        await likeUseCase.like(answerId: answer.id);
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(screenId)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
+    }
   }
 
   Future<void> favorButtonAction() async {
-//    try {
-//      if (answer.isFavor) {
-//        await favorUseCase.unfavor(answerId: answer.id);
-//        answer
-//          ..isFavor = false
-//          ..favoredTime = answer.favoredTime - 1;
-//      } else {
-//        await favorUseCase.favor(answerId: answer.id);
-//        answer
-//          ..isFavor = true
-//          ..favoredTime = answer.favoredTime + 1;
-//      }
-//      notifyListeners();
-//    } on Exception catch (error) {
-//      providerReference.read(alertViewModelProvider(screenId)).show(
-//            alertEntity: AlertEntity()
-//              ..title = 'エラー'
-//              ..subtitle = '通信エラーが発生しました'
-//              ..showCancelButton = false
-//              ..onPress = null
-//              ..style = null,
-//          );
-//    }
+    try {
+      if (answer.isFavor == null) {
+        providerReference.read(alertViewModelProvider(screenId)).show(
+              alertEntity: AlertEntity()
+                ..title = 'エラー'
+                ..subtitle = 'ログインしてください'
+                ..showCancelButton = false
+                ..onPress = null
+                ..style = null,
+            );
+      } else if (answer.isFavor.isFavor) {
+        await favorUseCase.unfavor(answerId: answer.id);
+      } else if (!answer.isFavor.isFavor) {
+        await favorUseCase.favor(answerId: answer.id);
+      }
+      notifyListeners();
+    } on Exception catch (error) {
+      providerReference.read(alertViewModelProvider(screenId)).show(
+            alertEntity: AlertEntity()
+              ..title = 'エラー'
+              ..subtitle = '通信エラーが発生しました'
+              ..showCancelButton = false
+              ..onPress = null
+              ..style = null,
+          );
+    }
   }
 
   Future<void> disposed() async {

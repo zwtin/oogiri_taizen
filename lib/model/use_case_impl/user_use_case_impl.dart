@@ -75,8 +75,11 @@ class UserUseCaseImpl implements UserUseCase {
 
   @override
   Future<UserEntity> getLoginUser() async {
+    final loginUserModel = authenticationRepository.getLoginUser();
+    if (loginUserModel == null) {
+      return null;
+    }
     try {
-      final loginUserModel = authenticationRepository.getLoginUser();
       final loginUser = await userRepository.getUser(userId: loginUserModel.id);
       return UserEntity()
         ..id = loginUser.id

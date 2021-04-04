@@ -522,28 +522,28 @@ class AnswerListView extends HookWidget {
                                               child: Row(
                                                 children: [
                                                   IconButton(
-//                                                    icon: viewModel.showingNewAnswers
-//                                                            .elementAt(index)
-//                                                            .isFavor
-//                                                        ? const Icon(
-//                                                            Icons.star,
-//                                                            color: Colors.cyan,
-//                                                          )
-//                                                        : const Icon(
-//                                                            Icons.star_outline,
-//                                                            color: Colors.cyan,
-//                                                          ),
-                                                    icon: const Icon(
-                                                      Icons.star_outline,
-                                                      color: Colors.cyan,
-                                                    ),
+                                                    icon: (viewModel
+                                                                .showingNewAnswers
+                                                                .elementAt(
+                                                                    index)
+                                                                .isFavor
+                                                                ?.isFavor ??
+                                                            false)
+                                                        ? const Icon(
+                                                            Icons.star,
+                                                            color: Colors.cyan,
+                                                          )
+                                                        : const Icon(
+                                                            Icons.star_outline,
+                                                            color: Colors.cyan,
+                                                          ),
                                                     onPressed: () {
-                                                      context
-                                                          .read(
-                                                              answerListViewModelProvider(
-                                                                  parameter))
+                                                      viewModel
                                                           .favorButtonAction(
-                                                              index: index);
+                                                        answerEntity: viewModel
+                                                            .showingNewAnswers
+                                                            .elementAt(index),
+                                                      );
                                                     },
                                                   ),
                                                   Text(
