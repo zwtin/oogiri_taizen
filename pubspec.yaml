@@ -160,11 +160,13 @@ flavorizr:
         applicationId: "com.zwtin.oogiritaizen.dev"
         firebase:
           config: "firebase/development/google-services.json"
+        generateDummyAssets: false
 
       ios:
         bundleId: "com.zwtin.oogiritaizen.dev"
         firebase:
           config: "firebase/development/GoogleService-Info.plist"
+        generateDummyAssets: false
 
     production:
       app:
@@ -174,7 +176,9 @@ flavorizr:
         applicationId: "com.zwtin.oogiritaizen"
         firebase:
           config: "firebase/production/google-services.json"
+        generateDummyAssets: false
       ios:
         bundleId: "com.zwtin.oogiritaizen"
         firebase:
           config: "firebase/production/GoogleService-Info.plist"
+        generateDummyAssets: false
