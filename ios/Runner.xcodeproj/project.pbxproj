@@ -178,7 +178,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
-				C7A53784EFB79FBA11426D5E /* Firebase Setup */,
+				1968E202FBB8536D44EBAF72 /* Firebase Setup */,
 				5A11C9103818AB22BC865C7A /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
@@ -270,6 +270,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		1968E202FBB8536D44EBAF72 /* Firebase Setup */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Firebase Setup";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" == \"Debug-development\" ] || [ \"$CONFIGURATION\" == \"Release-development\" ]; then\n  cp Runner/development/GoogleService-Info.plist Runner/GoogleService-Info.plist\nelif [ \"$CONFIGURATION\" == \"Debug-production\" ] || [ \"$CONFIGURATION\" == \"Release-production\" ]; then\n  cp Runner/production/GoogleService-Info.plist Runner/GoogleService-Info.plist\nfi\n\n";
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -336,24 +354,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
-		};
-		C7A53784EFB79FBA11426D5E /* Firebase Setup */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Firebase Setup";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" == \"Debug-development\" ] || [ \"$CONFIGURATION\" == \"Release-development\" ]; then\n  cp Runner/development/GoogleService-Info.plist Runner/GoogleService-Info.plist\nelif [ \"$CONFIGURATION\" == \"Debug-production\" ] || [ \"$CONFIGURATION\" == \"Release-production\" ]; then\n  cp Runner/production/GoogleService-Info.plist Runner/GoogleService-Info.plist\nfi\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
