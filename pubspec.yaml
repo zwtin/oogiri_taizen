@@ -184,9 +184,11 @@ flavorizr:
     - assets:extract
     - android:androidManifest
     - android:buildGradle
+    - android:icons
     - ios:xcconfig
     - ios:buildTargets
     - ios:schema
+    - ios:icons
     - ios:plist
     - google:firebase
     - assets:clean
