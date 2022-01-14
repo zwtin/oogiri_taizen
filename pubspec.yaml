@@ -190,7 +190,6 @@ flavorizr:
     - ios:schema
     - ios:icons
     - ios:plist
-    - ios:launchScreen
     - google:firebase
     - assets:clean
     - ide:config
