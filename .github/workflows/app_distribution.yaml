@@ -1,0 +1,14 @@
+name: app_distribution
+
+on: 
+  push:
+    branches:
+      - github_actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v2
