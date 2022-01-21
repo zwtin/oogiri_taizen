@@ -1092,7 +1092,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "Development com.zwtin.oogiritaizen.dev";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.zwtin.oogiritaizen.dev";
 			};
 			name = "Debug-development";
 		};
@@ -1107,7 +1107,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "AdHoc com.zwtin.oogiritaizen.dev";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc com.zwtin.oogiritaizen.dev";
 			};
 			name = "Profile-development";
 		};
@@ -1122,7 +1122,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "AppStore com.zwtin.oogiritaizen.dev";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.zwtin.oogiritaizen.dev";
 			};
 			name = "Release-development";
 		};
@@ -1136,7 +1136,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "Development com.zwtin.oogiritaizen";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.zwtin.oogiritaizen";
 			};
 			name = "Debug-production";
 		};
@@ -1151,7 +1151,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "AdHoc com.zwtin.oogiritaizen";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc com.zwtin.oogiritaizen";
 			};
 			name = "Profile-production";
 		};
@@ -1166,7 +1166,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "AppStore com.zwtin.oogiritaizen";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.zwtin.oogiritaizen";
 			};
 			name = "Release-production";
 		};
