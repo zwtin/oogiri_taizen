@@ -7,8 +7,20 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout
+        uses: actions/checkout@v2
+
+    steps:
+      - name: install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.8.1'
+          channel: 'stable'
+ 
+    steps:
+      - name: flutter pub get
+        run: flutter pub get 
