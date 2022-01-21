@@ -34,8 +34,7 @@ jobs:
             ANDROID_KEY_JKS_DEBUG: ${{ secrets.ANDROID_KEY_JKS_DEBUG }}
             ANDROID_KEY_JKS_RELEASE: ${{ secrets.ANDROID_KEY_JKS_RELEASE }}
         run: |
-            touch ./android/app/signingConfigs/debug.jks
-            touch ./android/app/signingConfigs/release.jks
+            mkdir android/app/signingConfigs
             echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
             echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
 
