@@ -52,13 +52,15 @@ jobs:
       - name: create flavor 
         run: flutter pub run flutter_flavorizr
 
-      - flutter build ios
+      - name: flutter build ios
         run: flutter build ios --release --no-codesign --flavor production
 
-      - uses: actions/setup-ruby@v1
+      - name: setup ruby
+        uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.7.2'
 
-      - uses: maierj/fastlane-action@v2.0.1
+      - name: archive
+        uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'archive'
