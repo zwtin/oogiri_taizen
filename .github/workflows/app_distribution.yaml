@@ -14,15 +14,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: install flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.8.1'
-          channel: 'stable'
- 
-      - name: flutter pub get
-        run: flutter pub get 
-
       - name: copy google-service
         env:
             ANDROID_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.ANDROID_GOOGLE_SERVICE_DEVELOPMENT }}
@@ -30,6 +21,10 @@ jobs:
             IOS_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.IOS_GOOGLE_SERVICE_DEVELOPMENT }}
             IOS_GOOGLE_SERVICE_PRODUCTION: ${{ secrets.IOS_GOOGLE_SERVICE_PRODUCTION }}
         run: |
+            touch ./firbase/development/google-services.json
+            touch ./firbase/production/google-services.json
+            touch ./firbase/development/GoogleService-Info.plist
+            touch ./firbase/production/GoogleService-Info.plist
             echo $ANDROID_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firbase/development/google-services.json
             echo $ANDROID_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firbase/production/google-services.json
             echo $IOS_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firbase/development/GoogleService-Info.plist
@@ -40,8 +35,19 @@ jobs:
             ANDROID_KEY_JKS_DEBUG: ${{ secrets.ANDROID_KEY_JKS_DEBUG }}
             ANDROID_KEY_JKS_RELEASE: ${{ secrets.ANDROID_KEY_JKS_RELEASE }}
         run: |
+            touch ./android/app/signingConfigs/debug.jks
+            touch ./android/app/signingConfigs/release.jks
             echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
             echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
+
+      - name: install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.8.1'
+          channel: 'stable'
+ 
+      - name: flutter pub get
+        run: flutter pub get 
 
       - name: create flavor 
         run: flutter pub run flutter_flavorizr
