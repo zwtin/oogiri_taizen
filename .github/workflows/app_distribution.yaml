@@ -21,28 +21,19 @@ jobs:
             IOS_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.IOS_GOOGLE_SERVICE_DEVELOPMENT }}
             IOS_GOOGLE_SERVICE_PRODUCTION: ${{ secrets.IOS_GOOGLE_SERVICE_PRODUCTION }}
         run: |
-            pwd
-            ls
-            mkdir firbase
-            mkdir firbase/development
-            mkdir firbase/production
-            echo $ANDROID_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firbase/development/google-services.json
-            echo $ANDROID_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firbase/production/google-services.json
-            echo $IOS_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firbase/development/GoogleService-Info.plist
-            echo $IOS_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firbase/production/GoogleService-Info.plist
+            mkdir firebase
+            mkdir firebase/development
+            mkdir firebase/production
+            echo $ANDROID_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firebase/development/google-services.json
+            echo $ANDROID_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firebase/production/google-services.json
+            echo $IOS_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firebase/development/GoogleService-Info.plist
+            echo $IOS_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firebase/production/GoogleService-Info.plist
 
       - name: copy android key.jks
         env:
             ANDROID_KEY_JKS_DEBUG: ${{ secrets.ANDROID_KEY_JKS_DEBUG }}
             ANDROID_KEY_JKS_RELEASE: ${{ secrets.ANDROID_KEY_JKS_RELEASE }}
         run: |
-            pwd
-            ls
-            cd firebase
-            ls
-            cd development
-            ls
-            cd ../../
             mkdir android/app/signingConfigs
             echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
             echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
