@@ -72,7 +72,7 @@ jobs:
         with:
           lane: 'archive'
 
-      - upload to Firebase App Distribution
+      - name: upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: com.zwtin.oogiritaizen
