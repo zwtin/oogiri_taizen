@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 60
 
     steps:
       - name: checkout
@@ -38,6 +38,11 @@ jobs:
             echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
             echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
 
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+
       - name: install flutter
         uses: subosito/flutter-action@v2
         with:
@@ -59,12 +64,18 @@ jobs:
       - name: flutter build ios
         run: flutter build ios --release --no-codesign --flavor production -t lib/main-production.dart
 
-      - name: setup ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.7.2'
-
+      - name: cd ios
+        run: cd ios
+        
       - name: archive
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'archive'
+
+      - upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: com.zwtin.oogiritaizen
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          group: tester
+          file: ./Runner.ipa
