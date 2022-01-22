@@ -21,6 +21,8 @@ jobs:
             IOS_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.IOS_GOOGLE_SERVICE_DEVELOPMENT }}
             IOS_GOOGLE_SERVICE_PRODUCTION: ${{ secrets.IOS_GOOGLE_SERVICE_PRODUCTION }}
         run: |
+            pwd
+            ls
             mkdir firbase
             mkdir firbase/development
             mkdir firbase/production
