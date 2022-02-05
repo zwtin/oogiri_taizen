@@ -3,9 +3,13 @@ name: app_distribution
 on:
   workflow_dispatch:
     inputs:
+      OS:
+        required: true
+        description: ios or android
+        default: ios
       buildConfig:
         required: true
-        description: Build Configuration
+        description: development or production
         default: development
 
 jobs:
