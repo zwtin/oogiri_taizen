@@ -1122,7 +1122,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.zwtin.oogiritaizen.dev";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc com.zwtin.oogiritaizen.dev";
 			};
 			name = "Release-development";
 		};
@@ -1166,7 +1166,7 @@
 				DEVELOPMENT_TEAM = 33L2X2QLC7;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = Runner;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.zwtin.oogiritaizen";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc com.zwtin.oogiritaizen";
 			};
 			name = "Release-production";
 		};
