@@ -59,6 +59,12 @@ platform :ios do
       scheme: "development",
       export_method: "ad-hoc",
       configuration: "Release-development"
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: {
+          "com.zwtin.oogiritaizen.dev" => "match AdHoc com.zwtin.oogiritaizen.dev"
+        }
+      }
     )
   end
 end
