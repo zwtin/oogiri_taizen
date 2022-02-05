@@ -51,41 +51,6 @@ platform :ios do
     match(
       git_basic_authorization: basic_authorization_token,
       app_identifier: 'com.zwtin.oogiritaizen.dev',
-      type: "development",
-      readonly: true
-    )
-
-    match(
-      git_basic_authorization: basic_authorization_token,
-      app_identifier: 'com.zwtin.oogiritaizen.dev',
-      type: "adhoc",
-      readonly: true
-    )
-
-    match(
-      git_basic_authorization: basic_authorization_token,
-      app_identifier: 'com.zwtin.oogiritaizen.dev',
-      type: "appstore",
-      readonly: true
-    )
-
-    match(
-      git_basic_authorization: basic_authorization_token,
-      app_identifier: 'com.zwtin.oogiritaizen',
-      type: "development",
-      readonly: true
-    )
-
-    match(
-      git_basic_authorization: basic_authorization_token,
-      app_identifier: 'com.zwtin.oogiritaizen',
-      type: "adhoc",
-      readonly: true
-    )
-
-    match(
-      git_basic_authorization: basic_authorization_token,
-      app_identifier: 'com.zwtin.oogiritaizen',
       type: "appstore",
       readonly: true
     )
