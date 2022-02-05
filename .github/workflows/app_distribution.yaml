@@ -18,6 +18,10 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - name: check os
+        if: ${{ github.event.inputs.OS != 'ios' && github.event.inputs.OS != 'android' }}
+        run: exit 1
+
       - name: check build config
         if: ${{ github.event.inputs.buildConfig != 'development' && github.event.inputs.buildConfig != 'production' }}
         run: exit 1
@@ -44,10 +48,12 @@ jobs:
         env:
             ANDROID_KEY_JKS_DEBUG: ${{ secrets.ANDROID_KEY_JKS_DEBUG }}
             ANDROID_KEY_JKS_RELEASE: ${{ secrets.ANDROID_KEY_JKS_RELEASE }}
+            ANDROID_KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
         run: |
             mkdir android/app/signingConfigs
             echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
             echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
+            echo $ANDROID_KEY_PROPERTIES | base64 --decode > ./android/key.properties
 
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -73,18 +79,26 @@ jobs:
         run: flutter pub run flutter_flavorizr
 
       - name: flutter build ios development
-        if: ${{ github.event.inputs.buildConfig == 'development' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'development' }}
         run: flutter build ios --release --no-codesign --flavor development -t lib/main-development.dart
 
       - name: flutter build ios production
-        if: ${{ github.event.inputs.buildConfig == 'production' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'production' }}
         run: flutter build ios --release --no-codesign --flavor production -t lib/main-production.dart
+
+      - name: flutter build android development
+        if: ${{ github.event.inputs.OS == 'android' && github.event.inputs.buildConfig == 'development' }}
+        run: flutter build apk --release --flavor development -t lib/main-development.dart
+
+      - name: flutter build android production
+        if: ${{ github.event.inputs.OS == 'android' && github.event.inputs.buildConfig == 'production' }}
+        run: flutter build apk --release --flavor production -t lib/main-production.dart
 
       - name: export CI
         run: export CI=1
 
       - name: archive development
-        if: ${{ github.event.inputs.buildConfig == 'development' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'development' }}
         uses: maierj/fastlane-action@v2.0.1
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -95,7 +109,7 @@ jobs:
           bundle-install-path: 'vendor/bundle'
 
       - name: archive production
-        if: ${{ github.event.inputs.buildConfig == 'production' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'production' }}
         uses: maierj/fastlane-action@v2.0.1
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -105,11 +119,19 @@ jobs:
           subdirectory: 'ios'
           bundle-install-path: 'vendor/bundle'
 
-      - name: upload Artifact
+      - name: upload ios Artifact
+        if: ${{ github.event.inputs.OS == 'ios' }}
         uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: ios/Runner.ipa
+
+      - name: upload android Artifact
+        if: ${{ github.event.inputs.OS == 'android' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: build/app/outputs/flutter-apk/app.apk
 
   distribution:
     needs: build
@@ -120,14 +142,22 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: download Artifact
+      - name: download ios Artifact
+        if: ${{ github.event.inputs.OS == 'ios' }}
         uses: actions/download-artifact@v2
         with:
           name: my-artifact
           path: ios/
 
+      - name: download android Artifact
+        if: ${{ github.event.inputs.OS == 'android' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: android/
+
       - name: upload to Firebase App Distribution
-        if: ${{ github.event.inputs.buildConfig == 'development' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'development' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.IOS_FIREBASE_APP_ID_DEVELOPMENT }}
@@ -136,10 +166,28 @@ jobs:
           file: ios/Runner.ipa
 
       - name: upload to Firebase App Distribution
-        if: ${{ github.event.inputs.buildConfig == 'production' }}
+        if: ${{ github.event.inputs.OS == 'ios' && github.event.inputs.buildConfig == 'production' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.IOS_FIREBASE_APP_ID_PRODUCTION }}
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: tester
           file: ios/Runner.ipa
+
+      - name: upload to Firebase App Distribution
+        if: ${{ github.event.inputs.OS == 'android' && github.event.inputs.buildConfig == 'development' }}
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.ANDROID_FIREBASE_APP_ID_DEVELOPMENT }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: tester
+          file: android/app.apk
+
+      - name: upload to Firebase App Distribution
+        if: ${{ github.event.inputs.OS == 'android' && github.event.inputs.buildConfig == 'production' }}
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.ANDROID_FIREBASE_APP_ID_PRODUCTION }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: tester
+          file: android/app.apk
