@@ -77,6 +77,27 @@ jobs:
           subdirectory: 'ios'
           bundle-install-path: 'vendor/bundle'
 
+      - name: upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ios/Runner.ipa
+
+  distribution:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: ios/
+
       - name: upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
