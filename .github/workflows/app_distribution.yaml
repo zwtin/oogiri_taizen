@@ -1,0 +1,141 @@
+name: app_distribution
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildConfig:
+        required: true
+        description: Build Configuration
+        default: development
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: check build config
+        if: ${{ github.event.inputs.buildConfig }} != 'development' && ${{ github.event.inputs.buildConfig }} != 'production'
+        run: exit 1
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: copy google-service
+        env:
+            ANDROID_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.ANDROID_GOOGLE_SERVICE_DEVELOPMENT }}
+            ANDROID_GOOGLE_SERVICE_PRODUCTION: ${{ secrets.ANDROID_GOOGLE_SERVICE_PRODUCTION }}
+            IOS_GOOGLE_SERVICE_DEVELOPMENT: ${{ secrets.IOS_GOOGLE_SERVICE_DEVELOPMENT }}
+            IOS_GOOGLE_SERVICE_PRODUCTION: ${{ secrets.IOS_GOOGLE_SERVICE_PRODUCTION }}
+        run: |
+            mkdir firebase
+            mkdir firebase/development
+            mkdir firebase/production
+            echo $ANDROID_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firebase/development/google-services.json
+            echo $ANDROID_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firebase/production/google-services.json
+            echo $IOS_GOOGLE_SERVICE_DEVELOPMENT | base64 --decode > ./firebase/development/GoogleService-Info.plist
+            echo $IOS_GOOGLE_SERVICE_PRODUCTION | base64 --decode > ./firebase/production/GoogleService-Info.plist
+
+      - name: copy android key.jks
+        env:
+            ANDROID_KEY_JKS_DEBUG: ${{ secrets.ANDROID_KEY_JKS_DEBUG }}
+            ANDROID_KEY_JKS_RELEASE: ${{ secrets.ANDROID_KEY_JKS_RELEASE }}
+        run: |
+            mkdir android/app/signingConfigs
+            echo $ANDROID_KEY_JKS_DEBUG | base64 --decode > ./android/app/signingConfigs/debug.jks
+            echo $ANDROID_KEY_JKS_RELEASE | base64 --decode > ./android/app/signingConfigs/release.jks
+
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+
+      - name: install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.8.1'
+          channel: 'stable'
+ 
+      - name: flutter pub get
+        run: flutter pub get 
+
+      - name: create flavor 
+        run: flutter pub run flutter_flavorizr
+
+      - name: create icon
+        run: flutter pub run flutter_launcher_icons:main
+
+      - name: create flavor 
+        run: flutter pub run flutter_flavorizr
+
+      - name: flutter build ios development
+        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        run: flutter build ios --release --no-codesign --flavor development -t lib/main-development.dart
+
+      - name: flutter build ios production
+        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        run: flutter build ios --release --no-codesign --flavor production -t lib/main-production.dart
+
+      - name: export CI
+        run: export CI=1
+
+      - name: archive development
+        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        uses: maierj/fastlane-action@v2.0.1
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.ITUNES_PASSWORD }}
+        with:
+          lane: 'archive_dev'
+          subdirectory: 'ios'
+          bundle-install-path: 'vendor/bundle'
+
+      - name: archive production
+        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        uses: maierj/fastlane-action@v2.0.1
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          MATCH_PASSWORD: ${{ secrets.ITUNES_PASSWORD }}
+        with:
+          lane: 'archive'
+          subdirectory: 'ios'
+          bundle-install-path: 'vendor/bundle'
+
+      - name: upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ios/Runner.ipa
+
+  distribution:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: ios/
+
+      - name: upload to Firebase App Distribution
+        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.IOS_FIREBASE_APP_ID_DEVELOPMENT }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: tester
+          file: ios/Runner.ipa
+
+      - name: upload to Firebase App Distribution
+        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.IOS_FIREBASE_APP_ID_PRODUCTION }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: tester
+          file: ios/Runner.ipa

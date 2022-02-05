@@ -1,0 +1,49 @@
+default_platform(:ios)
+
+platform :ios do
+  lane :archive do
+    setup_ci(provider: "travis")
+
+    username = "zwtin"
+    personal_github_access_token = ENV["PERSONAL_ACCESS_TOKEN"]
+    authorization_token_str = "#{username}:#{personal_github_access_token}"
+    basic_authorization_token = Base64.strict_encode64(authorization_token_str)
+
+    match(
+      git_url: "https://github.com/zwtin/certificates.git",
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen',
+      type: "adhoc",
+      readonly: true
+    )
+
+    gym(
+      scheme: "production",
+      export_method: "ad-hoc",
+      configuration: "Release-production",
+    )
+  end
+
+  lane :archive_dev do
+    setup_ci(provider: "travis")
+
+    username = "zwtin"
+    personal_github_access_token = ENV["PERSONAL_ACCESS_TOKEN"]
+    authorization_token_str = "#{username}:#{personal_github_access_token}"
+    basic_authorization_token = Base64.strict_encode64(authorization_token_str)
+
+    match(
+      git_url: "https://github.com/zwtin/certificates.git",
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen.dev',
+      type: "adhoc",
+      readonly: true
+    )
+
+    gym(
+      scheme: "development",
+      export_method: "ad-hoc",
+      configuration: "Release-development",
+    )
+  end
+end
