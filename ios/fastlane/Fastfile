@@ -16,13 +16,27 @@
 default_platform(:ios)
 
 platform :ios do
-  lane :archive_dev do
-    match(type: "adhoc", readonly: true)
-    gym(scheme: "development")
-  end
-
   lane :archive do
-    match(type: "adhoc", readonly: true)
-    gym(scheme: "production")
+    setup_ci(provider: "travis")
+
+    username = "zwtin"
+    personal_github_access_token = ENV["PERSONAL_ACCESS_TOKEN"]
+    authorization_token_str = "#{username}:#{personal_github_access_token}"
+    basic_authorization_token = Base64.strict_encode64(authorization_token_str)
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen',
+      type: "adhoc",
+      readonly: true
+    )
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "production",
+      export_options: {
+        method: "ad-hoc",
+      }
+    )
   end
 end
