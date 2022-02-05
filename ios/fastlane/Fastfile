@@ -58,6 +58,7 @@ platform :ios do
     gym(
       scheme: "development",
       export_method: "ad-hoc",
+      configuration: "Release-development"
     )
   end
 end
