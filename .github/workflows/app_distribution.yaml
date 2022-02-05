@@ -86,7 +86,7 @@ jobs:
   distribution:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 10
 
     steps:
       - name: checkout
@@ -98,10 +98,19 @@ jobs:
           name: my-artifact
           path: ios/
 
+      - name: script
+        run: ls -a
+
+      - name: script
+        run: |
+          cd ios/
+          ls -a
+          cd ../
+
       - name: upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: com.zwtin.oogiritaizen.dev
           token: ${{ secrets.FIREBASE_TOKEN }}
-          group: tester
+          groups: tester
           file: ios/Runner.ipa
