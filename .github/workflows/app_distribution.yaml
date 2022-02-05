@@ -15,8 +15,10 @@ jobs:
 
     steps:
       - name: check build config
-        if: ${{ github.event.inputs.buildConfig }} != 'development' && ${{ github.event.inputs.buildConfig }} != 'production'
-        run: exit 1
+        if: ${{ github.event.inputs.buildConfig != 'development' }} && ${{ github.event.inputs.buildConfig != 'production' }}
+        run: |
+          echo ${{ github.event.inputs.buildConfig }}
+          exit 1
 
       - name: checkout
         uses: actions/checkout@v2
@@ -69,18 +71,18 @@ jobs:
         run: flutter pub run flutter_flavorizr
 
       - name: flutter build ios development
-        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        if: ${{ github.event.inputs.buildConfig != 'development' }}
         run: flutter build ios --release --no-codesign --flavor development -t lib/main-development.dart
 
       - name: flutter build ios production
-        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        if: ${{ github.event.inputs.buildConfig != 'production' }}
         run: flutter build ios --release --no-codesign --flavor production -t lib/main-production.dart
 
       - name: export CI
         run: export CI=1
 
       - name: archive development
-        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        if: ${{ github.event.inputs.buildConfig != 'development' }}
         uses: maierj/fastlane-action@v2.0.1
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -91,7 +93,7 @@ jobs:
           bundle-install-path: 'vendor/bundle'
 
       - name: archive production
-        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        if: ${{ github.event.inputs.buildConfig != 'production' }}
         uses: maierj/fastlane-action@v2.0.1
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -123,7 +125,7 @@ jobs:
           path: ios/
 
       - name: upload to Firebase App Distribution
-        if: ${{ github.event.inputs.buildConfig }} != 'development'
+        if: ${{ github.event.inputs.buildConfig != 'development' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.IOS_FIREBASE_APP_ID_DEVELOPMENT }}
@@ -132,7 +134,7 @@ jobs:
           file: ios/Runner.ipa
 
       - name: upload to Firebase App Distribution
-        if: ${{ github.event.inputs.buildConfig }} != 'production'
+        if: ${{ github.event.inputs.buildConfig != 'production' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.IOS_FIREBASE_APP_ID_PRODUCTION }}
