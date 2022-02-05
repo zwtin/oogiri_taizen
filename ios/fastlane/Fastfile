@@ -58,7 +58,7 @@ platform :ios do
     gym(
       scheme: "development",
       export_method: "ad-hoc",
-      configuration: "Release-development"
+      configuration: "Release-development",
       export_options: {
         signingStyle: "manual",
         provisioningProfiles: {
