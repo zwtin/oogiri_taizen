@@ -114,3 +114,4 @@ jobs:
           token: ${{ secrets.FIREBASE_TOKEN }}
           groups: tester
           file: ios/Runner.ipa
+          debug: true
