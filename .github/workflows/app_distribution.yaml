@@ -15,10 +15,8 @@ jobs:
 
     steps:
       - name: check build config
-        if: ${{ github.event.inputs.buildConfig != 'development' }} && ${{ github.event.inputs.buildConfig != 'production' }}
-        run: |
-          echo ${{ github.event.inputs.buildConfig }}
-          exit 1
+        if: ${{ github.event.inputs.buildConfig != 'development' && github.event.inputs.buildConfig != 'production' }}
+        run: exit 1
 
       - name: checkout
         uses: actions/checkout@v2
