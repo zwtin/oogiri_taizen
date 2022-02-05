@@ -62,7 +62,7 @@ jobs:
         run: flutter pub run flutter_flavorizr
 
       - name: flutter build ios
-        run: flutter build ios --release --no-codesign --flavor production -t lib/main-production.dart
+        run: flutter build ios --release --no-codesign --flavor development -t lib/main-development.dart
 
       - name: export CI
         run: export CI=1
@@ -73,14 +73,14 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           MATCH_PASSWORD: ${{ secrets.ITUNES_PASSWORD }}
         with:
-          lane: 'archive'
+          lane: 'archive_dev'
           subdirectory: 'ios'
           bundle-install-path: 'vendor/bundle'
 
       - name: upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: com.zwtin.oogiritaizen
+          appId: com.zwtin.oogiritaizen.dev
           token: ${{ secrets.FIREBASE_TOKEN }}
           group: tester
           file: ios/Runner.ipa

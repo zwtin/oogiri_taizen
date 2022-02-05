@@ -39,4 +39,59 @@ platform :ios do
       }
     )
   end
+
+  lane :archive_dev do
+    setup_ci(provider: "travis")
+
+    username = "zwtin"
+    personal_github_access_token = ENV["PERSONAL_ACCESS_TOKEN"]
+    authorization_token_str = "#{username}:#{personal_github_access_token}"
+    basic_authorization_token = Base64.strict_encode64(authorization_token_str)
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen.dev',
+      type: "development",
+      readonly: true
+    )
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen.dev',
+      type: "adhoc",
+      readonly: true
+    )
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen.dev',
+      type: "appstore",
+      readonly: true
+    )
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen',
+      type: "development",
+      readonly: true
+    )
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen',
+      type: "adhoc",
+      readonly: true
+    )
+
+    match(
+      git_basic_authorization: basic_authorization_token,
+      app_identifier: 'com.zwtin.oogiritaizen',
+      type: "appstore",
+      readonly: true
+    )
+
+    gym(
+      scheme: "development",
+    )
+  end
 end
