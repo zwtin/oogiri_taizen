@@ -51,12 +51,13 @@ platform :ios do
     match(
       git_basic_authorization: basic_authorization_token,
       app_identifier: 'com.zwtin.oogiritaizen.dev',
-      type: "appstore",
+      type: "adhoc",
       readonly: true
     )
 
     gym(
       scheme: "development",
+      export_method: "ad-hoc",
     )
   end
 end
