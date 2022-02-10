@@ -1,23 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiri_taizen/app/mapper/login_user_view_data_mapper.dart';
-
-import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/block_list_view.dart';
-import 'package:oogiri_taizen/app/view/bottom_tab_view.dart';
-import 'package:oogiri_taizen/app/view/start_view.dart';
+import 'package:oogiri_taizen/app/view/setting_push_notification_view.dart';
 import 'package:oogiri_taizen/app/view/terms_of_service_view.dart';
 import 'package:oogiri_taizen/app/view_data/login_user_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/force_update_use_case.dart';
 import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/force_update_use_case_impl.dart';
 
 final settingViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SettingViewModel, UniqueKey>(
@@ -68,6 +61,12 @@ class SettingViewModel extends ChangeNotifier {
 
   LoginUserViewData? loginUser;
   StreamSubscription<LoginUser?>? loginUserSubscription;
+
+  Future<void> transitionToPushNotification() async {
+    await _reader.call(routerNotiferProvider(_key)).push(
+          nextScreen: SettingPushNotificationView(),
+        );
+  }
 
   Future<void> transitionToBlockList() async {
     await _reader.call(routerNotiferProvider(_key)).push(
