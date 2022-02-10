@@ -5,7 +5,9 @@ import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/push_notification_use_case.dart';
 import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case_impl/push_notification_use_case_impl.dart';
 
 final bottomTabViewModelProvider =
     ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
@@ -13,6 +15,7 @@ final bottomTabViewModelProvider =
     final bottomTabViewModel = BottomTabViewModel(
       ref.read,
       ref.watch(authenticationUseCaseProvider),
+      ref.watch(pushNotificationUseCaseProvider),
     );
     ref.onDispose(bottomTabViewModel.disposed);
     return bottomTabViewModel;
@@ -23,11 +26,15 @@ class BottomTabViewModel extends ChangeNotifier {
   BottomTabViewModel(
     this._reader,
     this._authenticationUseCase,
-  );
+      this._pushNotificationUseCase,
+  ) {
+    _pushNotificationUseCase.requestPermission();
+  }
 
   final Reader _reader;
 
   final AuthenticationUseCase _authenticationUseCase;
+  final PushNotificationUseCase _pushNotificationUseCase;
 
   int selected = 0;
   final Map<int, UniqueKey> _keyMap = {};
