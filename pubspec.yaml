@@ -71,8 +71,8 @@ dependencies:
   streaming_shared_preferences: ^2.0.0
 
   # For Authenticate
-  google_sign_in: ^5.0.7
-  sign_in_with_apple: ^3.0.0
+  google_sign_in: ^5.2.3
+  sign_in_with_apple: ^3.3.0
 
   # To Use Tuple
   tuple: ^2.0.0
