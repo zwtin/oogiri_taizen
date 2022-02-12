@@ -3,3 +3,4 @@
 FLUTTER_TARGET=lib/main-production.dart
 ASSET_PREFIX=production
 BUNDLE_NAME=大喜利大全
+REVERSED_CLIENT_ID=com.googleusercontent.apps.112273983609-62u434tpqqdj3a45t61ivkv4ehrggoj3

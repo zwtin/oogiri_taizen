@@ -3,3 +3,4 @@
 FLUTTER_TARGET=lib/main-development.dart
 ASSET_PREFIX=development
 BUNDLE_NAME=大喜利大全Dev
+REVERSED_CLIENT_ID=com.googleusercontent.apps.532670940197-3aphicmhdupitfthoq5fu2dmghhdcu8d

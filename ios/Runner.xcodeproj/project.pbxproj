@@ -205,7 +205,7 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				5A11C9103818AB22BC865C7A /* [CP] Check Pods Manifest.lock */,
-				B65A2DE99BD5120110E61BF5 /* Firebase Setup */,
+				9F216BE14D69A9BD0D4E5BD9 /* Firebase Setup */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
@@ -369,7 +369,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		B65A2DE99BD5120110E61BF5 /* Firebase Setup */ = {
+		9F216BE14D69A9BD0D4E5BD9 /* Firebase Setup */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
