@@ -121,40 +121,6 @@ class SettingPushNotificationView extends HookWidget {
                                 ),
                               ),
                             ),
-                            Container(
-                              color: Colors.white,
-                              height: 1,
-                            ),
-                            ListTile(
-                              title: const Text(
-                                '運営からのおすすめ',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              trailing: SizedBox(
-                                width: 60,
-                                height: 35,
-                                child: FlutterSwitch(
-                                  width: 60,
-                                  height: 35,
-                                  activeColor: Colors.yellow,
-                                  inactiveColor: Colors.grey,
-                                  value: viewModel.whenRecommended,
-                                  onToggle: (val) {
-                                    context
-                                        .read(
-                                          settingPushNotificationViewModelProvider(
-                                            _key,
-                                          ),
-                                        )
-                                        .setWhenRecommended(val);
-                                  },
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
