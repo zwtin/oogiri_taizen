@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
-
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
@@ -15,7 +14,7 @@ final bottomTabViewModelProvider =
     final bottomTabViewModel = BottomTabViewModel(
       ref.read,
       ref.watch(authenticationUseCaseProvider),
-      ref.watch(pushNotificationUseCaseProvider),
+      ref.watch(pushNotificationUseCaseProvider(UniqueKey())),
     );
     ref.onDispose(bottomTabViewModel.disposed);
     return bottomTabViewModel;
@@ -26,7 +25,7 @@ class BottomTabViewModel extends ChangeNotifier {
   BottomTabViewModel(
     this._reader,
     this._authenticationUseCase,
-      this._pushNotificationUseCase,
+    this._pushNotificationUseCase,
   ) {
     _pushNotificationUseCase.requestPermission();
   }

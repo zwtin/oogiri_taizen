@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
 import 'package:oogiri_taizen/app/view_model/setting_view_model.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
@@ -78,8 +77,8 @@ class SettingView extends HookWidget {
                                   ),
                                 ]
                               : [
-                                  const ListTile(
-                                    title: Text(
+                                  ListTile(
+                                    title: const Text(
                                       'プッシュ通知',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -87,10 +86,15 @@ class SettingView extends HookWidget {
                                         fontSize: 18,
                                       ),
                                     ),
-                                    trailing: Icon(
+                                    trailing: const Icon(
                                       Icons.arrow_forward_ios,
                                       color: Colors.white,
                                     ),
+                                    onTap: () async {
+                                      await context
+                                          .read(settingViewModelProvider(_key))
+                                          .transitionToPushNotification();
+                                    },
                                   ),
                                   Container(
                                     color: Colors.white,

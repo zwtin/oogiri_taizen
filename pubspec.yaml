@@ -66,6 +66,7 @@ dependencies:
   circular_menu: ^1.2.2
   freezed_annotation: ^0.14.2
   flutter_html: ^2.1.5
+  flutter_switch: ^0.3.2
 
   # To Use SharedPreferences
   streaming_shared_preferences: ^2.0.0
