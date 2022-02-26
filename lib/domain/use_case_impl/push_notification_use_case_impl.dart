@@ -12,9 +12,10 @@ import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_im
 import 'package:oogiri_taizen/infra/repository_impl/push_notification_repository_impl.dart';
 
 final pushNotificationUseCaseProvider =
-    Provider.autoDispose<PushNotificationUseCase>(
-  (ref) {
+    Provider.autoDispose.family<PushNotificationUseCase, UniqueKey>(
+  (ref, key) {
     final pushNotificationUseCase = PushNotificationUseCaseImpl(
+      key,
       ref.watch(authenticationRepositoryProvider),
       ref.watch(pushNotificationRepositoryProvider),
     );
@@ -25,6 +26,7 @@ final pushNotificationUseCaseProvider =
 
 class PushNotificationUseCaseImpl implements PushNotificationUseCase {
   PushNotificationUseCaseImpl(
+    this._key,
     this._authenticationRepository,
     this._pushNotificationRepository,
   ) {
@@ -38,6 +40,7 @@ class PushNotificationUseCaseImpl implements PushNotificationUseCase {
     _resetSetting();
   }
 
+  final UniqueKey _key;
   final AuthenticationRepository _authenticationRepository;
   final PushNotificationRepository _pushNotificationRepository;
 

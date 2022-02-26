@@ -15,7 +15,7 @@ final settingPushNotificationViewModelProvider = ChangeNotifierProvider
     final settingPushNotificationViewModel = SettingPushNotificationViewModel(
       key,
       ref.read,
-      ref.watch(pushNotificationUseCaseProvider),
+      ref.watch(pushNotificationUseCaseProvider(key)),
     );
     ref.onDispose(settingPushNotificationViewModel.disposed);
     return settingPushNotificationViewModel;
@@ -106,6 +106,7 @@ class SettingPushNotificationViewModel extends ChangeNotifier {
   }
 
   Future<void> disposed() async {
+    await _streamSubscription?.cancel();
     debugPrint('SettingPushNotificationViewModel disposed');
   }
 }
