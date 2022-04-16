@@ -16,10 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$TopicsTearOff {
   const _$TopicsTearOff();
 
-  _Topics call({required List<Topic> list, required bool hasNext}) {
+  _Topics call({required List<Topic> list}) {
     return _Topics(
       list: list,
-      hasNext: hasNext,
     );
   }
 }
@@ -30,7 +29,6 @@ const $Topics = _$TopicsTearOff();
 /// @nodoc
 mixin _$Topics {
   List<Topic> get list => throw _privateConstructorUsedError;
-  bool get hasNext => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TopicsCopyWith<Topics> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +38,7 @@ mixin _$Topics {
 abstract class $TopicsCopyWith<$Res> {
   factory $TopicsCopyWith(Topics value, $Res Function(Topics) then) =
       _$TopicsCopyWithImpl<$Res>;
-  $Res call({List<Topic> list, bool hasNext});
+  $Res call({List<Topic> list});
 }
 
 /// @nodoc
@@ -54,17 +52,12 @@ class _$TopicsCopyWithImpl<$Res> implements $TopicsCopyWith<$Res> {
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_value.copyWith(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<Topic>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -74,7 +67,7 @@ abstract class _$TopicsCopyWith<$Res> implements $TopicsCopyWith<$Res> {
   factory _$TopicsCopyWith(_Topics value, $Res Function(_Topics) then) =
       __$TopicsCopyWithImpl<$Res>;
   @override
-  $Res call({List<Topic> list, bool hasNext});
+  $Res call({List<Topic> list});
 }
 
 /// @nodoc
@@ -89,34 +82,27 @@ class __$TopicsCopyWithImpl<$Res> extends _$TopicsCopyWithImpl<$Res>
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_Topics(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<Topic>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Topics implements _Topics {
-  const _$_Topics({required this.list, required this.hasNext});
+class _$_Topics extends _Topics {
+  const _$_Topics({required this.list}) : super._();
 
   @override
   final List<Topic> list;
-  @override
-  final bool hasNext;
 
   @override
   String toString() {
-    return 'Topics(list: $list, hasNext: $hasNext)';
+    return 'Topics(list: $list)';
   }
 
   @override
@@ -124,16 +110,12 @@ class _$_Topics implements _Topics {
     return identical(this, other) ||
         (other is _Topics &&
             (identical(other.list, list) ||
-                const DeepCollectionEquality().equals(other.list, list)) &&
-            (identical(other.hasNext, hasNext) ||
-                const DeepCollectionEquality().equals(other.hasNext, hasNext)));
+                const DeepCollectionEquality().equals(other.list, list)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(list) ^
-      const DeepCollectionEquality().hash(hasNext);
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(list);
 
   @JsonKey(ignore: true)
   @override
@@ -141,14 +123,12 @@ class _$_Topics implements _Topics {
       __$TopicsCopyWithImpl<_Topics>(this, _$identity);
 }
 
-abstract class _Topics implements Topics {
-  const factory _Topics({required List<Topic> list, required bool hasNext}) =
-      _$_Topics;
+abstract class _Topics extends Topics {
+  const factory _Topics({required List<Topic> list}) = _$_Topics;
+  const _Topics._() : super._();
 
   @override
   List<Topic> get list => throw _privateConstructorUsedError;
-  @override
-  bool get hasNext => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$TopicsCopyWith<_Topics> get copyWith => throw _privateConstructorUsedError;

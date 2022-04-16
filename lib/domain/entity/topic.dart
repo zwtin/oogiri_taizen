@@ -1,16 +1,17 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:oogiri_taizen/domain/entity/user.dart';
+
 part 'topic.freezed.dart';
 
 @freezed
-class Topic with _$Topic {
+abstract class Topic implements _$Topic {
   const factory Topic({
     required String id,
     required String text,
     required String? imageUrl,
-    required int answeredTime,
-    required DateTime createdAt,
+    required int answeredCount,
     required User createdUser,
-    required bool isOwn,
+    required DateTime createdAt,
   }) = _Topic;
+  const Topic._();
 }

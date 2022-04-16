@@ -1,13 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart';
+
 part 'login_user.freezed.dart';
 
 @freezed
-class LoginUser with _$LoginUser {
+abstract class LoginUser implements _$LoginUser {
   const factory LoginUser({
-    required String id,
-    required String name,
-    required String? imageUrl,
-    required String introduction,
+    required User user,
     required bool emailVerified,
   }) = _LoginUser;
+  const LoginUser._();
 }

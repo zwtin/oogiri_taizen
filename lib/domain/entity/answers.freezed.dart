@@ -16,10 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$AnswersTearOff {
   const _$AnswersTearOff();
 
-  _Answers call({required List<Answer> list, required bool hasNext}) {
+  _Answers call({required List<Answer> list}) {
     return _Answers(
       list: list,
-      hasNext: hasNext,
     );
   }
 }
@@ -30,7 +29,6 @@ const $Answers = _$AnswersTearOff();
 /// @nodoc
 mixin _$Answers {
   List<Answer> get list => throw _privateConstructorUsedError;
-  bool get hasNext => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AnswersCopyWith<Answers> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +38,7 @@ mixin _$Answers {
 abstract class $AnswersCopyWith<$Res> {
   factory $AnswersCopyWith(Answers value, $Res Function(Answers) then) =
       _$AnswersCopyWithImpl<$Res>;
-  $Res call({List<Answer> list, bool hasNext});
+  $Res call({List<Answer> list});
 }
 
 /// @nodoc
@@ -54,17 +52,12 @@ class _$AnswersCopyWithImpl<$Res> implements $AnswersCopyWith<$Res> {
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_value.copyWith(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<Answer>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -74,7 +67,7 @@ abstract class _$AnswersCopyWith<$Res> implements $AnswersCopyWith<$Res> {
   factory _$AnswersCopyWith(_Answers value, $Res Function(_Answers) then) =
       __$AnswersCopyWithImpl<$Res>;
   @override
-  $Res call({List<Answer> list, bool hasNext});
+  $Res call({List<Answer> list});
 }
 
 /// @nodoc
@@ -89,34 +82,27 @@ class __$AnswersCopyWithImpl<$Res> extends _$AnswersCopyWithImpl<$Res>
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_Answers(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<Answer>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Answers implements _Answers {
-  const _$_Answers({required this.list, required this.hasNext});
+class _$_Answers extends _Answers {
+  const _$_Answers({required this.list}) : super._();
 
   @override
   final List<Answer> list;
-  @override
-  final bool hasNext;
 
   @override
   String toString() {
-    return 'Answers(list: $list, hasNext: $hasNext)';
+    return 'Answers(list: $list)';
   }
 
   @override
@@ -124,16 +110,12 @@ class _$_Answers implements _Answers {
     return identical(this, other) ||
         (other is _Answers &&
             (identical(other.list, list) ||
-                const DeepCollectionEquality().equals(other.list, list)) &&
-            (identical(other.hasNext, hasNext) ||
-                const DeepCollectionEquality().equals(other.hasNext, hasNext)));
+                const DeepCollectionEquality().equals(other.list, list)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(list) ^
-      const DeepCollectionEquality().hash(hasNext);
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(list);
 
   @JsonKey(ignore: true)
   @override
@@ -141,14 +123,12 @@ class _$_Answers implements _Answers {
       __$AnswersCopyWithImpl<_Answers>(this, _$identity);
 }
 
-abstract class _Answers implements Answers {
-  const factory _Answers({required List<Answer> list, required bool hasNext}) =
-      _$_Answers;
+abstract class _Answers extends Answers {
+  const factory _Answers({required List<Answer> list}) = _$_Answers;
+  const _Answers._() : super._();
 
   @override
   List<Answer> get list => throw _privateConstructorUsedError;
-  @override
-  bool get hasNext => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$AnswersCopyWith<_Answers> get copyWith =>

@@ -16,10 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$UsersTearOff {
   const _$UsersTearOff();
 
-  _Users call({required List<User> list, required bool hasNext}) {
+  _Users call({required List<User> list}) {
     return _Users(
       list: list,
-      hasNext: hasNext,
     );
   }
 }
@@ -30,7 +29,6 @@ const $Users = _$UsersTearOff();
 /// @nodoc
 mixin _$Users {
   List<User> get list => throw _privateConstructorUsedError;
-  bool get hasNext => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UsersCopyWith<Users> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +38,7 @@ mixin _$Users {
 abstract class $UsersCopyWith<$Res> {
   factory $UsersCopyWith(Users value, $Res Function(Users) then) =
       _$UsersCopyWithImpl<$Res>;
-  $Res call({List<User> list, bool hasNext});
+  $Res call({List<User> list});
 }
 
 /// @nodoc
@@ -54,17 +52,12 @@ class _$UsersCopyWithImpl<$Res> implements $UsersCopyWith<$Res> {
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_value.copyWith(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<User>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
@@ -74,7 +67,7 @@ abstract class _$UsersCopyWith<$Res> implements $UsersCopyWith<$Res> {
   factory _$UsersCopyWith(_Users value, $Res Function(_Users) then) =
       __$UsersCopyWithImpl<$Res>;
   @override
-  $Res call({List<User> list, bool hasNext});
+  $Res call({List<User> list});
 }
 
 /// @nodoc
@@ -89,34 +82,27 @@ class __$UsersCopyWithImpl<$Res> extends _$UsersCopyWithImpl<$Res>
   @override
   $Res call({
     Object? list = freezed,
-    Object? hasNext = freezed,
   }) {
     return _then(_Users(
       list: list == freezed
           ? _value.list
           : list // ignore: cast_nullable_to_non_nullable
               as List<User>,
-      hasNext: hasNext == freezed
-          ? _value.hasNext
-          : hasNext // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Users implements _Users {
-  const _$_Users({required this.list, required this.hasNext});
+class _$_Users extends _Users {
+  const _$_Users({required this.list}) : super._();
 
   @override
   final List<User> list;
-  @override
-  final bool hasNext;
 
   @override
   String toString() {
-    return 'Users(list: $list, hasNext: $hasNext)';
+    return 'Users(list: $list)';
   }
 
   @override
@@ -124,16 +110,12 @@ class _$_Users implements _Users {
     return identical(this, other) ||
         (other is _Users &&
             (identical(other.list, list) ||
-                const DeepCollectionEquality().equals(other.list, list)) &&
-            (identical(other.hasNext, hasNext) ||
-                const DeepCollectionEquality().equals(other.hasNext, hasNext)));
+                const DeepCollectionEquality().equals(other.list, list)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(list) ^
-      const DeepCollectionEquality().hash(hasNext);
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(list);
 
   @JsonKey(ignore: true)
   @override
@@ -141,14 +123,12 @@ class _$_Users implements _Users {
       __$UsersCopyWithImpl<_Users>(this, _$identity);
 }
 
-abstract class _Users implements Users {
-  const factory _Users({required List<User> list, required bool hasNext}) =
-      _$_Users;
+abstract class _Users extends Users {
+  const factory _Users({required List<User> list}) = _$_Users;
+  const _Users._() : super._();
 
   @override
   List<User> get list => throw _privateConstructorUsedError;
-  @override
-  bool get hasNext => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$UsersCopyWith<_Users> get copyWith => throw _privateConstructorUsedError;

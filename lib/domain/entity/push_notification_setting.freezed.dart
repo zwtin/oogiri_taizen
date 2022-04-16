@@ -115,9 +115,10 @@ class __$PushNotificationSettingCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_PushNotificationSetting implements _PushNotificationSetting {
+class _$_PushNotificationSetting extends _PushNotificationSetting {
   const _$_PushNotificationSetting(
-      {required this.whenLiked, required this.whenFavored});
+      {required this.whenLiked, required this.whenFavored})
+      : super._();
 
   @override
   final bool whenLiked;
@@ -154,10 +155,11 @@ class _$_PushNotificationSetting implements _PushNotificationSetting {
           this, _$identity);
 }
 
-abstract class _PushNotificationSetting implements PushNotificationSetting {
+abstract class _PushNotificationSetting extends PushNotificationSetting {
   const factory _PushNotificationSetting(
       {required bool whenLiked,
       required bool whenFavored}) = _$_PushNotificationSetting;
+  const _PushNotificationSetting._() : super._();
 
   @override
   bool get whenLiked => throw _privateConstructorUsedError;

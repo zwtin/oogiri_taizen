@@ -19,29 +19,23 @@ class _$AnswerTearOff {
   _Answer call(
       {required String id,
       required String text,
-      required int viewedTime,
-      required bool isLike,
-      required int likedTime,
-      required bool isFavor,
-      required int favoredTime,
-      required int point,
-      required DateTime createdAt,
+      required int viewedCount,
+      required int likedCount,
+      required int favoredCount,
+      required int popularPoint,
       required Topic topic,
       required User createdUser,
-      required bool isOwn}) {
+      required DateTime createdAt}) {
     return _Answer(
       id: id,
       text: text,
-      viewedTime: viewedTime,
-      isLike: isLike,
-      likedTime: likedTime,
-      isFavor: isFavor,
-      favoredTime: favoredTime,
-      point: point,
-      createdAt: createdAt,
+      viewedCount: viewedCount,
+      likedCount: likedCount,
+      favoredCount: favoredCount,
+      popularPoint: popularPoint,
       topic: topic,
       createdUser: createdUser,
-      isOwn: isOwn,
+      createdAt: createdAt,
     );
   }
 }
@@ -53,16 +47,13 @@ const $Answer = _$AnswerTearOff();
 mixin _$Answer {
   String get id => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
-  int get viewedTime => throw _privateConstructorUsedError;
-  bool get isLike => throw _privateConstructorUsedError;
-  int get likedTime => throw _privateConstructorUsedError;
-  bool get isFavor => throw _privateConstructorUsedError;
-  int get favoredTime => throw _privateConstructorUsedError;
-  int get point => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  int get viewedCount => throw _privateConstructorUsedError;
+  int get likedCount => throw _privateConstructorUsedError;
+  int get favoredCount => throw _privateConstructorUsedError;
+  int get popularPoint => throw _privateConstructorUsedError;
   Topic get topic => throw _privateConstructorUsedError;
   User get createdUser => throw _privateConstructorUsedError;
-  bool get isOwn => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AnswerCopyWith<Answer> get copyWith => throw _privateConstructorUsedError;
@@ -75,16 +66,13 @@ abstract class $AnswerCopyWith<$Res> {
   $Res call(
       {String id,
       String text,
-      int viewedTime,
-      bool isLike,
-      int likedTime,
-      bool isFavor,
-      int favoredTime,
-      int point,
-      DateTime createdAt,
+      int viewedCount,
+      int likedCount,
+      int favoredCount,
+      int popularPoint,
       Topic topic,
       User createdUser,
-      bool isOwn});
+      DateTime createdAt});
 
   $TopicCopyWith<$Res> get topic;
   $UserCopyWith<$Res> get createdUser;
@@ -102,16 +90,13 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? text = freezed,
-    Object? viewedTime = freezed,
-    Object? isLike = freezed,
-    Object? likedTime = freezed,
-    Object? isFavor = freezed,
-    Object? favoredTime = freezed,
-    Object? point = freezed,
-    Object? createdAt = freezed,
+    Object? viewedCount = freezed,
+    Object? likedCount = freezed,
+    Object? favoredCount = freezed,
+    Object? popularPoint = freezed,
     Object? topic = freezed,
     Object? createdUser = freezed,
-    Object? isOwn = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -122,34 +107,22 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
-      viewedTime: viewedTime == freezed
-          ? _value.viewedTime
-          : viewedTime // ignore: cast_nullable_to_non_nullable
+      viewedCount: viewedCount == freezed
+          ? _value.viewedCount
+          : viewedCount // ignore: cast_nullable_to_non_nullable
               as int,
-      isLike: isLike == freezed
-          ? _value.isLike
-          : isLike // ignore: cast_nullable_to_non_nullable
-              as bool,
-      likedTime: likedTime == freezed
-          ? _value.likedTime
-          : likedTime // ignore: cast_nullable_to_non_nullable
+      likedCount: likedCount == freezed
+          ? _value.likedCount
+          : likedCount // ignore: cast_nullable_to_non_nullable
               as int,
-      isFavor: isFavor == freezed
-          ? _value.isFavor
-          : isFavor // ignore: cast_nullable_to_non_nullable
-              as bool,
-      favoredTime: favoredTime == freezed
-          ? _value.favoredTime
-          : favoredTime // ignore: cast_nullable_to_non_nullable
+      favoredCount: favoredCount == freezed
+          ? _value.favoredCount
+          : favoredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      point: point == freezed
-          ? _value.point
-          : point // ignore: cast_nullable_to_non_nullable
+      popularPoint: popularPoint == freezed
+          ? _value.popularPoint
+          : popularPoint // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: createdAt == freezed
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       topic: topic == freezed
           ? _value.topic
           : topic // ignore: cast_nullable_to_non_nullable
@@ -158,10 +131,10 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
               as User,
-      isOwn: isOwn == freezed
-          ? _value.isOwn
-          : isOwn // ignore: cast_nullable_to_non_nullable
-              as bool,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 
@@ -188,16 +161,13 @@ abstract class _$AnswerCopyWith<$Res> implements $AnswerCopyWith<$Res> {
   $Res call(
       {String id,
       String text,
-      int viewedTime,
-      bool isLike,
-      int likedTime,
-      bool isFavor,
-      int favoredTime,
-      int point,
-      DateTime createdAt,
+      int viewedCount,
+      int likedCount,
+      int favoredCount,
+      int popularPoint,
       Topic topic,
       User createdUser,
-      bool isOwn});
+      DateTime createdAt});
 
   @override
   $TopicCopyWith<$Res> get topic;
@@ -218,16 +188,13 @@ class __$AnswerCopyWithImpl<$Res> extends _$AnswerCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? text = freezed,
-    Object? viewedTime = freezed,
-    Object? isLike = freezed,
-    Object? likedTime = freezed,
-    Object? isFavor = freezed,
-    Object? favoredTime = freezed,
-    Object? point = freezed,
-    Object? createdAt = freezed,
+    Object? viewedCount = freezed,
+    Object? likedCount = freezed,
+    Object? favoredCount = freezed,
+    Object? popularPoint = freezed,
     Object? topic = freezed,
     Object? createdUser = freezed,
-    Object? isOwn = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_Answer(
       id: id == freezed
@@ -238,34 +205,22 @@ class __$AnswerCopyWithImpl<$Res> extends _$AnswerCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
-      viewedTime: viewedTime == freezed
-          ? _value.viewedTime
-          : viewedTime // ignore: cast_nullable_to_non_nullable
+      viewedCount: viewedCount == freezed
+          ? _value.viewedCount
+          : viewedCount // ignore: cast_nullable_to_non_nullable
               as int,
-      isLike: isLike == freezed
-          ? _value.isLike
-          : isLike // ignore: cast_nullable_to_non_nullable
-              as bool,
-      likedTime: likedTime == freezed
-          ? _value.likedTime
-          : likedTime // ignore: cast_nullable_to_non_nullable
+      likedCount: likedCount == freezed
+          ? _value.likedCount
+          : likedCount // ignore: cast_nullable_to_non_nullable
               as int,
-      isFavor: isFavor == freezed
-          ? _value.isFavor
-          : isFavor // ignore: cast_nullable_to_non_nullable
-              as bool,
-      favoredTime: favoredTime == freezed
-          ? _value.favoredTime
-          : favoredTime // ignore: cast_nullable_to_non_nullable
+      favoredCount: favoredCount == freezed
+          ? _value.favoredCount
+          : favoredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      point: point == freezed
-          ? _value.point
-          : point // ignore: cast_nullable_to_non_nullable
+      popularPoint: popularPoint == freezed
+          ? _value.popularPoint
+          : popularPoint // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: createdAt == freezed
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       topic: topic == freezed
           ? _value.topic
           : topic // ignore: cast_nullable_to_non_nullable
@@ -274,59 +229,51 @@ class __$AnswerCopyWithImpl<$Res> extends _$AnswerCopyWithImpl<$Res>
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
               as User,
-      isOwn: isOwn == freezed
-          ? _value.isOwn
-          : isOwn // ignore: cast_nullable_to_non_nullable
-              as bool,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Answer implements _Answer {
+class _$_Answer extends _Answer {
   const _$_Answer(
       {required this.id,
       required this.text,
-      required this.viewedTime,
-      required this.isLike,
-      required this.likedTime,
-      required this.isFavor,
-      required this.favoredTime,
-      required this.point,
-      required this.createdAt,
+      required this.viewedCount,
+      required this.likedCount,
+      required this.favoredCount,
+      required this.popularPoint,
       required this.topic,
       required this.createdUser,
-      required this.isOwn});
+      required this.createdAt})
+      : super._();
 
   @override
   final String id;
   @override
   final String text;
   @override
-  final int viewedTime;
+  final int viewedCount;
   @override
-  final bool isLike;
+  final int likedCount;
   @override
-  final int likedTime;
+  final int favoredCount;
   @override
-  final bool isFavor;
-  @override
-  final int favoredTime;
-  @override
-  final int point;
-  @override
-  final DateTime createdAt;
+  final int popularPoint;
   @override
   final Topic topic;
   @override
   final User createdUser;
   @override
-  final bool isOwn;
+  final DateTime createdAt;
 
   @override
   String toString() {
-    return 'Answer(id: $id, text: $text, viewedTime: $viewedTime, isLike: $isLike, likedTime: $likedTime, isFavor: $isFavor, favoredTime: $favoredTime, point: $point, createdAt: $createdAt, topic: $topic, createdUser: $createdUser, isOwn: $isOwn)';
+    return 'Answer(id: $id, text: $text, viewedCount: $viewedCount, likedCount: $likedCount, favoredCount: $favoredCount, popularPoint: $popularPoint, topic: $topic, createdUser: $createdUser, createdAt: $createdAt)';
   }
 
   @override
@@ -337,32 +284,26 @@ class _$_Answer implements _Answer {
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.text, text) ||
                 const DeepCollectionEquality().equals(other.text, text)) &&
-            (identical(other.viewedTime, viewedTime) ||
+            (identical(other.viewedCount, viewedCount) ||
                 const DeepCollectionEquality()
-                    .equals(other.viewedTime, viewedTime)) &&
-            (identical(other.isLike, isLike) ||
-                const DeepCollectionEquality().equals(other.isLike, isLike)) &&
-            (identical(other.likedTime, likedTime) ||
+                    .equals(other.viewedCount, viewedCount)) &&
+            (identical(other.likedCount, likedCount) ||
                 const DeepCollectionEquality()
-                    .equals(other.likedTime, likedTime)) &&
-            (identical(other.isFavor, isFavor) ||
+                    .equals(other.likedCount, likedCount)) &&
+            (identical(other.favoredCount, favoredCount) ||
                 const DeepCollectionEquality()
-                    .equals(other.isFavor, isFavor)) &&
-            (identical(other.favoredTime, favoredTime) ||
+                    .equals(other.favoredCount, favoredCount)) &&
+            (identical(other.popularPoint, popularPoint) ||
                 const DeepCollectionEquality()
-                    .equals(other.favoredTime, favoredTime)) &&
-            (identical(other.point, point) ||
-                const DeepCollectionEquality().equals(other.point, point)) &&
-            (identical(other.createdAt, createdAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.createdAt, createdAt)) &&
+                    .equals(other.popularPoint, popularPoint)) &&
             (identical(other.topic, topic) ||
                 const DeepCollectionEquality().equals(other.topic, topic)) &&
             (identical(other.createdUser, createdUser) ||
                 const DeepCollectionEquality()
                     .equals(other.createdUser, createdUser)) &&
-            (identical(other.isOwn, isOwn) ||
-                const DeepCollectionEquality().equals(other.isOwn, isOwn)));
+            (identical(other.createdAt, createdAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.createdAt, createdAt)));
   }
 
   @override
@@ -370,16 +311,13 @@ class _$_Answer implements _Answer {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(text) ^
-      const DeepCollectionEquality().hash(viewedTime) ^
-      const DeepCollectionEquality().hash(isLike) ^
-      const DeepCollectionEquality().hash(likedTime) ^
-      const DeepCollectionEquality().hash(isFavor) ^
-      const DeepCollectionEquality().hash(favoredTime) ^
-      const DeepCollectionEquality().hash(point) ^
-      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(viewedCount) ^
+      const DeepCollectionEquality().hash(likedCount) ^
+      const DeepCollectionEquality().hash(favoredCount) ^
+      const DeepCollectionEquality().hash(popularPoint) ^
       const DeepCollectionEquality().hash(topic) ^
       const DeepCollectionEquality().hash(createdUser) ^
-      const DeepCollectionEquality().hash(isOwn);
+      const DeepCollectionEquality().hash(createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -387,45 +325,37 @@ class _$_Answer implements _Answer {
       __$AnswerCopyWithImpl<_Answer>(this, _$identity);
 }
 
-abstract class _Answer implements Answer {
+abstract class _Answer extends Answer {
   const factory _Answer(
       {required String id,
       required String text,
-      required int viewedTime,
-      required bool isLike,
-      required int likedTime,
-      required bool isFavor,
-      required int favoredTime,
-      required int point,
-      required DateTime createdAt,
+      required int viewedCount,
+      required int likedCount,
+      required int favoredCount,
+      required int popularPoint,
       required Topic topic,
       required User createdUser,
-      required bool isOwn}) = _$_Answer;
+      required DateTime createdAt}) = _$_Answer;
+  const _Answer._() : super._();
 
   @override
   String get id => throw _privateConstructorUsedError;
   @override
   String get text => throw _privateConstructorUsedError;
   @override
-  int get viewedTime => throw _privateConstructorUsedError;
+  int get viewedCount => throw _privateConstructorUsedError;
   @override
-  bool get isLike => throw _privateConstructorUsedError;
+  int get likedCount => throw _privateConstructorUsedError;
   @override
-  int get likedTime => throw _privateConstructorUsedError;
+  int get favoredCount => throw _privateConstructorUsedError;
   @override
-  bool get isFavor => throw _privateConstructorUsedError;
-  @override
-  int get favoredTime => throw _privateConstructorUsedError;
-  @override
-  int get point => throw _privateConstructorUsedError;
-  @override
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  int get popularPoint => throw _privateConstructorUsedError;
   @override
   Topic get topic => throw _privateConstructorUsedError;
   @override
   User get createdUser => throw _privateConstructorUsedError;
   @override
-  bool get isOwn => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$AnswerCopyWith<_Answer> get copyWith => throw _privateConstructorUsedError;

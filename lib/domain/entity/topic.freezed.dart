@@ -20,18 +20,16 @@ class _$TopicTearOff {
       {required String id,
       required String text,
       required String? imageUrl,
-      required int answeredTime,
-      required DateTime createdAt,
+      required int answeredCount,
       required User createdUser,
-      required bool isOwn}) {
+      required DateTime createdAt}) {
     return _Topic(
       id: id,
       text: text,
       imageUrl: imageUrl,
-      answeredTime: answeredTime,
-      createdAt: createdAt,
+      answeredCount: answeredCount,
       createdUser: createdUser,
-      isOwn: isOwn,
+      createdAt: createdAt,
     );
   }
 }
@@ -44,10 +42,9 @@ mixin _$Topic {
   String get id => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
-  int get answeredTime => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  int get answeredCount => throw _privateConstructorUsedError;
   User get createdUser => throw _privateConstructorUsedError;
-  bool get isOwn => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TopicCopyWith<Topic> get copyWith => throw _privateConstructorUsedError;
@@ -61,10 +58,9 @@ abstract class $TopicCopyWith<$Res> {
       {String id,
       String text,
       String? imageUrl,
-      int answeredTime,
-      DateTime createdAt,
+      int answeredCount,
       User createdUser,
-      bool isOwn});
+      DateTime createdAt});
 
   $UserCopyWith<$Res> get createdUser;
 }
@@ -82,10 +78,9 @@ class _$TopicCopyWithImpl<$Res> implements $TopicCopyWith<$Res> {
     Object? id = freezed,
     Object? text = freezed,
     Object? imageUrl = freezed,
-    Object? answeredTime = freezed,
-    Object? createdAt = freezed,
+    Object? answeredCount = freezed,
     Object? createdUser = freezed,
-    Object? isOwn = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -100,22 +95,18 @@ class _$TopicCopyWithImpl<$Res> implements $TopicCopyWith<$Res> {
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      answeredTime: answeredTime == freezed
-          ? _value.answeredTime
-          : answeredTime // ignore: cast_nullable_to_non_nullable
+      answeredCount: answeredCount == freezed
+          ? _value.answeredCount
+          : answeredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: createdAt == freezed
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       createdUser: createdUser == freezed
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
               as User,
-      isOwn: isOwn == freezed
-          ? _value.isOwn
-          : isOwn // ignore: cast_nullable_to_non_nullable
-              as bool,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 
@@ -136,10 +127,9 @@ abstract class _$TopicCopyWith<$Res> implements $TopicCopyWith<$Res> {
       {String id,
       String text,
       String? imageUrl,
-      int answeredTime,
-      DateTime createdAt,
+      int answeredCount,
       User createdUser,
-      bool isOwn});
+      DateTime createdAt});
 
   @override
   $UserCopyWith<$Res> get createdUser;
@@ -159,10 +149,9 @@ class __$TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res>
     Object? id = freezed,
     Object? text = freezed,
     Object? imageUrl = freezed,
-    Object? answeredTime = freezed,
-    Object? createdAt = freezed,
+    Object? answeredCount = freezed,
     Object? createdUser = freezed,
-    Object? isOwn = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_Topic(
       id: id == freezed
@@ -177,37 +166,33 @@ class __$TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      answeredTime: answeredTime == freezed
-          ? _value.answeredTime
-          : answeredTime // ignore: cast_nullable_to_non_nullable
+      answeredCount: answeredCount == freezed
+          ? _value.answeredCount
+          : answeredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      createdAt: createdAt == freezed
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       createdUser: createdUser == freezed
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
               as User,
-      isOwn: isOwn == freezed
-          ? _value.isOwn
-          : isOwn // ignore: cast_nullable_to_non_nullable
-              as bool,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Topic implements _Topic {
+class _$_Topic extends _Topic {
   const _$_Topic(
       {required this.id,
       required this.text,
       required this.imageUrl,
-      required this.answeredTime,
-      required this.createdAt,
+      required this.answeredCount,
       required this.createdUser,
-      required this.isOwn});
+      required this.createdAt})
+      : super._();
 
   @override
   final String id;
@@ -216,17 +201,15 @@ class _$_Topic implements _Topic {
   @override
   final String? imageUrl;
   @override
-  final int answeredTime;
-  @override
-  final DateTime createdAt;
+  final int answeredCount;
   @override
   final User createdUser;
   @override
-  final bool isOwn;
+  final DateTime createdAt;
 
   @override
   String toString() {
-    return 'Topic(id: $id, text: $text, imageUrl: $imageUrl, answeredTime: $answeredTime, createdAt: $createdAt, createdUser: $createdUser, isOwn: $isOwn)';
+    return 'Topic(id: $id, text: $text, imageUrl: $imageUrl, answeredCount: $answeredCount, createdUser: $createdUser, createdAt: $createdAt)';
   }
 
   @override
@@ -240,17 +223,15 @@ class _$_Topic implements _Topic {
             (identical(other.imageUrl, imageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.imageUrl, imageUrl)) &&
-            (identical(other.answeredTime, answeredTime) ||
+            (identical(other.answeredCount, answeredCount) ||
                 const DeepCollectionEquality()
-                    .equals(other.answeredTime, answeredTime)) &&
-            (identical(other.createdAt, createdAt) ||
-                const DeepCollectionEquality()
-                    .equals(other.createdAt, createdAt)) &&
+                    .equals(other.answeredCount, answeredCount)) &&
             (identical(other.createdUser, createdUser) ||
                 const DeepCollectionEquality()
                     .equals(other.createdUser, createdUser)) &&
-            (identical(other.isOwn, isOwn) ||
-                const DeepCollectionEquality().equals(other.isOwn, isOwn)));
+            (identical(other.createdAt, createdAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.createdAt, createdAt)));
   }
 
   @override
@@ -259,10 +240,9 @@ class _$_Topic implements _Topic {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(text) ^
       const DeepCollectionEquality().hash(imageUrl) ^
-      const DeepCollectionEquality().hash(answeredTime) ^
-      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(answeredCount) ^
       const DeepCollectionEquality().hash(createdUser) ^
-      const DeepCollectionEquality().hash(isOwn);
+      const DeepCollectionEquality().hash(createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -270,15 +250,15 @@ class _$_Topic implements _Topic {
       __$TopicCopyWithImpl<_Topic>(this, _$identity);
 }
 
-abstract class _Topic implements Topic {
+abstract class _Topic extends Topic {
   const factory _Topic(
       {required String id,
       required String text,
       required String? imageUrl,
-      required int answeredTime,
-      required DateTime createdAt,
+      required int answeredCount,
       required User createdUser,
-      required bool isOwn}) = _$_Topic;
+      required DateTime createdAt}) = _$_Topic;
+  const _Topic._() : super._();
 
   @override
   String get id => throw _privateConstructorUsedError;
@@ -287,13 +267,11 @@ abstract class _Topic implements Topic {
   @override
   String? get imageUrl => throw _privateConstructorUsedError;
   @override
-  int get answeredTime => throw _privateConstructorUsedError;
-  @override
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  int get answeredCount => throw _privateConstructorUsedError;
   @override
   User get createdUser => throw _privateConstructorUsedError;
   @override
-  bool get isOwn => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$TopicCopyWith<_Topic> get copyWith => throw _privateConstructorUsedError;
