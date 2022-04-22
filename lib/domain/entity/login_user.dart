@@ -10,4 +10,9 @@ abstract class LoginUser implements _$LoginUser {
     required bool emailVerified,
   }) = _LoginUser;
   const LoginUser._();
+
+  String get id => user.id;
+  String get name => user.name;
+  String? get imageUrl => user.imageUrl;
+  String get introduction => user.introduction;
 }

@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tuple/tuple.dart';
-
 import 'package:oogiri_taizen/domain/entity/answer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
@@ -16,6 +14,7 @@ import 'package:oogiri_taizen/infra/repository_impl/answer_repository_impl.dart'
 import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/favor_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/like_repository_impl.dart';
+import 'package:tuple/tuple.dart';
 
 final answerUseCaseProvider =
     Provider.autoDispose.family<AnswerUseCase, Tuple2<UniqueKey, String>>(
@@ -33,7 +32,7 @@ final answerUseCaseProvider =
   },
 );
 
-class AnswerUseCaseImpl implements AnswerUseCase {
+class AnswerUseCaseImpl implements AnswerUseCase, ChangeNotifier {
   AnswerUseCaseImpl(
     this._key,
     this._id,

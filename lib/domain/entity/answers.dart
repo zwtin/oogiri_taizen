@@ -10,7 +10,8 @@ abstract class Answers implements _$Answers {
   }) = _Answers;
   const Answers._();
 
-  int length() {
-    return list.length;
-  }
+  int get length => list.length;
+  bool get isEmpty => list.isEmpty;
+  Answer? get firstOrNull => list.firstOrNull;
+  Answer? get lastOrNull => list.lastOrNull;
 }

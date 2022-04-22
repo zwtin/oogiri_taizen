@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/storage_repository.dart';
@@ -12,12 +12,13 @@ import 'package:oogiri_taizen/extension/string_extension.dart';
 final storageRepositoryProvider = Provider.autoDispose<StorageRepository>(
   (ref) {
     final storageRepository = StorageRepositoryImpl();
-    ref.onDispose(storageRepository.disposed);
+    ref.onDispose(storageRepository.dispose);
     return storageRepository;
   },
 );
 
 class StorageRepositoryImpl implements StorageRepository {
+  final _logger = Logger();
   final _storage = FirebaseStorage.instance;
 
   @override
@@ -45,7 +46,7 @@ class StorageRepositoryImpl implements StorageRepository {
         quality: 85,
       );
       if (result == null) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: '画像の圧縮に失敗しました');
       }
       final ref = _storage.ref().child(imagePath);
 
@@ -72,7 +73,7 @@ class StorageRepositoryImpl implements StorageRepository {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('StorageRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('StorageRepositoryImpl dispose');
   }
 }

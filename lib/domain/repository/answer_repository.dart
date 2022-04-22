@@ -1,4 +1,5 @@
 import 'package:oogiri_taizen/domain/entity/answer.dart';
+import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 
 abstract class AnswerRepository {
@@ -6,18 +7,18 @@ abstract class AnswerRepository {
     required String id,
   });
 
-  Future<Result<List<String>>> getNewAnswerIds({
+  Future<Result<Answers>> getNewAnswerIds({
     required DateTime? offset,
     required int limit,
   });
 
-  Future<Result<List<String>>> getCreatedAnswerIds({
+  Future<Result<Answers>> getCreatedAnswerIds({
     required String userId,
     required DateTime? offset,
     required int limit,
   });
 
-  Future<Result<List<String>>> getFavorAnswerIds({
+  Future<Result<Answers>> getFavorAnswerIds({
     required String userId,
     required DateTime? offset,
     required int limit,

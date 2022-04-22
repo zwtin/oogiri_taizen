@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/repository/app_info_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/streaming_shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -9,7 +9,7 @@ final appInfoRepositoryProvider = Provider.autoDispose<AppInfoRepository>(
     final appInfoRepository = AppInfoRepositoryImpl(
       ref.watch(packageInfoProvider),
     );
-    ref.onDispose(appInfoRepository.disposed);
+    ref.onDispose(appInfoRepository.dispose);
     return appInfoRepository;
   },
 );
@@ -19,6 +19,7 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
     this._packageInfo,
   );
 
+  final _logger = Logger();
   final PackageInfo _packageInfo;
 
   @override
@@ -26,7 +27,7 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
     return _packageInfo.version;
   }
 
-  Future<void> disposed() async {
-    debugPrint('AppInfoRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('AppInfoRepositoryImpl dispose');
   }
 }

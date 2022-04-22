@@ -2,22 +2,21 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/authentication_repository.dart';
 import 'package:oogiri_taizen/flavors.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 final authenticationRepositoryProvider =
     Provider.autoDispose<AuthenticationRepository>(
   (ref) {
     final authenticationRepository = AuthenticationRepositoryImpl();
-    ref.onDispose(authenticationRepository.disposed);
+    ref.onDispose(authenticationRepository.dispose);
     return authenticationRepository;
   },
 );
@@ -60,6 +59,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     );
   }
 
+  final _logger = Logger();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -301,10 +301,10 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     }
   }
 
-  Future<void> disposed() async {
+  void dispose() {
     await _streamController.close();
     await _userSubscription?.cancel();
     await _loginUserModelSubscription?.cancel();
-    debugPrint('AuthenticationRepositoryImpl disposed');
+    _logger.d('AuthenticationRepositoryImpl dispose');
   }
 }

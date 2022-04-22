@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
-
 import 'package:oogiri_taizen/domain/entity/user.dart';
 import 'package:oogiri_taizen/domain/repository/user_repository.dart';
+import 'package:oogiri_taizen/infra/mapper/user_mapper.dart';
 
 final userRepositoryProvider = Provider.autoDispose<UserRepository>(
   (ref) {
     final userRepository = UserRepositoryImpl();
-    ref.onDispose(userRepository.disposed);
+    ref.onDispose(userRepository.dispose);
     return userRepository;
   },
 );
 
 class UserRepositoryImpl implements UserRepository {
+  final _logger = Logger();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -26,14 +27,9 @@ class UserRepositoryImpl implements UserRepository {
       final doc = await _firestore.collection('users').doc(id).get();
       final data = doc.data();
       if (data == null) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'ユーザーの取得に失敗しました');
       }
-      final user = User(
-        id: data['id'] as String,
-        name: data['name'] as String,
-        imageUrl: data['image_url'] as String,
-        introduction: data['introduction'] as String,
-      );
+      final user = mappingForUser(userData: data);
       return Result.success(user);
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -50,12 +46,8 @@ class UserRepositoryImpl implements UserRepository {
         if (data == null) {
           return null;
         }
-        return User(
-          id: data['id'] as String,
-          name: data['name'] as String,
-          imageUrl: data['image_url'] as String,
-          introduction: data['introduction'] as String,
-        );
+        final user = mappingForUser(userData: data);
+        return user;
       },
     );
   }
@@ -65,18 +57,17 @@ class UserRepositoryImpl implements UserRepository {
     required String id,
   }) async {
     try {
+      final ref = _firestore.collection('users').doc(id);
+      final data = {
+        'id': id,
+        'introduction': 'よろしくお願いします',
+        'name': '名無し',
+      };
       await _firestore.runTransaction<void>(
         (Transaction transaction) async {
-          final userRef = _firestore.collection('users').doc(id);
-          final userMap = {
-            'id': id,
-            'image_url': '',
-            'introduction': 'よろしくお願いします',
-            'name': '名無し',
-          };
           transaction.set(
-            userRef,
-            userMap,
+            ref,
+            data,
           );
         },
       );
@@ -94,6 +85,7 @@ class UserRepositoryImpl implements UserRepository {
     required String? introduction,
   }) async {
     try {
+      final ref = _firestore.collection('users').doc(id);
       final data = <String, dynamic>{};
       if (name != null) {
         data['name'] = name;
@@ -106,7 +98,6 @@ class UserRepositoryImpl implements UserRepository {
       }
       await _firestore.runTransaction<void>(
         (Transaction transaction) async {
-          final ref = _firestore.collection('users').doc(id);
           transaction.update(
             ref,
             data,
@@ -119,7 +110,7 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('UserRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('UserRepositoryImpl dispose');
   }
 }

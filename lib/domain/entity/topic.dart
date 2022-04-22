@@ -10,7 +10,8 @@ abstract class Topic implements _$Topic {
     required String text,
     required String? imageUrl,
     required int answeredCount,
-    required User createdUser,
+    required String createdUserId,
+    User? createdUser,
     required DateTime createdAt,
   }) = _Topic;
   const Topic._();

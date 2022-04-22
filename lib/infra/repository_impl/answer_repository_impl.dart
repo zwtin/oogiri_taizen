@@ -1,25 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/answer.dart';
+import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
-import 'package:oogiri_taizen/domain/entity/topic.dart';
-import 'package:oogiri_taizen/domain/entity/user.dart' as ot;
 import 'package:oogiri_taizen/domain/repository/answer_repository.dart';
+import 'package:oogiri_taizen/infra/mapper/answer_mapper.dart';
 
 final answerRepositoryProvider = Provider.autoDispose<AnswerRepository>(
   (ref) {
     final answerRepository = AnswerRepositoryImpl();
-    ref.onDispose(answerRepository.disposed);
+    ref.onDispose(answerRepository.dispose);
     return answerRepository;
   },
 );
 
 class AnswerRepositoryImpl implements AnswerRepository {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final _logger = Logger();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -30,63 +28,9 @@ class AnswerRepositoryImpl implements AnswerRepository {
       final answerDoc = await _firestore.collection('answers').doc(id).get();
       final answerData = answerDoc.data();
       if (answerData == null) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'ボケの取得に失敗しました');
       }
-      final createdUserId = answerData['created_user'] as String;
-      final createdUserDoc =
-          await _firestore.collection('users').doc(createdUserId).get();
-      final createdUserData = createdUserDoc.data();
-      if (createdUserData == null) {
-        throw OTException();
-      }
-      final topicId = answerData['topic'] as String;
-      final topicDoc = await _firestore.collection('topics').doc(topicId).get();
-      final topicData = topicDoc.data();
-      if (topicData == null) {
-        throw OTException();
-      }
-      final topicCreatedUserId = topicData['created_user'] as String;
-      final topicCreatedUserDoc =
-          await _firestore.collection('users').doc(topicCreatedUserId).get();
-      final topicCreatedUserData = topicCreatedUserDoc.data();
-      if (topicCreatedUserData == null) {
-        throw OTException();
-      }
-      final topicCreatedUser = ot.User(
-        id: topicCreatedUserData['id'] as String,
-        name: topicCreatedUserData['name'] as String,
-        imageUrl: topicCreatedUserData['image_url'] as String,
-        introduction: topicCreatedUserData['introduction'] as String,
-      );
-      final topic = Topic(
-        id: topicData['id'] as String,
-        text: topicData['text'] as String,
-        imageUrl: topicData['image_url'] as String,
-        answeredTime: topicData['answered_time'] as int,
-        createdAt: (topicData['created_at'] as Timestamp).toDate(),
-        createdUser: topicCreatedUser,
-        isOwn: topicCreatedUser.id == _firebaseAuth.currentUser?.uid,
-      );
-      final createdUser = ot.User(
-        id: createdUserData['id'] as String,
-        name: createdUserData['name'] as String,
-        imageUrl: createdUserData['image_url'] as String,
-        introduction: createdUserData['introduction'] as String,
-      );
-      final answer = Answer(
-        id: answerData['id'] as String,
-        text: answerData['text'] as String,
-        viewedTime: answerData['viewed_time'] as int,
-        isLike: false,
-        likedTime: answerData['liked_time'] as int,
-        isFavor: false,
-        favoredTime: answerData['favored_time'] as int,
-        point: answerData['point'] as int,
-        createdAt: (answerData['created_at'] as Timestamp).toDate(),
-        topic: topic,
-        createdUser: createdUser,
-        isOwn: topicCreatedUser.id == _firebaseAuth.currentUser?.uid,
-      );
+      final answer = mappingForAnswer(answerData: answerData);
       return Result.success(answer);
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -94,7 +38,7 @@ class AnswerRepositoryImpl implements AnswerRepository {
   }
 
   @override
-  Future<Result<List<String>>> getNewAnswerIds({
+  Future<Result<Answers>> getNewAnswerIds({
     required DateTime? offset,
     required int limit,
   }) async {
@@ -121,26 +65,27 @@ class AnswerRepositoryImpl implements AnswerRepository {
             .limit(limit)
             .get();
       }
-      final newAnswerIds = query.docs
+      final list = query.docs
           .map(
             (doc) {
               final data = doc.data() as Map<String, dynamic>?;
               if (data == null) {
                 return null;
               }
-              return data['id'] as String;
+              return mappingForAnswer(answerData: data);
             },
           )
-          .whereType<String>()
+          .whereType<Answer>()
           .toList();
-      return Result.success(newAnswerIds);
+      final answers = Answers(list: list);
+      return Result.success(answers);
     } on Exception catch (exception) {
       return Result.failure(exception);
     }
   }
 
   @override
-  Future<Result<List<String>>> getCreatedAnswerIds({
+  Future<Result<Answers>> getCreatedAnswerIds({
     required String userId,
     required DateTime? offset,
     required int limit,
@@ -172,26 +117,27 @@ class AnswerRepositoryImpl implements AnswerRepository {
             .limit(limit)
             .get();
       }
-      final createdAnswerIds = query.docs
+      final list = query.docs
           .map(
             (doc) {
               final data = doc.data() as Map<String, dynamic>?;
               if (data == null) {
                 return null;
               }
-              return data['id'] as String;
+              return mappingForAnswer(answerData: data);
             },
           )
-          .whereType<String>()
+          .whereType<Answer>()
           .toList();
-      return Result.success(createdAnswerIds);
+      final answers = Answers(list: list);
+      return Result.success(answers);
     } on Exception catch (exception) {
       return Result.failure(exception);
     }
   }
 
   @override
-  Future<Result<List<String>>> getFavorAnswerIds({
+  Future<Result<Answers>> getFavorAnswerIds({
     required String userId,
     required DateTime? offset,
     required int limit,
@@ -223,25 +169,26 @@ class AnswerRepositoryImpl implements AnswerRepository {
             .limit(limit)
             .get();
       }
-      final favorAnswerIds = query.docs
+      final list = query.docs
           .map(
             (doc) {
               final data = doc.data() as Map<String, dynamic>?;
               if (data == null) {
                 return null;
               }
-              return data['id'] as String;
+              return mappingForAnswer(answerData: data);
             },
           )
-          .whereType<String>()
+          .whereType<Answer>()
           .toList();
-      return Result.success(favorAnswerIds);
+      final answers = Answers(list: list);
+      return Result.success(answers);
     } on Exception catch (exception) {
       return Result.failure(exception);
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('AnswerRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('AnswerRepositoryImpl dispose');
   }
 }

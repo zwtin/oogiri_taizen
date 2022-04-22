@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/favor_repository.dart';
@@ -8,12 +8,13 @@ import 'package:oogiri_taizen/domain/repository/favor_repository.dart';
 final favorRepositoryProvider = Provider.autoDispose<FavorRepository>(
   (ref) {
     final favorRepository = FavorRepositoryImpl();
-    ref.onDispose(favorRepository.disposed);
+    ref.onDispose(favorRepository.dispose);
     return favorRepository;
   },
 );
 
 class FavorRepositoryImpl implements FavorRepository {
+  final _logger = Logger();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -28,7 +29,7 @@ class FavorRepositoryImpl implements FavorRepository {
           final answerDoc = await transaction.get(answerRef);
           final answerData = answerDoc.data();
           if (answerData == null) {
-            throw OTException();
+            throw OTException(text: 'エラー', title: 'ボケの取得に失敗しました');
           }
 
           final answerFavoredUserRef = _firestore
@@ -38,9 +39,6 @@ class FavorRepositoryImpl implements FavorRepository {
               .doc(userId);
           final answerFavoredUserDoc =
               await transaction.get(answerFavoredUserRef);
-          if (answerFavoredUserDoc.exists) {
-            throw OTException();
-          }
 
           final userFavorAnswerRef = _firestore
               .collection('users')
@@ -48,84 +46,41 @@ class FavorRepositoryImpl implements FavorRepository {
               .collection('favor_answers')
               .doc(answerId);
           final userFavorAnswerDoc = await transaction.get(userFavorAnswerRef);
-          if (userFavorAnswerDoc.exists) {
-            throw OTException();
+
+          if (answerFavoredUserDoc.exists && userFavorAnswerDoc.exists) {
+            final favoredTime = answerData['favored_time'] as int;
+            final favorUpdateMap = {
+              'favored_time': favoredTime - 1,
+            };
+            transaction.update(answerRef, favorUpdateMap)
+              ..delete(answerFavoredUserRef)
+              ..delete(userFavorAnswerRef);
+          } else if (!answerFavoredUserDoc.exists &&
+              !userFavorAnswerDoc.exists) {
+            final favoredTime = answerData['favored_time'] as int;
+            final favorUpdateMap = {
+              'favored_time': favoredTime + 1,
+            };
+            transaction.update(answerRef, favorUpdateMap);
+
+            final answerFavoredUserMap = {
+              'id': userId,
+              'favored_at': FieldValue.serverTimestamp(),
+            };
+            transaction.set(
+              answerFavoredUserRef,
+              answerFavoredUserMap,
+            );
+
+            final userMap = {
+              'id': answerId,
+              'favor_at': FieldValue.serverTimestamp(),
+            };
+            transaction.set(
+              userFavorAnswerRef,
+              userMap,
+            );
           }
-
-          final favoredTime = answerData['favored_time'] as int;
-          final favorUpdateMap = {
-            'favored_time': favoredTime + 1,
-          };
-          transaction.update(answerRef, favorUpdateMap);
-
-          final answerFavoredUserMap = {
-            'id': userId,
-            'favored_at': FieldValue.serverTimestamp(),
-          };
-          transaction.set(
-            answerFavoredUserRef,
-            answerFavoredUserMap,
-          );
-
-          final userMap = {
-            'id': answerId,
-            'favor_at': FieldValue.serverTimestamp(),
-          };
-          transaction.set(
-            userFavorAnswerRef,
-            userMap,
-          );
-        },
-      );
-      return const Result.success(null);
-    } on Exception catch (exception) {
-      return Result.failure(exception);
-    }
-  }
-
-  @override
-  Future<Result<void>> unfavor({
-    required String userId,
-    required String answerId,
-  }) async {
-    try {
-      await _firestore.runTransaction<void>(
-        (Transaction transaction) async {
-          final answerRef = _firestore.collection('answers').doc(answerId);
-          final answerDoc = await transaction.get(answerRef);
-          final answerData = answerDoc.data();
-          if (answerData == null) {
-            throw OTException();
-          }
-
-          final answerFavoredUserRef = _firestore
-              .collection('answers')
-              .doc(answerId)
-              .collection('favored_users')
-              .doc(userId);
-          final answerFavoredUserDoc =
-              await transaction.get(answerFavoredUserRef);
-          if (!answerFavoredUserDoc.exists) {
-            throw OTException();
-          }
-
-          final userFavorAnswerRef = _firestore
-              .collection('users')
-              .doc(userId)
-              .collection('favor_answers')
-              .doc(answerId);
-          final userFavorAnswerDoc = await transaction.get(userFavorAnswerRef);
-          if (!userFavorAnswerDoc.exists) {
-            throw OTException();
-          }
-
-          final favoredTime = answerData['favored_time'] as int;
-          final favorUpdateMap = {
-            'favored_time': favoredTime - 1,
-          };
-          transaction.update(answerRef, favorUpdateMap)
-            ..delete(answerFavoredUserRef)
-            ..delete(userFavorAnswerRef);
         },
       );
       return const Result.success(null);
@@ -183,7 +138,7 @@ class FavorRepositoryImpl implements FavorRepository {
           .get();
       final favorData = favorDoc.data();
       if (favorData == null) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'お気に入り情報の取得に失敗しました');
       }
       final favorDate = (favorData['favor_at'] as Timestamp).toDate();
       return Result.success(favorDate);
@@ -192,7 +147,7 @@ class FavorRepositoryImpl implements FavorRepository {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('FavorRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('FavorRepositoryImpl dispose');
   }
 }

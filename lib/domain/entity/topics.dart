@@ -10,7 +10,8 @@ abstract class Topics implements _$Topics {
   }) = _Topics;
   const Topics._();
 
-  int length() {
-    return list.length;
-  }
+  int get length => list.length;
+  bool get isEmpty => list.isEmpty;
+  Topic? get firstOrNull => list.firstOrNull;
+  Topic? get lastOrNull => list.lastOrNull;
 }

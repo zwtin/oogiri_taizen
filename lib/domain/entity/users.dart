@@ -10,7 +10,8 @@ abstract class Users implements _$Users {
   }) = _Users;
   const Users._();
 
-  int length() {
-    return list.length;
-  }
+  int get length => list.length;
+  bool get isEmpty => list.isEmpty;
+  User? get firstOrNull => list.firstOrNull;
+  User? get lastOrNull => list.lastOrNull;
 }

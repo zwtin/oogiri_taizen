@@ -78,6 +78,8 @@ dependencies:
   # To Use Tuple
   tuple: ^2.0.0
 
+  logger: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

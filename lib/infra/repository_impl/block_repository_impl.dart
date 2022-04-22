@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/block_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/streaming_shared_preferences.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 final blockRepositoryProvider = Provider.autoDispose<BlockRepository>(
   (ref) {
     final blockRepository = BlockRepositoryImpl(
       ref.watch(sharedPreferencesProvider),
     );
-    ref.onDispose(blockRepository.disposed);
+    ref.onDispose(blockRepository.dispose);
     return blockRepository;
   },
 );
@@ -22,6 +21,7 @@ class BlockRepositoryImpl implements BlockRepository {
     this._instance,
   );
 
+  final _logger = Logger();
   final StreamingSharedPreferences _instance;
 
   @override
@@ -40,7 +40,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockUsers', defaultValue: []).getValue();
       if (list.contains(userId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックユーザーの追加に失敗しました');
       }
       list.add(userId);
       await _instance.setStringList('BlockUsers', list);
@@ -56,7 +56,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockUsers', defaultValue: []).getValue();
       if (!list.contains(userId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックユーザーの削除に失敗しました');
       }
       list.remove(userId);
       await _instance.setStringList('BlockUsers', list);
@@ -82,7 +82,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockTopics', defaultValue: []).getValue();
       if (list.contains(topicId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックお題の追加に失敗しました');
       }
       list.add(topicId);
       await _instance.setStringList('BlockTopics', list);
@@ -98,7 +98,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockTopics', defaultValue: []).getValue();
       if (!list.contains(topicId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックお題の削除に失敗しました');
       }
       list.remove(topicId);
       await _instance.setStringList('BlockTopics', list);
@@ -124,7 +124,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockAnswers', defaultValue: []).getValue();
       if (list.contains(answerId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックボケの追加に失敗しました');
       }
       list.add(answerId);
       await _instance.setStringList('BlockAnswers', list);
@@ -140,7 +140,7 @@ class BlockRepositoryImpl implements BlockRepository {
       final list =
           _instance.getStringList('BlockAnswers', defaultValue: []).getValue();
       if (!list.contains(answerId)) {
-        throw OTException();
+        throw OTException(text: 'エラー', title: 'ブロックボケの削除に失敗しました');
       }
       list.remove(answerId);
       await _instance.setStringList('BlockAnswers', list);
@@ -150,7 +150,7 @@ class BlockRepositoryImpl implements BlockRepository {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('BlockRepositoryImpl disposed');
+  void dispose() {
+    _logger.d('BlockRepositoryImpl dispose');
   }
 }

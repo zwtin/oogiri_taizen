@@ -6,11 +6,6 @@ abstract class LikeRepository {
     required String answerId,
   });
 
-  Future<Result<void>> unlike({
-    required String userId,
-    required String answerId,
-  });
-
   Future<Result<bool>> getLike({
     required String userId,
     required String answerId,

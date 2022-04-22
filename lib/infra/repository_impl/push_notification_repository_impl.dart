@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/push_notification_setting.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/push_notification_repository.dart';
@@ -11,12 +10,13 @@ final pushNotificationRepositoryProvider =
     Provider.autoDispose<PushNotificationRepository>(
   (ref) {
     final pushNotificationRepository = PushNotificationRepositoryImpl();
-    ref.onDispose(pushNotificationRepository.disposed);
+    ref.onDispose(pushNotificationRepository.dispose);
     return pushNotificationRepository;
   },
 );
 
 class PushNotificationRepositoryImpl implements PushNotificationRepository {
+  final _logger = Logger();
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -65,24 +65,18 @@ class PushNotificationRepositoryImpl implements PushNotificationRepository {
     required PushNotificationSetting setting,
   }) async {
     try {
+      final ref = _firestore.collection('push_notifications').doc(userId);
+      final data = {
+        'id': userId,
+        'updated_at': FieldValue.serverTimestamp(),
+        'when_liked': setting.whenLiked,
+        'when_favored': setting.whenFavored,
+      };
       await _firestore.runTransaction<void>(
         (Transaction transaction) async {
-          final ref = _firestore.collection('push_notifications').doc(userId);
-          final doc = await transaction.get(ref);
-          final data = doc.data();
-          if (data == null) {
-            throw OTException();
-          }
-
-          final map = {
-            'id': userId,
-            'updated_at': FieldValue.serverTimestamp(),
-            'when_liked': setting.whenLiked,
-            'when_favored': setting.whenFavored,
-          };
           transaction.update(
             ref,
-            map,
+            data,
           );
         },
       );
@@ -92,7 +86,7 @@ class PushNotificationRepositoryImpl implements PushNotificationRepository {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('PushNotificationRepository disposed');
+  void dispose() {
+    _logger.d('PushNotificationRepository dispose');
   }
 }

@@ -10,11 +10,15 @@ abstract class Answer implements _$Answer {
     required String id,
     required String text,
     required int viewedCount,
+    required bool isLike,
     required int likedCount,
+    required bool isFavor,
     required int favoredCount,
     required int popularPoint,
-    required Topic topic,
-    required User createdUser,
+    required String topicId,
+    Topic? topic,
+    required String createdUserId,
+    User? createdUser,
     required DateTime createdAt,
   }) = _Answer;
   const Answer._();
