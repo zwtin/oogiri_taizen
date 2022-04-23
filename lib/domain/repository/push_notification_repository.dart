@@ -3,10 +3,13 @@ import 'package:oogiri_taizen/domain/entity/result.dart';
 
 abstract class PushNotificationRepository {
   Future<Result<void>> requestPermission();
-  Stream<PushNotificationSetting?> getPushNotificationSetting({
+  Stream<PushNotificationSetting> getPushNotificationSetting({
     required String userId,
   });
-  Future<Result<void>> setPushNotificationSetting({
+  Future<Result<void>> createPushNotificationSetting({
+    required String userId,
+  });
+  Future<Result<void>> updatePushNotificationSetting({
     required String userId,
     required PushNotificationSetting setting,
   });

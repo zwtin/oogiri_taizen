@@ -7,18 +7,18 @@ abstract class AnswerRepository {
     required String id,
   });
 
-  Future<Result<Answers>> getNewAnswerIds({
+  Future<Result<Answers>> getNewAnswers({
     required DateTime? offset,
     required int limit,
   });
 
-  Future<Result<Answers>> getCreatedAnswerIds({
+  Future<Result<Answers>> getCreatedAnswers({
     required String userId,
     required DateTime? offset,
     required int limit,
   });
 
-  Future<Result<Answers>> getFavorAnswerIds({
+  Future<Result<Answers>> getFavorAnswers({
     required String userId,
     required DateTime? offset,
     required int limit,

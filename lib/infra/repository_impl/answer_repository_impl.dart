@@ -38,7 +38,7 @@ class AnswerRepositoryImpl implements AnswerRepository {
   }
 
   @override
-  Future<Result<Answers>> getNewAnswerIds({
+  Future<Result<Answers>> getNewAnswers({
     required DateTime? offset,
     required int limit,
   }) async {
@@ -85,7 +85,7 @@ class AnswerRepositoryImpl implements AnswerRepository {
   }
 
   @override
-  Future<Result<Answers>> getCreatedAnswerIds({
+  Future<Result<Answers>> getCreatedAnswers({
     required String userId,
     required DateTime? offset,
     required int limit,
@@ -137,7 +137,7 @@ class AnswerRepositoryImpl implements AnswerRepository {
   }
 
   @override
-  Future<Result<Answers>> getFavorAnswerIds({
+  Future<Result<Answers>> getFavorAnswers({
     required String userId,
     required DateTime? offset,
     required int limit,

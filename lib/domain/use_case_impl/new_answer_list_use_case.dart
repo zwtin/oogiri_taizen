@@ -7,16 +7,22 @@ import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
+import 'package:oogiri_taizen/domain/entity/topic.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart';
 import 'package:oogiri_taizen/domain/repository/answer_repository.dart';
 import 'package:oogiri_taizen/domain/repository/authentication_repository.dart';
 import 'package:oogiri_taizen/domain/repository/block_repository.dart';
 import 'package:oogiri_taizen/domain/repository/favor_repository.dart';
 import 'package:oogiri_taizen/domain/repository/like_repository.dart';
+import 'package:oogiri_taizen/domain/repository/topic_repository.dart';
+import 'package:oogiri_taizen/domain/repository/user_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/answer_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/block_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/favor_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/like_repository_impl.dart';
+import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
+import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
 final newAnswerListUseCaseProvider =
     Provider.autoDispose.family<NewAnswerListUseCase, UniqueKey>(
@@ -28,6 +34,8 @@ final newAnswerListUseCaseProvider =
       ref.watch(blockRepositoryProvider),
       ref.watch(favorRepositoryProvider),
       ref.watch(likeRepositoryProvider),
+      ref.watch(topicRepositoryProvider),
+      ref.watch(userRepositoryProvider),
     );
   },
 );
@@ -40,13 +48,15 @@ class NewAnswerListUseCase extends ChangeNotifier {
     this._blockRepository,
     this._favorRepository,
     this._likeRepository,
+    this._topicRepository,
+    this._userRepository,
   ) {
     _blockAnswerIdsSubscription?.cancel();
     _blockAnswerIdsSubscription =
         _blockRepository.getBlockAnswerIdsStream().listen(
-      (ids) {
+      (ids) async {
         _blockAnswerIds = ids;
-        resetAnswers();
+        await resetAnswers();
       },
     );
     _blockAnswerIds = _blockRepository.getBlockAnswerIds();
@@ -54,31 +64,40 @@ class NewAnswerListUseCase extends ChangeNotifier {
     _blockTopicIdsSubscription?.cancel();
     _blockTopicIdsSubscription =
         _blockRepository.getBlockTopicIdsStream().listen(
-      (ids) {
+      (ids) async {
         _blockTopicIds = ids;
-        resetAnswers();
+        await resetAnswers();
       },
     );
     _blockTopicIds = _blockRepository.getBlockTopicIds();
 
     _blockUserIdsSubscription?.cancel();
     _blockUserIdsSubscription = _blockRepository.getBlockUserIdsStream().listen(
-      (ids) {
+      (ids) async {
         _blockUserIds = ids;
-        resetAnswers();
+        await resetAnswers();
       },
     );
     _blockUserIds = _blockRepository.getBlockUserIds();
 
-    _authenticationRepository.getLoginUserStream().listen(
-      (_loginUser) {
-        loginUser = _loginUser;
-        resetAnswers();
+    _loginUserSubscription?.cancel();
+    _loginUserSubscription =
+        _authenticationRepository.getLoginUserStream().listen(
+      (_loginUser) async {
+        await _userSubscription?.cancel();
+        if (_loginUser == null) {
+          loginUser = null;
+          await resetAnswers();
+          return;
+        }
+        _userSubscription = _userRepository
+            .getUserStream(id: _loginUser.id)
+            .listen((user) async {
+          loginUser = _loginUser.copyWith(user: user);
+          await resetAnswers();
+        });
       },
     );
-
-    loginUser = _authenticationRepository.getLoginUser();
-    resetAnswers();
   }
 
   final AnswerRepository _answerRepository;
@@ -86,6 +105,8 @@ class NewAnswerListUseCase extends ChangeNotifier {
   final BlockRepository _blockRepository;
   final FavorRepository _favorRepository;
   final LikeRepository _likeRepository;
+  final TopicRepository _topicRepository;
+  final UserRepository _userRepository;
 
   final UniqueKey _key;
   final _logger = Logger();
@@ -95,6 +116,8 @@ class NewAnswerListUseCase extends ChangeNotifier {
   Answers answers = const Answers(list: []);
   bool hasNext = true;
 
+  StreamSubscription<LoginUser?>? _loginUserSubscription;
+  StreamSubscription<User?>? _userSubscription;
   List<String> _blockAnswerIds = [];
   StreamSubscription<List<String>>? _blockAnswerIdsSubscription;
   List<String> _blockTopicIds = [];
@@ -158,11 +181,11 @@ class NewAnswerListUseCase extends ChangeNotifier {
     const limit = 10;
     isConnecting = true;
     notifyListeners();
-    final newAnswerIdsResult = await _answerRepository.getNewAnswerIds(
+    final newAnswersResult = await _answerRepository.getNewAnswers(
       offset: offset,
       limit: limit + 1,
     );
-    if (newAnswerIdsResult is Failure) {
+    if (newAnswersResult is Failure) {
       return Result.failure(
         OTException(
           title: 'エラー',
@@ -170,99 +193,51 @@ class NewAnswerListUseCase extends ChangeNotifier {
         ),
       );
     }
-    final newAnswerIds = (newAnswerIdsResult as Success<List<String>>).value;
-    hasNext = newAnswerIds.length == limit + 1;
+    final newAnswers = (newAnswersResult as Success<Answers>).value;
+    hasNext = newAnswers.length == limit + 1;
     if (hasNext) {
-      newAnswerIds.removeLast();
+      newAnswers.removeLast();
     }
-    for (final id in newAnswerIds) {
-      final newAnswerResult = await _answerRepository.getAnswer(id: id);
-      if (newAnswerResult is Failure) {
+
+    for (var i = 0; i < newAnswers.length; i++) {
+      var answer = newAnswers.get(i);
+      final createdUserResult =
+          await _userRepository.getUser(id: answer.createdUserId);
+      if (!(createdUserResult is Success<User>)) {
         continue;
       }
-      var newAnswer = (newAnswerResult as Success<Answer>).value;
-      if (_userId != null) {
-        final isLikeResult =
-            await _likeRepository.getLike(userId: _userId!, answerId: id);
-        final isFavorResult =
-            await _favorRepository.getFavor(userId: _userId!, answerId: id);
+      answer = answer.copyWith(createdUser: createdUserResult.value);
+      final topicResult = await _topicRepository.getTopic(id: answer.topicId);
+      if (!(topicResult is Success<Topic>)) {
+        continue;
+      }
+      var topic = topicResult.value;
+      final topicCreatedUserResult =
+          await _userRepository.getUser(id: topic.createdUserId);
+      if (!(topicCreatedUserResult is Success<User>)) {
+        continue;
+      }
+      topic = topic.copyWith(createdUser: topicCreatedUserResult.value);
+      answer = answer.copyWith(topic: topic);
+
+      if (loginUser != null) {
+        final isLikeResult = await _likeRepository.getLike(
+          userId: loginUser!.id,
+          answerId: answer.id,
+        );
+        final isFavorResult = await _favorRepository.getFavor(
+          userId: loginUser!.id,
+          answerId: answer.id,
+        );
         if (isLikeResult is Success<bool> && isFavorResult is Success<bool>) {
-          newAnswer = newAnswer.copyWith(
+          answer = answer.copyWith(
             isLike: isLikeResult.value,
             isFavor: isFavorResult.value,
           );
         }
       }
-      newAnswers.add(newAnswer);
-
-      if (_userId != null) {
-        _likeStreamSubscription[id] = _likeRepository
-            .getLikeStream(
-          userId: _userId!,
-          answerId: id,
-        )
-            .listen(
-          (value) {
-            final list = _answers.list;
-            final index = list.indexWhere((element) => element.id == id);
-            final answer = list.firstWhere((element) => element.id == id);
-
-            if (value && !answer.isLike) {
-              final updatedAnswer = answer.copyWith(
-                isLike: value,
-                likedTime: answer.likedTime + 1,
-              );
-              list.replaceRange(index, index + 1, [updatedAnswer]);
-              final updatedAnswers = _answers.copyWith(list: list);
-              _setAnswers(answers: updatedAnswers);
-            } else if (!value && answer.isLike) {
-              final updatedAnswer = answer.copyWith(
-                isLike: value,
-                likedTime: answer.likedTime - 1,
-              );
-              list.replaceRange(index, index + 1, [updatedAnswer]);
-              final updatedAnswers = _answers.copyWith(list: list);
-              _setAnswers(answers: updatedAnswers);
-            }
-          },
-        );
-        _favorStreamSubscription[id] = _favorRepository
-            .getFavorStream(
-          userId: _userId!,
-          answerId: id,
-        )
-            .listen(
-          (value) {
-            final list = _answers.list;
-            final index = list.indexWhere((element) => element.id == id);
-            final answer = list.firstWhere((element) => element.id == id);
-
-            if (value && !answer.isFavor) {
-              final updatedAnswer = answer.copyWith(
-                isFavor: value,
-                favoredTime: answer.favoredTime + 1,
-              );
-              list.replaceRange(index, index + 1, [updatedAnswer]);
-              final updatedAnswers = _answers.copyWith(list: list);
-              _setAnswers(answers: updatedAnswers);
-            } else if (!value && answer.isFavor) {
-              final updatedAnswer = answer.copyWith(
-                isFavor: value,
-                favoredTime: answer.favoredTime - 1,
-              );
-              list.replaceRange(index, index + 1, [updatedAnswer]);
-              final updatedAnswers = _answers.copyWith(list: list);
-              _setAnswers(answers: updatedAnswers);
-            }
-          },
-        );
-      }
     }
-    _isConnecting = false;
-    _setAnswers(
-      answers: _answers.copyWith(list: newAnswers, hasNext: hasNext),
-    );
-    return const Result.success(null);
+
     return const Result.success(null);
   }
 
@@ -277,6 +252,8 @@ class NewAnswerListUseCase extends ChangeNotifier {
     for (final element in _isFavorSubscriptions.values) {
       element.cancel();
     }
+    _loginUserSubscription?.cancel();
+    _userSubscription?.cancel();
     _blockAnswerIdsSubscription?.cancel();
     _blockTopicIdsSubscription?.cancel();
     _blockUserIdsSubscription?.cancel();

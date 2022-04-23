@@ -39,7 +39,7 @@ class PushNotificationRepositoryImpl implements PushNotificationRepository {
   }
 
   @override
-  Stream<PushNotificationSetting?> getPushNotificationSetting({
+  Stream<PushNotificationSetting> getPushNotificationSetting({
     required String userId,
   }) {
     final stream = _firestore
@@ -49,7 +49,10 @@ class PushNotificationRepositoryImpl implements PushNotificationRepository {
         .map((snapshot) {
       final data = snapshot.data();
       if (data == null) {
-        return null;
+        return const PushNotificationSetting(
+          whenLiked: false,
+          whenFavored: false,
+        );
       }
       return PushNotificationSetting(
         whenLiked: data['when_liked'] as bool,
@@ -60,7 +63,33 @@ class PushNotificationRepositoryImpl implements PushNotificationRepository {
   }
 
   @override
-  Future<Result<void>> setPushNotificationSetting({
+  Future<Result<void>> createPushNotificationSetting({
+    required String userId,
+  }) async {
+    try {
+      final ref = _firestore.collection('push_notifications').doc(userId);
+      final data = {
+        'id': userId,
+        'updated_at': FieldValue.serverTimestamp(),
+        'when_liked': true,
+        'when_favored': true,
+      };
+      await _firestore.runTransaction<void>(
+        (Transaction transaction) async {
+          transaction.set(
+            ref,
+            data,
+          );
+        },
+      );
+      return const Result.success(null);
+    } on Exception catch (exception) {
+      return Result.failure(exception);
+    }
+  }
+
+  @override
+  Future<Result<void>> updatePushNotificationSetting({
     required String userId,
     required PushNotificationSetting setting,
   }) async {

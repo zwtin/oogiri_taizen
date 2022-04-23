@@ -14,4 +14,12 @@ abstract class Topics implements _$Topics {
   bool get isEmpty => list.isEmpty;
   Topic? get firstOrNull => list.firstOrNull;
   Topic? get lastOrNull => list.lastOrNull;
+
+  void removeLast() {
+    list.removeLast();
+  }
+
+  Topic get(int index) {
+    return list[index];
+  }
 }

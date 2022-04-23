@@ -14,4 +14,12 @@ abstract class Users implements _$Users {
   bool get isEmpty => list.isEmpty;
   User? get firstOrNull => list.firstOrNull;
   User? get lastOrNull => list.lastOrNull;
+
+  void removeLast() {
+    list.removeLast();
+  }
+
+  User get(int index) {
+    return list[index];
+  }
 }

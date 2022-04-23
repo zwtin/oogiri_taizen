@@ -14,4 +14,12 @@ abstract class Answers implements _$Answers {
   bool get isEmpty => list.isEmpty;
   Answer? get firstOrNull => list.firstOrNull;
   Answer? get lastOrNull => list.lastOrNull;
+
+  void removeLast() {
+    list.removeLast();
+  }
+
+  Answer get(int index) {
+    return list[index];
+  }
 }
