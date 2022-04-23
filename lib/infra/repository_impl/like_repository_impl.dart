@@ -15,7 +15,7 @@ final likeRepositoryProvider = Provider.autoDispose<LikeRepository>(
 
 class LikeRepositoryImpl implements LikeRepository {
   final _logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<void>> like({

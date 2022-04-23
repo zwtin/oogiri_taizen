@@ -18,7 +18,7 @@ final answerRepositoryProvider = Provider.autoDispose<AnswerRepository>(
 
 class AnswerRepositoryImpl implements AnswerRepository {
   final _logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<Answer>> getAnswer({

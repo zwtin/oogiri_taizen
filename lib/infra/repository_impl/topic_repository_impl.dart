@@ -17,7 +17,7 @@ final topicRepositoryProvider = Provider.autoDispose<TopicRepository>(
 
 class TopicRepositoryImpl implements TopicRepository {
   final _logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<Topic>> getTopic({

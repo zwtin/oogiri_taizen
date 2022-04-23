@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,107 +21,38 @@ final authenticationRepositoryProvider =
 );
 
 class AuthenticationRepositoryImpl implements AuthenticationRepository {
-  AuthenticationRepositoryImpl() {
-    _loginUserModelSubscription?.cancel();
-    _loginUserModelSubscription = _firebaseAuth.authStateChanges().listen(
-      (loginUserModel) async {
-        if (loginUserModel == null) {
-          _loginUser = null;
-          _streamController.sink.add(null);
-        } else {
-          await _userSubscription?.cancel();
-          _userSubscription = _firestore
-              .collection('users')
-              .doc(loginUserModel.uid)
-              .snapshots()
-              .listen(
-            (snapshot) {
-              final data = snapshot.data();
-              if (data == null) {
-                _loginUser = null;
-                _streamController.sink.add(null);
-              } else {
-                final loginUser = LoginUser(
-                  id: loginUserModel.uid,
-                  name: data['name'] as String,
-                  imageUrl: data['image_url'] as String,
-                  introduction: data['introduction'] as String,
-                  emailVerified: loginUserModel.emailVerified,
-                );
-                _loginUser = loginUser;
-                _streamController.sink.add(loginUser);
-              }
-            },
-          );
-        }
-      },
-    );
-  }
-
   final _logger = Logger();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  LoginUser? _loginUser;
-  final _streamController = StreamController<LoginUser?>.broadcast();
-  StreamSubscription<dynamic>? _userSubscription;
-  StreamSubscription<User?>? _loginUserModelSubscription;
-
-  @override
-  String? getLoginUserId() {
-    return _firebaseAuth.currentUser?.uid;
-  }
+  final _firebaseAuth = FirebaseAuth.instance;
 
   @override
   LoginUser? getLoginUser() {
-    return _loginUser;
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return null;
+    }
+    return LoginUser(
+      id: user.uid,
+      emailVerified: user.emailVerified,
+    );
   }
 
   @override
   Stream<LoginUser?> getLoginUserStream() {
-    return _streamController.stream;
+    return _firebaseAuth.authStateChanges().map((user) {
+      if (user == null) {
+        return null;
+      }
+      return LoginUser(
+        id: user.uid,
+        emailVerified: user.emailVerified,
+      );
+    });
   }
 
   @override
   Future<Result<void>> refresh() async {
     try {
       await _firebaseAuth.currentUser?.reload();
-
-      await _loginUserModelSubscription?.cancel();
-      _loginUserModelSubscription = _firebaseAuth.authStateChanges().listen(
-        (loginUserModel) async {
-          if (loginUserModel == null) {
-            _loginUser = null;
-            _streamController.sink.add(null);
-          } else {
-            await _userSubscription?.cancel();
-            _userSubscription = _firestore
-                .collection('users')
-                .doc(loginUserModel.uid)
-                .snapshots()
-                .listen(
-              (snapshot) {
-                final data = snapshot.data();
-                if (data == null) {
-                  _loginUser = null;
-                  _streamController.sink.add(null);
-                } else {
-                  final loginUser = LoginUser(
-                    id: loginUserModel.uid,
-                    name: data['name'] as String,
-                    imageUrl: data['image_url'] as String,
-                    introduction: data['introduction'] as String,
-                    emailVerified: loginUserModel.emailVerified,
-                  );
-                  _loginUser = loginUser;
-                  _streamController.sink.add(loginUser);
-                }
-              },
-            );
-          }
-        },
-      );
-
       return const Result.success(null);
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -162,10 +92,10 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     try {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'ログインしてください');
       }
       if (user.emailVerified) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'メールアドレスは認証済みです');
       }
       final actionCodeSettings = ActionCodeSettings(
         url: F.appFlavor == Flavor.DEVELOPMENT
@@ -215,7 +145,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       currentUser ??= await _googleSignIn.signInSilently();
       currentUser ??= await _googleSignIn.signIn();
       if (currentUser == null) {
-        throw OTException();
+        throw OTException(title: 'エラー', text: 'Googleログインに失敗しました');
       }
       final googleAuth = await currentUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -248,7 +178,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
           await _firebaseAuth.signInWithCredential(credential);
           return const Result.success(null);
         default:
-          throw OTException();
+          throw OTException(title: 'エラー', text: 'Appleログインに失敗しました');
       }
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -274,7 +204,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
           await _firebaseAuth.currentUser!.linkWithCredential(credential);
           return const Result.success(null);
         default:
-          throw OTException();
+          throw OTException(title: 'エラー', text: 'Appleとの紐付けに失敗しました');
       }
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -302,9 +232,6 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   void dispose() {
-    await _streamController.close();
-    await _userSubscription?.cancel();
-    await _loginUserModelSubscription?.cancel();
     _logger.d('AuthenticationRepositoryImpl dispose');
   }
 }

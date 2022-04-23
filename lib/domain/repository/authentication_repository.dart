@@ -2,9 +2,9 @@ import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 
 abstract class AuthenticationRepository {
-  String? getLoginUserId();
   LoginUser? getLoginUser();
   Stream<LoginUser?> getLoginUserStream();
+
   Future<Result<void>> refresh();
   Future<Result<void>> applyActionCode({
     required String code,

@@ -17,7 +17,7 @@ final userRepositoryProvider = Provider.autoDispose<UserRepository>(
 
 class UserRepositoryImpl implements UserRepository {
   final _logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<User>> getUser({

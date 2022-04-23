@@ -17,8 +17,8 @@ final pushNotificationRepositoryProvider =
 
 class PushNotificationRepositoryImpl implements PushNotificationRepository {
   final _logger = Logger();
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _messaging = FirebaseMessaging.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<void>> requestPermission() async {

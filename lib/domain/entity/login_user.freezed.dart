@@ -16,8 +16,10 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$LoginUserTearOff {
   const _$LoginUserTearOff();
 
-  _LoginUser call({required User user, required bool emailVerified}) {
+  _LoginUser call(
+      {required String id, User? user, required bool emailVerified}) {
     return _LoginUser(
+      id: id,
       user: user,
       emailVerified: emailVerified,
     );
@@ -29,7 +31,8 @@ const $LoginUser = _$LoginUserTearOff();
 
 /// @nodoc
 mixin _$LoginUser {
-  User get user => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  User? get user => throw _privateConstructorUsedError;
   bool get emailVerified => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -41,9 +44,9 @@ mixin _$LoginUser {
 abstract class $LoginUserCopyWith<$Res> {
   factory $LoginUserCopyWith(LoginUser value, $Res Function(LoginUser) then) =
       _$LoginUserCopyWithImpl<$Res>;
-  $Res call({User user, bool emailVerified});
+  $Res call({String id, User? user, bool emailVerified});
 
-  $UserCopyWith<$Res> get user;
+  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -56,14 +59,19 @@ class _$LoginUserCopyWithImpl<$Res> implements $LoginUserCopyWith<$Res> {
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? user = freezed,
     Object? emailVerified = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       user: user == freezed
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User,
+              as User?,
       emailVerified: emailVerified == freezed
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
@@ -72,8 +80,12 @@ class _$LoginUserCopyWithImpl<$Res> implements $LoginUserCopyWith<$Res> {
   }
 
   @override
-  $UserCopyWith<$Res> get user {
-    return $UserCopyWith<$Res>(_value.user, (value) {
+  $UserCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.user!, (value) {
       return _then(_value.copyWith(user: value));
     });
   }
@@ -85,10 +97,10 @@ abstract class _$LoginUserCopyWith<$Res> implements $LoginUserCopyWith<$Res> {
           _LoginUser value, $Res Function(_LoginUser) then) =
       __$LoginUserCopyWithImpl<$Res>;
   @override
-  $Res call({User user, bool emailVerified});
+  $Res call({String id, User? user, bool emailVerified});
 
   @override
-  $UserCopyWith<$Res> get user;
+  $UserCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -102,14 +114,19 @@ class __$LoginUserCopyWithImpl<$Res> extends _$LoginUserCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? user = freezed,
     Object? emailVerified = freezed,
   }) {
     return _then(_LoginUser(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       user: user == freezed
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
-              as User,
+              as User?,
       emailVerified: emailVerified == freezed
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
@@ -121,23 +138,27 @@ class __$LoginUserCopyWithImpl<$Res> extends _$LoginUserCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_LoginUser extends _LoginUser {
-  const _$_LoginUser({required this.user, required this.emailVerified})
+  const _$_LoginUser({required this.id, this.user, required this.emailVerified})
       : super._();
 
   @override
-  final User user;
+  final String id;
+  @override
+  final User? user;
   @override
   final bool emailVerified;
 
   @override
   String toString() {
-    return 'LoginUser(user: $user, emailVerified: $emailVerified)';
+    return 'LoginUser(id: $id, user: $user, emailVerified: $emailVerified)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _LoginUser &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.user, user) ||
                 const DeepCollectionEquality().equals(other.user, user)) &&
             (identical(other.emailVerified, emailVerified) ||
@@ -148,6 +169,7 @@ class _$_LoginUser extends _LoginUser {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(user) ^
       const DeepCollectionEquality().hash(emailVerified);
 
@@ -158,12 +180,16 @@ class _$_LoginUser extends _LoginUser {
 }
 
 abstract class _LoginUser extends LoginUser {
-  const factory _LoginUser({required User user, required bool emailVerified}) =
-      _$_LoginUser;
+  const factory _LoginUser(
+      {required String id,
+      User? user,
+      required bool emailVerified}) = _$_LoginUser;
   const _LoginUser._() : super._();
 
   @override
-  User get user => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  @override
+  User? get user => throw _privateConstructorUsedError;
   @override
   bool get emailVerified => throw _privateConstructorUsedError;
   @override

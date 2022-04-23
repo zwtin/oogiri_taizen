@@ -15,7 +15,7 @@ final favorRepositoryProvider = Provider.autoDispose<FavorRepository>(
 
 class FavorRepositoryImpl implements FavorRepository {
   final _logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
   Future<Result<void>> favor({
