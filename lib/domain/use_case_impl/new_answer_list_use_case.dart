@@ -112,9 +112,17 @@ class NewAnswerListUseCase extends ChangeNotifier {
   final _logger = Logger();
 
   LoginUser? loginUser;
-  bool isConnecting = false;
-  Answers answers = const Answers(list: []);
   bool hasNext = true;
+  Answers get showingAnswers {
+    return _loadedAnswers.filteredBlock(
+      blockAnswerIds: _blockAnswerIds,
+      blockTopicIds: _blockTopicIds,
+      blockUserIds: _blockUserIds,
+    );
+  }
+
+  bool _isConnecting = false;
+  Answers _loadedAnswers = const Answers(list: []);
 
   StreamSubscription<LoginUser?>? _loginUserSubscription;
   StreamSubscription<User?>? _userSubscription;
@@ -163,7 +171,7 @@ class NewAnswerListUseCase extends ChangeNotifier {
     _isLikeSubscriptions.clear();
     _isFavorSubscriptions.clear();
 
-    answers = const Answers(list: []);
+    _loadedAnswers = const Answers(list: []);
     hasNext = true;
 
     notifyListeners();
@@ -174,13 +182,15 @@ class NewAnswerListUseCase extends ChangeNotifier {
     if (!hasNext) {
       return const Result.success(null);
     }
-    if (isConnecting) {
+    if (_isConnecting) {
       return const Result.success(null);
     }
-    final offset = answers.lastOrNull?.createdAt;
-    const limit = 10;
-    isConnecting = true;
+    _isConnecting = true;
     notifyListeners();
+
+    final offset = _loadedAnswers.lastOrNull?.createdAt;
+    const limit = 10;
+
     final newAnswersResult = await _answerRepository.getNewAnswers(
       offset: offset,
       limit: limit + 1,
@@ -193,14 +203,13 @@ class NewAnswerListUseCase extends ChangeNotifier {
         ),
       );
     }
-    final newAnswers = (newAnswersResult as Success<Answers>).value;
+    var newAnswers = (newAnswersResult as Success<Answers>).value;
     hasNext = newAnswers.length == limit + 1;
     if (hasNext) {
-      newAnswers.removeLast();
+      newAnswers = newAnswers.removedLast();
     }
-
     for (var i = 0; i < newAnswers.length; i++) {
-      var answer = newAnswers.get(i);
+      var answer = newAnswers.getByIndex(i)!;
       final createdUserResult =
           await _userRepository.getUser(id: answer.createdUserId);
       if (!(createdUserResult is Success<User>)) {
@@ -236,8 +245,60 @@ class NewAnswerListUseCase extends ChangeNotifier {
           );
         }
       }
+
+      _loadedAnswers = _loadedAnswers.added(answer);
+
+      if (loginUser != null) {
+        _isLikeSubscriptions[answer.id] = _likeRepository
+            .getLikeStream(userId: loginUser!.id, answerId: answer.id)
+            .listen((value) {
+          var newAnswer = _loadedAnswers.getById(answer.id);
+          if (newAnswer == null) {
+            return;
+          }
+          if (value && !newAnswer.isLike) {
+            newAnswer = newAnswer.copyWith(
+              isLike: value,
+              likedCount: newAnswer.likedCount + 1,
+            );
+            _loadedAnswers = _loadedAnswers.update(newAnswer);
+          } else if (!value && newAnswer.isLike) {
+            newAnswer = newAnswer.copyWith(
+              isLike: value,
+              likedCount: newAnswer.likedCount - 1,
+            );
+            _loadedAnswers = _loadedAnswers.update(newAnswer);
+          }
+          notifyListeners();
+        });
+
+        _isFavorSubscriptions[answer.id] = _favorRepository
+            .getFavorStream(userId: loginUser!.id, answerId: answer.id)
+            .listen((value) {
+          var newAnswer = _loadedAnswers.getById(answer.id);
+          if (newAnswer == null) {
+            return;
+          }
+          if (value && !newAnswer.isFavor) {
+            newAnswer = newAnswer.copyWith(
+              isFavor: value,
+              favoredCount: newAnswer.favoredCount + 1,
+            );
+            _loadedAnswers = _loadedAnswers.update(newAnswer);
+          } else if (!value && newAnswer.isFavor) {
+            newAnswer = newAnswer.copyWith(
+              isFavor: value,
+              favoredCount: newAnswer.favoredCount - 1,
+            );
+            _loadedAnswers = _loadedAnswers.update(newAnswer);
+          }
+          notifyListeners();
+        });
+      }
     }
 
+    _isConnecting = false;
+    notifyListeners();
     return const Result.success(null);
   }
 

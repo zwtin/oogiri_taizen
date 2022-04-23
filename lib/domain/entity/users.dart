@@ -15,11 +15,29 @@ abstract class Users implements _$Users {
   User? get firstOrNull => list.firstOrNull;
   User? get lastOrNull => list.lastOrNull;
 
-  void removeLast() {
-    list.removeLast();
+  Users added(User user) {
+    final newList = List.of(list)..add(user);
+    return Users(list: newList);
   }
 
-  User get(int index) {
-    return list[index];
+  Users removedLast() {
+    final newList = List.of(list)..removeLast();
+    return Users(list: newList);
+  }
+
+  User? getByIndex(int index) {
+    if (index < list.length) {
+      return list[index];
+    } else {
+      return null;
+    }
+  }
+
+  User? getById(String id) {
+    if (list.any((element) => element.id == id)) {
+      return list.firstWhere((element) => element.id == id);
+    } else {
+      return null;
+    }
   }
 }

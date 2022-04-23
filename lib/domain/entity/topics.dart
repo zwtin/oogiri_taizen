@@ -15,11 +15,29 @@ abstract class Topics implements _$Topics {
   Topic? get firstOrNull => list.firstOrNull;
   Topic? get lastOrNull => list.lastOrNull;
 
-  void removeLast() {
-    list.removeLast();
+  Topics added(Topic topic) {
+    final newList = List.of(list)..add(topic);
+    return Topics(list: newList);
   }
 
-  Topic get(int index) {
-    return list[index];
+  Topics removedLast() {
+    final newList = List.of(list)..removeLast();
+    return Topics(list: newList);
+  }
+
+  Topic? getByIndex(int index) {
+    if (index < list.length) {
+      return list[index];
+    } else {
+      return null;
+    }
+  }
+
+  Topic? getById(String id) {
+    if (list.any((element) => element.id == id)) {
+      return list.firstWhere((element) => element.id == id);
+    } else {
+      return null;
+    }
   }
 }
