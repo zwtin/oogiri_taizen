@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:oogiri_taizen/domain/use_case/terms_of_service_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/terms_of_service_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case_impl/terms_of_service_use_case.dart';
 
 final termsOfServiceViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<TermsOfServiceViewModel, UniqueKey>(
