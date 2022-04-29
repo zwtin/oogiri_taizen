@@ -20,6 +20,12 @@ abstract class Topics implements _$Topics {
     return Topics(list: newList);
   }
 
+  Topics removed(Topic topic) {
+    final newList = List.of(list)
+      ..removeWhere((element) => element.id == topic.id);
+    return Topics(list: newList);
+  }
+
   Topics removedLast() {
     final newList = List.of(list)..removeLast();
     return Topics(list: newList);

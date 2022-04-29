@@ -20,6 +20,12 @@ abstract class Answers implements _$Answers {
     return Answers(list: newList);
   }
 
+  Answers removed(Answer answer) {
+    final newList = List.of(list)
+      ..removeWhere((element) => element.id == answer.id);
+    return Answers(list: newList);
+  }
+
   Answers removedLast() {
     final newList = List.of(list)..removeLast();
     return Answers(list: newList);

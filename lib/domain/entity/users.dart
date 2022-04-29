@@ -20,6 +20,12 @@ abstract class Users implements _$Users {
     return Users(list: newList);
   }
 
+  Users removed(User user) {
+    final newList = List.of(list)
+      ..removeWhere((element) => element.id == user.id);
+    return Users(list: newList);
+  }
+
   Users removedLast() {
     final newList = List.of(list)..removeLast();
     return Users(list: newList);
