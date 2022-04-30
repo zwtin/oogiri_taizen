@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:oogiri_taizen/app/mapper/answer_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/login_user_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/topic_view_data_mapper.dart';
@@ -22,17 +21,17 @@ import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/block_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/favor_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/favor_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/like_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/like_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/my_create_answer_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/my_create_answer_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/my_favor_answer_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/block_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/favor_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/like_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/my_create_answer_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/my_favor_answer_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/my_favor_answer_use_case_impl.dart';
 import 'package:tuple/tuple.dart';
 
 final myProfileViewModelProvider =

@@ -14,8 +14,8 @@ import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/topics.dart';
 import 'package:oogiri_taizen/domain/entity/users.dart';
 import 'package:oogiri_taizen/domain/use_case/block_list_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/block_list_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/block_list_use_case_impl.dart';
 
 final blockListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<BlockListViewModel, UniqueKey>(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/temporary_register_complete_view.dart';
@@ -8,7 +7,7 @@ import 'package:oogiri_taizen/app/view/terms_of_service_view.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 
 final signUpViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignUpViewModel, UniqueKey>(

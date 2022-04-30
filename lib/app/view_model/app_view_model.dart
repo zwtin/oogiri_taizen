@@ -6,7 +6,7 @@ import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/view/bottom_tab_view.dart';
 import 'package:oogiri_taizen/app/view/start_view.dart';
 import 'package:oogiri_taizen/domain/use_case/force_update_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/force_update_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/force_update_use_case_impl.dart';
 
 final appViewModelProvider = ChangeNotifierProvider.autoDispose<AppViewModel>(
   (ref) {

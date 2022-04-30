@@ -8,21 +8,20 @@ import 'package:oogiri_taizen/app/mapper/user_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/profile_view.dart';
+import 'package:oogiri_taizen/app/view_data/answer_view_data.dart';
 import 'package:oogiri_taizen/app/view_data/topic_view_data.dart';
 import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/answer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/answer_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/answer_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/block_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/favor_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/favor_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/like_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/answer_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/block_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/favor_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/like_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/like_use_case_impl.dart';
 import 'package:tuple/tuple.dart';
-
-import 'package:oogiri_taizen/app/view_data/answer_view_data.dart';
 
 final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<AnswerDetailViewModel, Tuple2<UniqueKey, String>>(

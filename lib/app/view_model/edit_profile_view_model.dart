@@ -3,17 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
-
-import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
-import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 
 final editProfileViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<EditProfileViewModel, UniqueKey>(

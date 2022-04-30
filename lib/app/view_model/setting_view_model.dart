@@ -10,7 +10,7 @@ import 'package:oogiri_taizen/app/view/terms_of_service_view.dart';
 import 'package:oogiri_taizen/app/view_data/login_user_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 
 final settingViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SettingViewModel, UniqueKey>(

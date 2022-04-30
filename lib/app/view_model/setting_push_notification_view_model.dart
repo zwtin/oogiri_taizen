@@ -6,7 +6,7 @@ import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/push_notification_setting.dart';
 import 'package:oogiri_taizen/domain/use_case/push_notification_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/push_notification_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/push_notification_use_case_impl.dart';
 
 final settingPushNotificationViewModelProvider = ChangeNotifierProvider
     .autoDispose

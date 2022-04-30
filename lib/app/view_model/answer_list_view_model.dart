@@ -2,29 +2,28 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:oogiri_taizen/app/mapper/answer_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/topic_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/user_view_data_mapper.dart';
-import 'package:oogiri_taizen/app/view/profile_view.dart';
-import 'package:oogiri_taizen/app/view_data/topic_view_data.dart';
-import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
-
-import 'package:oogiri_taizen/app/mapper/answer_view_data_mapper.dart';
-import 'package:oogiri_taizen/app/view/answer_detail_view.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
+import 'package:oogiri_taizen/app/view/answer_detail_view.dart';
+import 'package:oogiri_taizen/app/view/profile_view.dart';
 import 'package:oogiri_taizen/app/view_data/answer_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/topic_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/block_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/favor_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/favor_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/like_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/like_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/new_answer_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/authentication_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/block_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/favor_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/like_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/new_answer_use_case_impl.dart';
+import 'package:oogiri_taizen/domain/use_case/new_answer_use_case_impl.dart';
 
 final answerListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, UniqueKey>(
