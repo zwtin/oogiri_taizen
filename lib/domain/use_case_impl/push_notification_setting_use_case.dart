@@ -15,10 +15,10 @@ import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_im
 import 'package:oogiri_taizen/infra/repository_impl/push_notification_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
-final pushNotificationUseCaseProvider =
-    Provider.autoDispose.family<PushNotificationUseCase, UniqueKey>(
+final pushNotificationSettingUseCaseProvider =
+    Provider.autoDispose.family<PushNotificationSettingUseCase, UniqueKey>(
   (ref, key) {
-    return PushNotificationUseCase(
+    return PushNotificationSettingUseCase(
       key,
       ref.watch(authenticationRepositoryProvider),
       ref.watch(userRepositoryProvider),
@@ -27,8 +27,8 @@ final pushNotificationUseCaseProvider =
   },
 );
 
-class PushNotificationUseCase extends ChangeNotifier {
-  PushNotificationUseCase(
+class PushNotificationSettingUseCase extends ChangeNotifier {
+  PushNotificationSettingUseCase(
     this._key,
     this._authenticationRepository,
     this._userRepository,
@@ -110,7 +110,7 @@ class PushNotificationUseCase extends ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-    _logger.d('PushNotificationUseCase dispose $_key');
+    _logger.d('PushNotificationSettingUseCase dispose $_key');
 
     _loginUserSubscription?.cancel();
     _userSubscription?.cancel();

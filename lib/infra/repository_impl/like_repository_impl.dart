@@ -46,15 +46,7 @@ class LikeRepositoryImpl implements LikeRepository {
               .doc(userId);
           final answerLikedUserDoc = await transaction.get(answerLikedUserRef);
 
-          if (userlikeAnswerDoc.exists && answerLikedUserDoc.exists) {
-            final likedTime = answerData['liked_time'] as int;
-            final likeUpdateMap = {
-              'liked_time': likedTime - 1,
-            };
-            transaction.update(answerRef, likeUpdateMap)
-              ..delete(answerLikedUserRef)
-              ..delete(userlikeAnswerRef);
-          } else if (!userlikeAnswerDoc.exists && !answerLikedUserDoc.exists) {
+          if (!userlikeAnswerDoc.exists && !answerLikedUserDoc.exists) {
             final likedTime = answerData['liked_time'] as int;
             final likeUpdateMap = {
               'liked_time': likedTime + 1,
@@ -78,6 +70,52 @@ class LikeRepositoryImpl implements LikeRepository {
               userlikeAnswerRef,
               userMap,
             );
+          }
+        },
+      );
+      return const Result.success(null);
+    } on Exception catch (exception) {
+      return Result.failure(exception);
+    }
+  }
+
+  @override
+  Future<Result<void>> unlike({
+    required String userId,
+    required String answerId,
+  }) async {
+    try {
+      await _firestore.runTransaction<void>(
+        (Transaction transaction) async {
+          final answerRef = _firestore.collection('answers').doc(answerId);
+          final answerDoc = await transaction.get(answerRef);
+          final answerData = answerDoc.data();
+          if (answerData == null) {
+            throw OTException(text: 'エラー', title: 'ボケの取得に失敗しました');
+          }
+
+          final userlikeAnswerRef = _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('like_answers')
+              .doc(answerId);
+          final userlikeAnswerDoc = await transaction.get(userlikeAnswerRef);
+
+          final answerLikedUserRef = _firestore
+              .collection('answers')
+              .doc(answerId)
+              .collection('liked_users')
+              .doc(userId);
+          final answerLikedUserDoc = await transaction.get(answerLikedUserRef);
+
+          if (userlikeAnswerDoc.exists && answerLikedUserDoc.exists) {
+            final likedTime = answerData['liked_time'] as int;
+            final likeUpdateMap = {
+              'liked_time': likedTime - 1,
+            };
+            transaction.update(answerRef, likeUpdateMap)
+              ..delete(answerLikedUserRef)
+              ..delete(userlikeAnswerRef);
           }
         },
       );

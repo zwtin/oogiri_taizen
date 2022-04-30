@@ -6,6 +6,11 @@ abstract class FavorRepository {
     required String answerId,
   });
 
+  Future<Result<void>> unfavor({
+    required String userId,
+    required String answerId,
+  });
+
   Future<Result<bool>> getFavor({
     required String userId,
     required String answerId,

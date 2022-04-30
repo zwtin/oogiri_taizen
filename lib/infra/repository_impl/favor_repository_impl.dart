@@ -47,16 +47,7 @@ class FavorRepositoryImpl implements FavorRepository {
               .doc(answerId);
           final userFavorAnswerDoc = await transaction.get(userFavorAnswerRef);
 
-          if (answerFavoredUserDoc.exists && userFavorAnswerDoc.exists) {
-            final favoredTime = answerData['favored_time'] as int;
-            final favorUpdateMap = {
-              'favored_time': favoredTime - 1,
-            };
-            transaction.update(answerRef, favorUpdateMap)
-              ..delete(answerFavoredUserRef)
-              ..delete(userFavorAnswerRef);
-          } else if (!answerFavoredUserDoc.exists &&
-              !userFavorAnswerDoc.exists) {
+          if (!answerFavoredUserDoc.exists && !userFavorAnswerDoc.exists) {
             final favoredTime = answerData['favored_time'] as int;
             final favorUpdateMap = {
               'favored_time': favoredTime + 1,
@@ -80,6 +71,53 @@ class FavorRepositoryImpl implements FavorRepository {
               userFavorAnswerRef,
               userMap,
             );
+          }
+        },
+      );
+      return const Result.success(null);
+    } on Exception catch (exception) {
+      return Result.failure(exception);
+    }
+  }
+
+  @override
+  Future<Result<void>> unfavor({
+    required String userId,
+    required String answerId,
+  }) async {
+    try {
+      await _firestore.runTransaction<void>(
+        (Transaction transaction) async {
+          final answerRef = _firestore.collection('answers').doc(answerId);
+          final answerDoc = await transaction.get(answerRef);
+          final answerData = answerDoc.data();
+          if (answerData == null) {
+            throw OTException(text: 'エラー', title: 'ボケの取得に失敗しました');
+          }
+
+          final answerFavoredUserRef = _firestore
+              .collection('answers')
+              .doc(answerId)
+              .collection('favored_users')
+              .doc(userId);
+          final answerFavoredUserDoc =
+              await transaction.get(answerFavoredUserRef);
+
+          final userFavorAnswerRef = _firestore
+              .collection('users')
+              .doc(userId)
+              .collection('favor_answers')
+              .doc(answerId);
+          final userFavorAnswerDoc = await transaction.get(userFavorAnswerRef);
+
+          if (answerFavoredUserDoc.exists && userFavorAnswerDoc.exists) {
+            final favoredTime = answerData['favored_time'] as int;
+            final favorUpdateMap = {
+              'favored_time': favoredTime - 1,
+            };
+            transaction.update(answerRef, favorUpdateMap)
+              ..delete(answerFavoredUserRef)
+              ..delete(userFavorAnswerRef);
           }
         },
       );
