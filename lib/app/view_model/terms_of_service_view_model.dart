@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/use_case/terms_of_service_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case_impl/terms_of_service_use_case.dart';
 
 final termsOfServiceViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<TermsOfServiceViewModel, UniqueKey>(
   (ref, key) {
-    final termsOfServiceViewModel = TermsOfServiceViewModel(
+    return TermsOfServiceViewModel(
       key,
       ref.read,
-      ref.watch(termsOfServiceUseCaseProvider),
+      ref.watch(termsOfServiceUseCaseProvider(key)),
     );
-    ref.onDispose(termsOfServiceViewModel.disposed);
-    return termsOfServiceViewModel;
   },
 );
 
@@ -28,12 +26,15 @@ class TermsOfServiceViewModel extends ChangeNotifier {
 
   final UniqueKey _key;
   final Reader _reader;
+  final _logger = Logger();
 
   final TermsOfServiceUseCase _termsOfServiceUseCase;
 
   String html = '';
 
-  Future<void> disposed() async {
-    debugPrint('TermsOfServiceViewModel disposed $_key');
+  @override
+  void dispose() {
+    super.dispose();
+    _logger.d('TermsOfServiceViewModel dispose $_key');
   }
 }
