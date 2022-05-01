@@ -7,7 +7,7 @@ class UserProfileViewData with _$UserProfileViewData {
   const factory UserProfileViewData({
     required String id,
     required String name,
-    required String? imageUrl,
+    String? imageUrl,
     required String introduction,
   }) = _UserProfileViewData;
 }

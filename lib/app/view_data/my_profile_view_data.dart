@@ -7,7 +7,7 @@ class MyProfileViewData with _$MyProfileViewData {
   const factory MyProfileViewData({
     required String id,
     required String name,
-    required String? imageUrl,
+    String? imageUrl,
     required String introduction,
     required bool emailVerified,
   }) = _MyProfileViewData;

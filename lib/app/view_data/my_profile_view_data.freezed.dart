@@ -19,7 +19,7 @@ class _$MyProfileViewDataTearOff {
   _MyProfileViewData call(
       {required String id,
       required String name,
-      required String? imageUrl,
+      String? imageUrl,
       required String introduction,
       required bool emailVerified}) {
     return _MyProfileViewData(
@@ -168,7 +168,7 @@ class _$_MyProfileViewData implements _MyProfileViewData {
   const _$_MyProfileViewData(
       {required this.id,
       required this.name,
-      required this.imageUrl,
+      this.imageUrl,
       required this.introduction,
       required this.emailVerified});
 
@@ -226,7 +226,7 @@ abstract class _MyProfileViewData implements MyProfileViewData {
   const factory _MyProfileViewData(
       {required String id,
       required String name,
-      required String? imageUrl,
+      String? imageUrl,
       required String introduction,
       required bool emailVerified}) = _$_MyProfileViewData;
 

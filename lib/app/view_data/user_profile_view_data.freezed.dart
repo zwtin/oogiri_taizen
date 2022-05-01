@@ -19,7 +19,7 @@ class _$UserProfileViewDataTearOff {
   _UserProfileViewData call(
       {required String id,
       required String name,
-      required String? imageUrl,
+      String? imageUrl,
       required String introduction}) {
     return _UserProfileViewData(
       id: id,
@@ -145,7 +145,7 @@ class _$_UserProfileViewData implements _UserProfileViewData {
   const _$_UserProfileViewData(
       {required this.id,
       required this.name,
-      required this.imageUrl,
+      this.imageUrl,
       required this.introduction});
 
   @override
@@ -197,7 +197,7 @@ abstract class _UserProfileViewData implements UserProfileViewData {
   const factory _UserProfileViewData(
       {required String id,
       required String name,
-      required String? imageUrl,
+      String? imageUrl,
       required String introduction}) = _$_UserProfileViewData;
 
   @override
