@@ -19,10 +19,10 @@ class _$AlertViewDataTearOff {
   _AlertViewData call(
       {required String title,
       required String message,
-      required String? okButtonTitle,
-      required void Function()? okButtonAction,
-      required String? cancelButtonTitle,
-      required void Function()? cancelButtonAction}) {
+      String? okButtonTitle,
+      void Function()? okButtonAction,
+      String? cancelButtonTitle,
+      void Function()? cancelButtonAction}) {
     return _AlertViewData(
       title: title,
       message: message,
@@ -183,10 +183,10 @@ class _$_AlertViewData implements _AlertViewData {
   const _$_AlertViewData(
       {required this.title,
       required this.message,
-      required this.okButtonTitle,
-      required this.okButtonAction,
-      required this.cancelButtonTitle,
-      required this.cancelButtonAction});
+      this.okButtonTitle,
+      this.okButtonAction,
+      this.cancelButtonTitle,
+      this.cancelButtonAction});
 
   @override
   final String title;
@@ -249,10 +249,10 @@ abstract class _AlertViewData implements AlertViewData {
   const factory _AlertViewData(
       {required String title,
       required String message,
-      required String? okButtonTitle,
-      required void Function()? okButtonAction,
-      required String? cancelButtonTitle,
-      required void Function()? cancelButtonAction}) = _$_AlertViewData;
+      String? okButtonTitle,
+      void Function()? okButtonAction,
+      String? cancelButtonTitle,
+      void Function()? cancelButtonAction}) = _$_AlertViewData;
 
   @override
   String get title => throw _privateConstructorUsedError;

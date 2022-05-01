@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:oogiri_taizen/extension/date_time_extension.dart';
-
 class UserCardWidget extends HookWidget {
   const UserCardWidget({
     this.userImageUrl,

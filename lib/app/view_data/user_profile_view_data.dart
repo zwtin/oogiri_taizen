@@ -1,12 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-part 'user_view_data.freezed.dart';
+
+part 'user_profile_view_data.freezed.dart';
 
 @freezed
-class UserViewData with _$UserViewData {
-  const factory UserViewData({
+class UserProfileViewData with _$UserProfileViewData {
+  const factory UserProfileViewData({
     required String id,
     required String name,
     required String? imageUrl,
     required String introduction,
-  }) = _UserViewData;
+  }) = _UserProfileViewData;
 }

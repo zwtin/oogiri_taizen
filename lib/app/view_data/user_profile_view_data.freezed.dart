@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
 
-part of 'login_user_view_data.dart';
+part of 'user_profile_view_data.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,62 +13,54 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-class _$LoginUserViewDataTearOff {
-  const _$LoginUserViewDataTearOff();
+class _$UserProfileViewDataTearOff {
+  const _$UserProfileViewDataTearOff();
 
-  _LoginUserViewData call(
+  _UserProfileViewData call(
       {required String id,
       required String name,
       required String? imageUrl,
-      required String introduction,
-      required bool emailVerified}) {
-    return _LoginUserViewData(
+      required String introduction}) {
+    return _UserProfileViewData(
       id: id,
       name: name,
       imageUrl: imageUrl,
       introduction: introduction,
-      emailVerified: emailVerified,
     );
   }
 }
 
 /// @nodoc
-const $LoginUserViewData = _$LoginUserViewDataTearOff();
+const $UserProfileViewData = _$UserProfileViewDataTearOff();
 
 /// @nodoc
-mixin _$LoginUserViewData {
+mixin _$UserProfileViewData {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   String get introduction => throw _privateConstructorUsedError;
-  bool get emailVerified => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $LoginUserViewDataCopyWith<LoginUserViewData> get copyWith =>
+  $UserProfileViewDataCopyWith<UserProfileViewData> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LoginUserViewDataCopyWith<$Res> {
-  factory $LoginUserViewDataCopyWith(
-          LoginUserViewData value, $Res Function(LoginUserViewData) then) =
-      _$LoginUserViewDataCopyWithImpl<$Res>;
-  $Res call(
-      {String id,
-      String name,
-      String? imageUrl,
-      String introduction,
-      bool emailVerified});
+abstract class $UserProfileViewDataCopyWith<$Res> {
+  factory $UserProfileViewDataCopyWith(
+          UserProfileViewData value, $Res Function(UserProfileViewData) then) =
+      _$UserProfileViewDataCopyWithImpl<$Res>;
+  $Res call({String id, String name, String? imageUrl, String introduction});
 }
 
 /// @nodoc
-class _$LoginUserViewDataCopyWithImpl<$Res>
-    implements $LoginUserViewDataCopyWith<$Res> {
-  _$LoginUserViewDataCopyWithImpl(this._value, this._then);
+class _$UserProfileViewDataCopyWithImpl<$Res>
+    implements $UserProfileViewDataCopyWith<$Res> {
+  _$UserProfileViewDataCopyWithImpl(this._value, this._then);
 
-  final LoginUserViewData _value;
+  final UserProfileViewData _value;
   // ignore: unused_field
-  final $Res Function(LoginUserViewData) _then;
+  final $Res Function(UserProfileViewData) _then;
 
   @override
   $Res call({
@@ -76,7 +68,6 @@ class _$LoginUserViewDataCopyWithImpl<$Res>
     Object? name = freezed,
     Object? imageUrl = freezed,
     Object? introduction = freezed,
-    Object? emailVerified = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -95,39 +86,30 @@ class _$LoginUserViewDataCopyWithImpl<$Res>
           ? _value.introduction
           : introduction // ignore: cast_nullable_to_non_nullable
               as String,
-      emailVerified: emailVerified == freezed
-          ? _value.emailVerified
-          : emailVerified // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$LoginUserViewDataCopyWith<$Res>
-    implements $LoginUserViewDataCopyWith<$Res> {
-  factory _$LoginUserViewDataCopyWith(
-          _LoginUserViewData value, $Res Function(_LoginUserViewData) then) =
-      __$LoginUserViewDataCopyWithImpl<$Res>;
+abstract class _$UserProfileViewDataCopyWith<$Res>
+    implements $UserProfileViewDataCopyWith<$Res> {
+  factory _$UserProfileViewDataCopyWith(_UserProfileViewData value,
+          $Res Function(_UserProfileViewData) then) =
+      __$UserProfileViewDataCopyWithImpl<$Res>;
   @override
-  $Res call(
-      {String id,
-      String name,
-      String? imageUrl,
-      String introduction,
-      bool emailVerified});
+  $Res call({String id, String name, String? imageUrl, String introduction});
 }
 
 /// @nodoc
-class __$LoginUserViewDataCopyWithImpl<$Res>
-    extends _$LoginUserViewDataCopyWithImpl<$Res>
-    implements _$LoginUserViewDataCopyWith<$Res> {
-  __$LoginUserViewDataCopyWithImpl(
-      _LoginUserViewData _value, $Res Function(_LoginUserViewData) _then)
-      : super(_value, (v) => _then(v as _LoginUserViewData));
+class __$UserProfileViewDataCopyWithImpl<$Res>
+    extends _$UserProfileViewDataCopyWithImpl<$Res>
+    implements _$UserProfileViewDataCopyWith<$Res> {
+  __$UserProfileViewDataCopyWithImpl(
+      _UserProfileViewData _value, $Res Function(_UserProfileViewData) _then)
+      : super(_value, (v) => _then(v as _UserProfileViewData));
 
   @override
-  _LoginUserViewData get _value => super._value as _LoginUserViewData;
+  _UserProfileViewData get _value => super._value as _UserProfileViewData;
 
   @override
   $Res call({
@@ -135,9 +117,8 @@ class __$LoginUserViewDataCopyWithImpl<$Res>
     Object? name = freezed,
     Object? imageUrl = freezed,
     Object? introduction = freezed,
-    Object? emailVerified = freezed,
   }) {
-    return _then(_LoginUserViewData(
+    return _then(_UserProfileViewData(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -154,23 +135,18 @@ class __$LoginUserViewDataCopyWithImpl<$Res>
           ? _value.introduction
           : introduction // ignore: cast_nullable_to_non_nullable
               as String,
-      emailVerified: emailVerified == freezed
-          ? _value.emailVerified
-          : emailVerified // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_LoginUserViewData implements _LoginUserViewData {
-  const _$_LoginUserViewData(
+class _$_UserProfileViewData implements _UserProfileViewData {
+  const _$_UserProfileViewData(
       {required this.id,
       required this.name,
       required this.imageUrl,
-      required this.introduction,
-      required this.emailVerified});
+      required this.introduction});
 
   @override
   final String id;
@@ -180,18 +156,16 @@ class _$_LoginUserViewData implements _LoginUserViewData {
   final String? imageUrl;
   @override
   final String introduction;
-  @override
-  final bool emailVerified;
 
   @override
   String toString() {
-    return 'LoginUserViewData(id: $id, name: $name, imageUrl: $imageUrl, introduction: $introduction, emailVerified: $emailVerified)';
+    return 'UserProfileViewData(id: $id, name: $name, imageUrl: $imageUrl, introduction: $introduction)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _LoginUserViewData &&
+        (other is _UserProfileViewData &&
             (identical(other.id, id) ||
                 const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.name, name) ||
@@ -201,10 +175,7 @@ class _$_LoginUserViewData implements _LoginUserViewData {
                     .equals(other.imageUrl, imageUrl)) &&
             (identical(other.introduction, introduction) ||
                 const DeepCollectionEquality()
-                    .equals(other.introduction, introduction)) &&
-            (identical(other.emailVerified, emailVerified) ||
-                const DeepCollectionEquality()
-                    .equals(other.emailVerified, emailVerified)));
+                    .equals(other.introduction, introduction)));
   }
 
   @override
@@ -213,22 +184,21 @@ class _$_LoginUserViewData implements _LoginUserViewData {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(imageUrl) ^
-      const DeepCollectionEquality().hash(introduction) ^
-      const DeepCollectionEquality().hash(emailVerified);
+      const DeepCollectionEquality().hash(introduction);
 
   @JsonKey(ignore: true)
   @override
-  _$LoginUserViewDataCopyWith<_LoginUserViewData> get copyWith =>
-      __$LoginUserViewDataCopyWithImpl<_LoginUserViewData>(this, _$identity);
+  _$UserProfileViewDataCopyWith<_UserProfileViewData> get copyWith =>
+      __$UserProfileViewDataCopyWithImpl<_UserProfileViewData>(
+          this, _$identity);
 }
 
-abstract class _LoginUserViewData implements LoginUserViewData {
-  const factory _LoginUserViewData(
+abstract class _UserProfileViewData implements UserProfileViewData {
+  const factory _UserProfileViewData(
       {required String id,
       required String name,
       required String? imageUrl,
-      required String introduction,
-      required bool emailVerified}) = _$_LoginUserViewData;
+      required String introduction}) = _$_UserProfileViewData;
 
   @override
   String get id => throw _privateConstructorUsedError;
@@ -239,9 +209,7 @@ abstract class _LoginUserViewData implements LoginUserViewData {
   @override
   String get introduction => throw _privateConstructorUsedError;
   @override
-  bool get emailVerified => throw _privateConstructorUsedError;
-  @override
   @JsonKey(ignore: true)
-  _$LoginUserViewDataCopyWith<_LoginUserViewData> get copyWith =>
+  _$UserProfileViewDataCopyWith<_UserProfileViewData> get copyWith =>
       throw _privateConstructorUsedError;
 }

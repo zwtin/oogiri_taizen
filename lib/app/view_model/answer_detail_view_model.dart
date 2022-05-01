@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/mapper/answer_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/topic_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/mapper/user_view_data_mapper.dart';
@@ -11,8 +12,8 @@ import 'package:oogiri_taizen/app/view/profile_view.dart';
 import 'package:oogiri_taizen/app/view_data/answer_view_data.dart';
 import 'package:oogiri_taizen/app/view_data/topic_view_data.dart';
 import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
-import 'package:oogiri_taizen/domain/entity/answer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
+import 'package:oogiri_taizen/domain/use_case/answer_detail_use_case.dart';
 import 'package:oogiri_taizen/domain/use_case/answer_use_case.dart';
 import 'package:oogiri_taizen/domain/use_case/answer_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
@@ -26,16 +27,14 @@ import 'package:tuple/tuple.dart';
 final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<AnswerDetailViewModel, Tuple2<UniqueKey, String>>(
   (ref, tuple) {
-    final answerDetailViewModel = AnswerDetailViewModel(
+    return AnswerDetailViewModel(
       tuple.item1,
       ref.read,
-      ref.watch(answerUseCaseProvider(tuple)),
-      ref.watch(blockUseCaseProvider),
-      ref.watch(favorUseCaseProvider),
-      ref.watch(likeUseCaseProvider),
+      ref.watch(answerDetailUseCaseProvider(tuple)),
+      ref.watch(blockUseCaseProvider(tuple.item1)),
+      ref.watch(favorUseCaseProvider(tuple.item1)),
+      ref.watch(likeUseCaseProvider(tuple.item1)),
     );
-    ref.onDispose(answerDetailViewModel.disposed);
-    return answerDetailViewModel;
   },
 );
 
@@ -43,35 +42,22 @@ class AnswerDetailViewModel extends ChangeNotifier {
   AnswerDetailViewModel(
     this._key,
     this._reader,
-    this._answerUseCase,
+    this._answerDetailUseCase,
     this._blockUseCase,
     this._favorUseCase,
     this._likeUseCase,
-  ) {
-    answerSubscription?.cancel();
-    answerSubscription = _answerUseCase.getAnswerStream().listen(
-      (_answer) {
-        if (_answer == null) {
-          answer = null;
-          notifyListeners();
-        } else {
-          answer = AnswerViewDataMapper.convertToViewData(answer: _answer);
-          notifyListeners();
-        }
-      },
-    );
-  }
+  );
 
   final UniqueKey _key;
   final Reader _reader;
+  final _logger = Logger();
 
-  final AnswerUseCase _answerUseCase;
+  final AnswerDetailUseCase _answerDetailUseCase;
   final BlockUseCase _blockUseCase;
   final FavorUseCase _favorUseCase;
   final LikeUseCase _likeUseCase;
 
-  AnswerViewData? answer;
-  StreamSubscription<Answer?>? answerSubscription;
+  AnswerViewData? get answer = _answerDetailUseCase.answer
 
   Future<void> likeAnswer() async {
     if (answer == null) {
@@ -240,8 +226,9 @@ class AnswerDetailViewModel extends ChangeNotifier {
         );
   }
 
-  Future<void> disposed() async {
-    await answerSubscription?.cancel();
-    debugPrint('AnswerDetailViewModel disposed $_key');
+  @override
+  void dispose() {
+    super.dispose();
+    _logger.d('AnswerDetailViewModel dispose $_key');
   }
 }
