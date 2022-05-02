@@ -103,6 +103,45 @@ class PopularAnswerListViewModel extends ChangeNotifier {
     );
   }
 
+  Future<void> likeAnswer({required String id}) async {
+    final answer = _popularAnswerListUseCase.showingAnswers.getById(id);
+    if (answer == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'イイね！に失敗しました',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _likeUseCase.like(answer: answer);
+    result.when(
+      success: (_) {},
+      failure: (exception) {
+        if (exception is OTException) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
+            _reader.call(alertNotiferProvider).show(
+                  title: alertTitle,
+                  message: alertText,
+                  okButtonTitle: 'OK',
+                  cancelButtonTitle: null,
+                  okButtonAction: () {
+                    _reader.call(alertNotiferProvider).dismiss();
+                  },
+                  cancelButtonAction: null,
+                );
+          }
+        }
+      },
+    );
+  }
+
   @override
   void dispose() {
     super.dispose();

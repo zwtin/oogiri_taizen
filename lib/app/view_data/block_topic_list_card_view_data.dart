@@ -10,5 +10,7 @@ class BlockTopicListCardViewData with _$BlockTopicListCardViewData {
     required DateTime createdTime,
     required String userName,
     required String text,
+    String? imageUrl,
+    String? imageTag,
   }) = _BlockTopicListCardViewData;
 }

@@ -1,25 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:oogiri_taizen/app/view_data/answer_list_card_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/answer_detail_answer_card_view_data.dart';
 import 'package:oogiri_taizen/extension/date_time_extension.dart';
 import 'package:oogiri_taizen/extension/int_extension.dart';
 
-class AnswerListCardWidget extends HookWidget {
-  const AnswerListCardWidget({
+class AnswerDetailAnswerCardWidget extends HookWidget {
+  const AnswerDetailAnswerCardWidget({
     required this.viewData,
     this.menuList,
     this.onTapUserImage,
-    this.onTapImage,
     this.onTapLikeButton,
     this.onTapFavorButton,
     this.onTap,
   });
 
-  final AnswerListCardViewData viewData;
+  final AnswerDetailAnswerCardViewData viewData;
   final List<ListTile>? menuList;
   final void Function()? onTapUserImage;
-  final void Function()? onTapImage;
   final void Function()? onTapLikeButton;
   final void Function()? onTapFavorButton;
   final void Function()? onTap;
@@ -159,38 +157,6 @@ class AnswerListCardWidget extends HookWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
-                ),
-              ),
-              Visibility(
-                visible: viewData.imageUrl != null &&
-                    viewData.imageUrl!.isNotEmpty &&
-                    viewData.imageTag != null &&
-                    viewData.imageTag!.isNotEmpty,
-                child: Column(
-                  children: [
-                    Container(
-                      height: 16,
-                    ),
-                    GestureDetector(
-                      onTap: onTapImage,
-                      child: Hero(
-                        tag: viewData.imageTag!,
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                          imageUrl: viewData.imageUrl!,
-                          errorWidget: (context, url, dynamic error) {
-                            return Image.asset(
-                              'assets/images/no_image.jpg',
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
               Container(

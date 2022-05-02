@@ -1,27 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:oogiri_taizen/app/view_data/answer_list_card_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/answer_detail_topic_card_view_data.dart';
 import 'package:oogiri_taizen/extension/date_time_extension.dart';
-import 'package:oogiri_taizen/extension/int_extension.dart';
 
-class AnswerListCardWidget extends HookWidget {
-  const AnswerListCardWidget({
+class AnswerDetailTopicCardWidget extends HookWidget {
+  const AnswerDetailTopicCardWidget({
     required this.viewData,
     this.menuList,
     this.onTapUserImage,
     this.onTapImage,
-    this.onTapLikeButton,
-    this.onTapFavorButton,
     this.onTap,
   });
 
-  final AnswerListCardViewData viewData;
+  final AnswerDetailTopicCardViewData viewData;
   final List<ListTile>? menuList;
   final void Function()? onTapUserImage;
   final void Function()? onTapImage;
-  final void Function()? onTapLikeButton;
-  final void Function()? onTapFavorButton;
   final void Function()? onTap;
 
   @override
@@ -103,7 +98,7 @@ class AnswerListCardWidget extends HookWidget {
                             ),
                             Container(
                               child: const Text(
-                                ' のボケ：',
+                                ' のお題：',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 15,
@@ -192,65 +187,6 @@ class AnswerListCardWidget extends HookWidget {
                     ),
                   ],
                 ),
-              ),
-              Container(
-                height: 16,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: viewData.isLike
-                              ? const Icon(
-                                  Icons.favorite,
-                                  color: Colors.pink,
-                                )
-                              : const Icon(
-                                  Icons.favorite_outline,
-                                  color: Colors.pink,
-                                ),
-                          onPressed: onTapLikeButton,
-                        ),
-                        Text(
-                          viewData.likedCount.toStringOverTenThousand(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: viewData.isFavor
-                              ? const Icon(
-                                  Icons.star,
-                                  color: Colors.cyan,
-                                )
-                              : const Icon(
-                                  Icons.star_outline,
-                                  color: Colors.cyan,
-                                ),
-                          onPressed: onTapFavorButton,
-                        ),
-                        Text(
-                          viewData.favoredCount.toStringOverTenThousand(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ],
           ),

@@ -21,13 +21,17 @@ class _$BlockTopicListCardViewDataTearOff {
       String? userImageUrl,
       required DateTime createdTime,
       required String userName,
-      required String text}) {
+      required String text,
+      String? imageUrl,
+      String? imageTag}) {
     return _BlockTopicListCardViewData(
       id: id,
       userImageUrl: userImageUrl,
       createdTime: createdTime,
       userName: userName,
       text: text,
+      imageUrl: imageUrl,
+      imageTag: imageTag,
     );
   }
 }
@@ -42,6 +46,8 @@ mixin _$BlockTopicListCardViewData {
   DateTime get createdTime => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
+  String? get imageTag => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $BlockTopicListCardViewDataCopyWith<BlockTopicListCardViewData>
@@ -58,7 +64,9 @@ abstract class $BlockTopicListCardViewDataCopyWith<$Res> {
       String? userImageUrl,
       DateTime createdTime,
       String userName,
-      String text});
+      String text,
+      String? imageUrl,
+      String? imageTag});
 }
 
 /// @nodoc
@@ -77,6 +85,8 @@ class _$BlockTopicListCardViewDataCopyWithImpl<$Res>
     Object? createdTime = freezed,
     Object? userName = freezed,
     Object? text = freezed,
+    Object? imageUrl = freezed,
+    Object? imageTag = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -99,6 +109,14 @@ class _$BlockTopicListCardViewDataCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      imageUrl: imageUrl == freezed
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageTag: imageTag == freezed
+          ? _value.imageTag
+          : imageTag // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -116,7 +134,9 @@ abstract class _$BlockTopicListCardViewDataCopyWith<$Res>
       String? userImageUrl,
       DateTime createdTime,
       String userName,
-      String text});
+      String text,
+      String? imageUrl,
+      String? imageTag});
 }
 
 /// @nodoc
@@ -138,6 +158,8 @@ class __$BlockTopicListCardViewDataCopyWithImpl<$Res>
     Object? createdTime = freezed,
     Object? userName = freezed,
     Object? text = freezed,
+    Object? imageUrl = freezed,
+    Object? imageTag = freezed,
   }) {
     return _then(_BlockTopicListCardViewData(
       id: id == freezed
@@ -160,6 +182,14 @@ class __$BlockTopicListCardViewDataCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      imageUrl: imageUrl == freezed
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageTag: imageTag == freezed
+          ? _value.imageTag
+          : imageTag // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -172,7 +202,9 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
       this.userImageUrl,
       required this.createdTime,
       required this.userName,
-      required this.text});
+      required this.text,
+      this.imageUrl,
+      this.imageTag});
 
   @override
   final String id;
@@ -184,10 +216,14 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
   final String userName;
   @override
   final String text;
+  @override
+  final String? imageUrl;
+  @override
+  final String? imageTag;
 
   @override
   String toString() {
-    return 'BlockTopicListCardViewData(id: $id, userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text)';
+    return 'BlockTopicListCardViewData(id: $id, userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text, imageUrl: $imageUrl, imageTag: $imageTag)';
   }
 
   @override
@@ -206,7 +242,13 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
                 const DeepCollectionEquality()
                     .equals(other.userName, userName)) &&
             (identical(other.text, text) ||
-                const DeepCollectionEquality().equals(other.text, text)));
+                const DeepCollectionEquality().equals(other.text, text)) &&
+            (identical(other.imageUrl, imageUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.imageUrl, imageUrl)) &&
+            (identical(other.imageTag, imageTag) ||
+                const DeepCollectionEquality()
+                    .equals(other.imageTag, imageTag)));
   }
 
   @override
@@ -216,7 +258,9 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
       const DeepCollectionEquality().hash(userImageUrl) ^
       const DeepCollectionEquality().hash(createdTime) ^
       const DeepCollectionEquality().hash(userName) ^
-      const DeepCollectionEquality().hash(text);
+      const DeepCollectionEquality().hash(text) ^
+      const DeepCollectionEquality().hash(imageUrl) ^
+      const DeepCollectionEquality().hash(imageTag);
 
   @JsonKey(ignore: true)
   @override
@@ -232,7 +276,9 @@ abstract class _BlockTopicListCardViewData
       String? userImageUrl,
       required DateTime createdTime,
       required String userName,
-      required String text}) = _$_BlockTopicListCardViewData;
+      required String text,
+      String? imageUrl,
+      String? imageTag}) = _$_BlockTopicListCardViewData;
 
   @override
   String get id => throw _privateConstructorUsedError;
@@ -244,6 +290,10 @@ abstract class _BlockTopicListCardViewData
   String get userName => throw _privateConstructorUsedError;
   @override
   String get text => throw _privateConstructorUsedError;
+  @override
+  String? get imageUrl => throw _privateConstructorUsedError;
+  @override
+  String? get imageTag => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$BlockTopicListCardViewDataCopyWith<_BlockTopicListCardViewData>
