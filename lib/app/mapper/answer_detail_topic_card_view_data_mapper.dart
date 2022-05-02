@@ -11,6 +11,8 @@ AnswerDetailTopicCardViewData? mappingForAnswerDetailTopicCardViewData({
     return null;
   }
   return AnswerDetailTopicCardViewData(
+    topicId: answer.topic!.id,
+    userId: answer.topic!.createdUser!.id,
     userImageUrl: answer.topic!.createdUser!.imageUrl,
     createdTime: answer.topic!.createdAt,
     userName: answer.topic!.createdUser!.name,

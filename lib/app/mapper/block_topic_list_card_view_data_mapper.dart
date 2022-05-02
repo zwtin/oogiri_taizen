@@ -12,6 +12,7 @@ List<BlockTopicListCardViewData> mappingForBlockTopicListCardViewData({
     }
     list.add(
       BlockTopicListCardViewData(
+        id: topic.id,
         userImageUrl: topic.createdUser!.imageUrl,
         createdTime: topic.createdAt,
         userName: topic.createdUser!.name,

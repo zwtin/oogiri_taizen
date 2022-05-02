@@ -17,13 +17,17 @@ class _$AnswerDetailTopicCardViewDataTearOff {
   const _$AnswerDetailTopicCardViewDataTearOff();
 
   _AnswerDetailTopicCardViewData call(
-      {String? userImageUrl,
+      {required String topicId,
+      required String userId,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text,
       String? imageUrl,
       String? imageTag}) {
     return _AnswerDetailTopicCardViewData(
+      topicId: topicId,
+      userId: userId,
       userImageUrl: userImageUrl,
       createdTime: createdTime,
       userName: userName,
@@ -39,6 +43,8 @@ const $AnswerDetailTopicCardViewData = _$AnswerDetailTopicCardViewDataTearOff();
 
 /// @nodoc
 mixin _$AnswerDetailTopicCardViewData {
+  String get topicId => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
   String? get userImageUrl => throw _privateConstructorUsedError;
   DateTime get createdTime => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
@@ -58,7 +64,9 @@ abstract class $AnswerDetailTopicCardViewDataCopyWith<$Res> {
           $Res Function(AnswerDetailTopicCardViewData) then) =
       _$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>;
   $Res call(
-      {String? userImageUrl,
+      {String topicId,
+      String userId,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text,
@@ -77,6 +85,8 @@ class _$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? topicId = freezed,
+    Object? userId = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
@@ -85,6 +95,14 @@ class _$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>
     Object? imageTag = freezed,
   }) {
     return _then(_value.copyWith(
+      topicId: topicId == freezed
+          ? _value.topicId
+          : topicId // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -122,7 +140,9 @@ abstract class _$AnswerDetailTopicCardViewDataCopyWith<$Res>
       __$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String? userImageUrl,
+      {String topicId,
+      String userId,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text,
@@ -145,6 +165,8 @@ class __$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? topicId = freezed,
+    Object? userId = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
@@ -153,6 +175,14 @@ class __$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>
     Object? imageTag = freezed,
   }) {
     return _then(_AnswerDetailTopicCardViewData(
+      topicId: topicId == freezed
+          ? _value.topicId
+          : topicId // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -186,13 +216,19 @@ class __$AnswerDetailTopicCardViewDataCopyWithImpl<$Res>
 class _$_AnswerDetailTopicCardViewData
     implements _AnswerDetailTopicCardViewData {
   const _$_AnswerDetailTopicCardViewData(
-      {this.userImageUrl,
+      {required this.topicId,
+      required this.userId,
+      this.userImageUrl,
       required this.createdTime,
       required this.userName,
       required this.text,
       this.imageUrl,
       this.imageTag});
 
+  @override
+  final String topicId;
+  @override
+  final String userId;
   @override
   final String? userImageUrl;
   @override
@@ -208,13 +244,18 @@ class _$_AnswerDetailTopicCardViewData
 
   @override
   String toString() {
-    return 'AnswerDetailTopicCardViewData(userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text, imageUrl: $imageUrl, imageTag: $imageTag)';
+    return 'AnswerDetailTopicCardViewData(topicId: $topicId, userId: $userId, userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text, imageUrl: $imageUrl, imageTag: $imageTag)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _AnswerDetailTopicCardViewData &&
+            (identical(other.topicId, topicId) ||
+                const DeepCollectionEquality()
+                    .equals(other.topicId, topicId)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.userImageUrl, userImageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.userImageUrl, userImageUrl)) &&
@@ -237,6 +278,8 @@ class _$_AnswerDetailTopicCardViewData
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(topicId) ^
+      const DeepCollectionEquality().hash(userId) ^
       const DeepCollectionEquality().hash(userImageUrl) ^
       const DeepCollectionEquality().hash(createdTime) ^
       const DeepCollectionEquality().hash(userName) ^
@@ -254,13 +297,19 @@ class _$_AnswerDetailTopicCardViewData
 abstract class _AnswerDetailTopicCardViewData
     implements AnswerDetailTopicCardViewData {
   const factory _AnswerDetailTopicCardViewData(
-      {String? userImageUrl,
+      {required String topicId,
+      required String userId,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text,
       String? imageUrl,
       String? imageTag}) = _$_AnswerDetailTopicCardViewData;
 
+  @override
+  String get topicId => throw _privateConstructorUsedError;
+  @override
+  String get userId => throw _privateConstructorUsedError;
   @override
   String? get userImageUrl => throw _privateConstructorUsedError;
   @override

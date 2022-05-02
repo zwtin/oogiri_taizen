@@ -12,6 +12,7 @@ List<BlockUserListCardViewData> mappingForBlockUserListCardViewData({
     }
     list.add(
       BlockUserListCardViewData(
+        id: user.id,
         userImageUrl: user.imageUrl,
         userName: user.name,
       ),

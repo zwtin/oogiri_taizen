@@ -17,11 +17,13 @@ class _$BlockTopicListCardViewDataTearOff {
   const _$BlockTopicListCardViewDataTearOff();
 
   _BlockTopicListCardViewData call(
-      {String? userImageUrl,
+      {required String id,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text}) {
     return _BlockTopicListCardViewData(
+      id: id,
       userImageUrl: userImageUrl,
       createdTime: createdTime,
       userName: userName,
@@ -35,6 +37,7 @@ const $BlockTopicListCardViewData = _$BlockTopicListCardViewDataTearOff();
 
 /// @nodoc
 mixin _$BlockTopicListCardViewData {
+  String get id => throw _privateConstructorUsedError;
   String? get userImageUrl => throw _privateConstructorUsedError;
   DateTime get createdTime => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
@@ -51,7 +54,8 @@ abstract class $BlockTopicListCardViewDataCopyWith<$Res> {
           $Res Function(BlockTopicListCardViewData) then) =
       _$BlockTopicListCardViewDataCopyWithImpl<$Res>;
   $Res call(
-      {String? userImageUrl,
+      {String id,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text});
@@ -68,12 +72,17 @@ class _$BlockTopicListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
     Object? text = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -103,7 +112,8 @@ abstract class _$BlockTopicListCardViewDataCopyWith<$Res>
       __$BlockTopicListCardViewDataCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String? userImageUrl,
+      {String id,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text});
@@ -123,12 +133,17 @@ class __$BlockTopicListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
     Object? text = freezed,
   }) {
     return _then(_BlockTopicListCardViewData(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -153,11 +168,14 @@ class __$BlockTopicListCardViewDataCopyWithImpl<$Res>
 
 class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
   const _$_BlockTopicListCardViewData(
-      {this.userImageUrl,
+      {required this.id,
+      this.userImageUrl,
       required this.createdTime,
       required this.userName,
       required this.text});
 
+  @override
+  final String id;
   @override
   final String? userImageUrl;
   @override
@@ -169,13 +187,15 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
 
   @override
   String toString() {
-    return 'BlockTopicListCardViewData(userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text)';
+    return 'BlockTopicListCardViewData(id: $id, userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _BlockTopicListCardViewData &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.userImageUrl, userImageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.userImageUrl, userImageUrl)) &&
@@ -192,6 +212,7 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(userImageUrl) ^
       const DeepCollectionEquality().hash(createdTime) ^
       const DeepCollectionEquality().hash(userName) ^
@@ -207,11 +228,14 @@ class _$_BlockTopicListCardViewData implements _BlockTopicListCardViewData {
 abstract class _BlockTopicListCardViewData
     implements BlockTopicListCardViewData {
   const factory _BlockTopicListCardViewData(
-      {String? userImageUrl,
+      {required String id,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text}) = _$_BlockTopicListCardViewData;
 
+  @override
+  String get id => throw _privateConstructorUsedError;
   @override
   String? get userImageUrl => throw _privateConstructorUsedError;
   @override

@@ -17,7 +17,9 @@ class _$AnswerListCardViewDataTearOff {
   const _$AnswerListCardViewDataTearOff();
 
   _AnswerListCardViewData call(
-      {String? userImageUrl,
+      {required String answerId,
+      required String userId,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text,
@@ -28,6 +30,8 @@ class _$AnswerListCardViewDataTearOff {
       required bool isFavor,
       required int favoredCount}) {
     return _AnswerListCardViewData(
+      answerId: answerId,
+      userId: userId,
       userImageUrl: userImageUrl,
       createdTime: createdTime,
       userName: userName,
@@ -47,6 +51,8 @@ const $AnswerListCardViewData = _$AnswerListCardViewDataTearOff();
 
 /// @nodoc
 mixin _$AnswerListCardViewData {
+  String get answerId => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
   String? get userImageUrl => throw _privateConstructorUsedError;
   DateTime get createdTime => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
@@ -69,7 +75,9 @@ abstract class $AnswerListCardViewDataCopyWith<$Res> {
           $Res Function(AnswerListCardViewData) then) =
       _$AnswerListCardViewDataCopyWithImpl<$Res>;
   $Res call(
-      {String? userImageUrl,
+      {String answerId,
+      String userId,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text,
@@ -92,6 +100,8 @@ class _$AnswerListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? answerId = freezed,
+    Object? userId = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
@@ -104,6 +114,14 @@ class _$AnswerListCardViewDataCopyWithImpl<$Res>
     Object? favoredCount = freezed,
   }) {
     return _then(_value.copyWith(
+      answerId: answerId == freezed
+          ? _value.answerId
+          : answerId // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -156,7 +174,9 @@ abstract class _$AnswerListCardViewDataCopyWith<$Res>
       __$AnswerListCardViewDataCopyWithImpl<$Res>;
   @override
   $Res call(
-      {String? userImageUrl,
+      {String answerId,
+      String userId,
+      String? userImageUrl,
       DateTime createdTime,
       String userName,
       String text,
@@ -181,6 +201,8 @@ class __$AnswerListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? answerId = freezed,
+    Object? userId = freezed,
     Object? userImageUrl = freezed,
     Object? createdTime = freezed,
     Object? userName = freezed,
@@ -193,6 +215,14 @@ class __$AnswerListCardViewDataCopyWithImpl<$Res>
     Object? favoredCount = freezed,
   }) {
     return _then(_AnswerListCardViewData(
+      answerId: answerId == freezed
+          ? _value.answerId
+          : answerId // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -241,7 +271,9 @@ class __$AnswerListCardViewDataCopyWithImpl<$Res>
 
 class _$_AnswerListCardViewData implements _AnswerListCardViewData {
   const _$_AnswerListCardViewData(
-      {this.userImageUrl,
+      {required this.answerId,
+      required this.userId,
+      this.userImageUrl,
       required this.createdTime,
       required this.userName,
       required this.text,
@@ -252,6 +284,10 @@ class _$_AnswerListCardViewData implements _AnswerListCardViewData {
       required this.isFavor,
       required this.favoredCount});
 
+  @override
+  final String answerId;
+  @override
+  final String userId;
   @override
   final String? userImageUrl;
   @override
@@ -275,13 +311,18 @@ class _$_AnswerListCardViewData implements _AnswerListCardViewData {
 
   @override
   String toString() {
-    return 'AnswerListCardViewData(userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text, imageUrl: $imageUrl, imageTag: $imageTag, isLike: $isLike, likedCount: $likedCount, isFavor: $isFavor, favoredCount: $favoredCount)';
+    return 'AnswerListCardViewData(answerId: $answerId, userId: $userId, userImageUrl: $userImageUrl, createdTime: $createdTime, userName: $userName, text: $text, imageUrl: $imageUrl, imageTag: $imageTag, isLike: $isLike, likedCount: $likedCount, isFavor: $isFavor, favoredCount: $favoredCount)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _AnswerListCardViewData &&
+            (identical(other.answerId, answerId) ||
+                const DeepCollectionEquality()
+                    .equals(other.answerId, answerId)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.userImageUrl, userImageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.userImageUrl, userImageUrl)) &&
@@ -315,6 +356,8 @@ class _$_AnswerListCardViewData implements _AnswerListCardViewData {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(answerId) ^
+      const DeepCollectionEquality().hash(userId) ^
       const DeepCollectionEquality().hash(userImageUrl) ^
       const DeepCollectionEquality().hash(createdTime) ^
       const DeepCollectionEquality().hash(userName) ^
@@ -335,7 +378,9 @@ class _$_AnswerListCardViewData implements _AnswerListCardViewData {
 
 abstract class _AnswerListCardViewData implements AnswerListCardViewData {
   const factory _AnswerListCardViewData(
-      {String? userImageUrl,
+      {required String answerId,
+      required String userId,
+      String? userImageUrl,
       required DateTime createdTime,
       required String userName,
       required String text,
@@ -346,6 +391,10 @@ abstract class _AnswerListCardViewData implements AnswerListCardViewData {
       required bool isFavor,
       required int favoredCount}) = _$_AnswerListCardViewData;
 
+  @override
+  String get answerId => throw _privateConstructorUsedError;
+  @override
+  String get userId => throw _privateConstructorUsedError;
   @override
   String? get userImageUrl => throw _privateConstructorUsedError;
   @override

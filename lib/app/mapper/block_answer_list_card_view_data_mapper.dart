@@ -15,6 +15,7 @@ List<BlockAnswerListCardViewData> mappingForBlockAnswerListCardViewData({
     }
     list.add(
       BlockAnswerListCardViewData(
+        id: answer.id,
         userImageUrl: answer.createdUser!.imageUrl,
         createdTime: answer.createdAt,
         userName: answer.createdUser!.name,

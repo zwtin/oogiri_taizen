@@ -17,8 +17,9 @@ class _$BlockUserListCardViewDataTearOff {
   const _$BlockUserListCardViewDataTearOff();
 
   _BlockUserListCardViewData call(
-      {String? userImageUrl, required String userName}) {
+      {required String id, String? userImageUrl, required String userName}) {
     return _BlockUserListCardViewData(
+      id: id,
       userImageUrl: userImageUrl,
       userName: userName,
     );
@@ -30,6 +31,7 @@ const $BlockUserListCardViewData = _$BlockUserListCardViewDataTearOff();
 
 /// @nodoc
 mixin _$BlockUserListCardViewData {
+  String get id => throw _privateConstructorUsedError;
   String? get userImageUrl => throw _privateConstructorUsedError;
   String get userName => throw _privateConstructorUsedError;
 
@@ -43,7 +45,7 @@ abstract class $BlockUserListCardViewDataCopyWith<$Res> {
   factory $BlockUserListCardViewDataCopyWith(BlockUserListCardViewData value,
           $Res Function(BlockUserListCardViewData) then) =
       _$BlockUserListCardViewDataCopyWithImpl<$Res>;
-  $Res call({String? userImageUrl, String userName});
+  $Res call({String id, String? userImageUrl, String userName});
 }
 
 /// @nodoc
@@ -57,10 +59,15 @@ class _$BlockUserListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? userImageUrl = freezed,
     Object? userName = freezed,
   }) {
     return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -80,7 +87,7 @@ abstract class _$BlockUserListCardViewDataCopyWith<$Res>
           $Res Function(_BlockUserListCardViewData) then) =
       __$BlockUserListCardViewDataCopyWithImpl<$Res>;
   @override
-  $Res call({String? userImageUrl, String userName});
+  $Res call({String id, String? userImageUrl, String userName});
 }
 
 /// @nodoc
@@ -97,10 +104,15 @@ class __$BlockUserListCardViewDataCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object? id = freezed,
     Object? userImageUrl = freezed,
     Object? userName = freezed,
   }) {
     return _then(_BlockUserListCardViewData(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       userImageUrl: userImageUrl == freezed
           ? _value.userImageUrl
           : userImageUrl // ignore: cast_nullable_to_non_nullable
@@ -117,8 +129,10 @@ class __$BlockUserListCardViewDataCopyWithImpl<$Res>
 
 class _$_BlockUserListCardViewData implements _BlockUserListCardViewData {
   const _$_BlockUserListCardViewData(
-      {this.userImageUrl, required this.userName});
+      {required this.id, this.userImageUrl, required this.userName});
 
+  @override
+  final String id;
   @override
   final String? userImageUrl;
   @override
@@ -126,13 +140,15 @@ class _$_BlockUserListCardViewData implements _BlockUserListCardViewData {
 
   @override
   String toString() {
-    return 'BlockUserListCardViewData(userImageUrl: $userImageUrl, userName: $userName)';
+    return 'BlockUserListCardViewData(id: $id, userImageUrl: $userImageUrl, userName: $userName)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _BlockUserListCardViewData &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
             (identical(other.userImageUrl, userImageUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.userImageUrl, userImageUrl)) &&
@@ -144,6 +160,7 @@ class _$_BlockUserListCardViewData implements _BlockUserListCardViewData {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(userImageUrl) ^
       const DeepCollectionEquality().hash(userName);
 
@@ -157,9 +174,12 @@ class _$_BlockUserListCardViewData implements _BlockUserListCardViewData {
 
 abstract class _BlockUserListCardViewData implements BlockUserListCardViewData {
   const factory _BlockUserListCardViewData(
-      {String? userImageUrl,
+      {required String id,
+      String? userImageUrl,
       required String userName}) = _$_BlockUserListCardViewData;
 
+  @override
+  String get id => throw _privateConstructorUsedError;
   @override
   String? get userImageUrl => throw _privateConstructorUsedError;
   @override

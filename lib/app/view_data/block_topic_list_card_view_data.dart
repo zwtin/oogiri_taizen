@@ -5,6 +5,7 @@ part 'block_topic_list_card_view_data.freezed.dart';
 @freezed
 class BlockTopicListCardViewData with _$BlockTopicListCardViewData {
   const factory BlockTopicListCardViewData({
+    required String id,
     String? userImageUrl,
     required DateTime createdTime,
     required String userName,

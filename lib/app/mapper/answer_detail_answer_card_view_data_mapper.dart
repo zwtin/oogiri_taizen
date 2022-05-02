@@ -10,6 +10,8 @@ AnswerDetailAnswerCardViewData? mappingForAnswerDetailAnswerCardViewData({
     return null;
   }
   return AnswerDetailAnswerCardViewData(
+    answerId: answer.id,
+    userId: answer.createdUser!.id,
     userImageUrl: answer.createdUser!.imageUrl,
     createdTime: answer.createdAt,
     userName: answer.createdUser!.name,

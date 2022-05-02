@@ -5,6 +5,8 @@ part 'answer_detail_answer_card_view_data.freezed.dart';
 @freezed
 class AnswerDetailAnswerCardViewData with _$AnswerDetailAnswerCardViewData {
   const factory AnswerDetailAnswerCardViewData({
+    required String answerId,
+    required String userId,
     String? userImageUrl,
     required DateTime createdTime,
     required String userName,
