@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/temporary_register_complete_view.dart';
@@ -7,18 +8,15 @@ import 'package:oogiri_taizen/app/view/terms_of_service_view.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 
 final signUpViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignUpViewModel, UniqueKey>(
   (ref, key) {
-    final signUpViewModel = SignUpViewModel(
+    return SignUpViewModel(
       key,
       ref.read,
-      ref.watch(authenticationUseCaseProvider),
+      ref.watch(authenticationUseCaseProvider(key)),
     );
-    ref.onDispose(signUpViewModel.disposed);
-    return signUpViewModel;
   },
 );
 
@@ -31,10 +29,12 @@ class SignUpViewModel extends ChangeNotifier {
 
   final UniqueKey _key;
   final Reader _reader;
+  final _logger = Logger();
+
   final AuthenticationUseCase _authenticationUseCase;
 
   bool isConnecting = false;
-  bool? isAgreeWithTerms = false;
+  bool isAgreeWithTerms = false;
   String email = '';
   String password = '';
 
@@ -78,11 +78,12 @@ class SignUpViewModel extends ChangeNotifier {
       },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -99,7 +100,7 @@ class SignUpViewModel extends ChangeNotifier {
   void changeAgreeState({
     required bool? isAgree,
   }) {
-    isAgreeWithTerms = isAgree;
+    isAgreeWithTerms = isAgree ?? false;
     notifyListeners();
   }
 
@@ -119,7 +120,9 @@ class SignUpViewModel extends ChangeNotifier {
         );
   }
 
-  Future<void> disposed() async {
-    debugPrint('SignUpViewModel disposed $_key');
+  @override
+  void dispose() {
+    super.dispose();
+    _logger.d('SignUpViewModel dispose $_key');
   }
 }

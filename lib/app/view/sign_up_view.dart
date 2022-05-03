@@ -3,16 +3,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/sign_up_view_model.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
 class SignUpView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('SignUpView = $_key');
+    _logger.d('SignUpView = $_key');
+
     final viewModel = useProvider(signUpViewModelProvider(_key));
     final emailTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();

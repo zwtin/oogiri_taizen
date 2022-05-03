@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
 
 final signInViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignInViewModel, UniqueKey>(
   (ref, key) {
-    final signInViewModel = SignInViewModel(
+    return SignInViewModel(
       key,
       ref.read,
-      ref.watch(authenticationUseCaseProvider),
+      ref.watch(authenticationUseCaseProvider(key)),
     );
-    ref.onDispose(signInViewModel.disposed);
-    return signInViewModel;
   },
 );
 
@@ -28,6 +26,8 @@ class SignInViewModel extends ChangeNotifier {
 
   final UniqueKey _key;
   final Reader _reader;
+  final _logger = Logger();
+
   final AuthenticationUseCase _authenticationUseCase;
 
   bool isConnecting = false;
@@ -50,11 +50,12 @@ class SignInViewModel extends ChangeNotifier {
       },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -81,11 +82,12 @@ class SignInViewModel extends ChangeNotifier {
       },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -112,11 +114,12 @@ class SignInViewModel extends ChangeNotifier {
       },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -140,7 +143,9 @@ class SignInViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> disposed() async {
-    debugPrint('SignInViewModel disposed $_key');
+  @override
+  void dispose() {
+    super.dispose();
+    _logger.d('SignInViewModel dispose $_key');
   }
 }
