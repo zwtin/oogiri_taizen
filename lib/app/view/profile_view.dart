@@ -2,15 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tuple/tuple.dart';
-
-import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
-import 'package:oogiri_taizen/app/view_model/profile_view_model.dart';
-import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
+import 'package:oogiri_taizen/app/view_model/user_profile_view_model.dart';
 import 'package:oogiri_taizen/app/widget/answer_card_widget.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
-import 'package:oogiri_taizen/app/widget/fade_in_route.dart';
 import 'package:oogiri_taizen/extension/string_extension.dart';
+import 'package:tuple/tuple.dart';
 
 class ProfileView extends HookWidget {
   ProfileView({required this.userId});

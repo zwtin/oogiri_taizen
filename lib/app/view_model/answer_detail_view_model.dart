@@ -3,25 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/app/mapper/answer_view_data_mapper.dart';
-import 'package:oogiri_taizen/app/mapper/topic_view_data_mapper.dart';
-import 'package:oogiri_taizen/app/mapper/user_view_data_mapper.dart';
+import 'package:oogiri_taizen/app/mapper/answer_detail_answer_card_view_data_mapper.dart';
+import 'package:oogiri_taizen/app/mapper/answer_detail_topic_card_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/profile_view.dart';
-import 'package:oogiri_taizen/app/view_data/answer_view_data.dart';
-import 'package:oogiri_taizen/app/view_data/topic_view_data.dart';
-import 'package:oogiri_taizen/app/view_data/user_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/answer_detail_answer_card_view_data.dart';
+import 'package:oogiri_taizen/app/view_data/answer_detail_topic_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/answer_detail_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/answer_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/answer_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/block_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/favor_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/favor_use_case_impl.dart';
 import 'package:oogiri_taizen/domain/use_case/like_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/like_use_case_impl.dart';
 import 'package:tuple/tuple.dart';
 
 final answerDetailViewModelProvider = ChangeNotifierProvider.autoDispose
@@ -57,26 +50,48 @@ class AnswerDetailViewModel extends ChangeNotifier {
   final FavorUseCase _favorUseCase;
   final LikeUseCase _likeUseCase;
 
-  AnswerViewData? get answer = _answerDetailUseCase.answer
+  AnswerDetailTopicCardViewData? get topicViewData {
+    final answer = _answerDetailUseCase.answer;
+    if (answer == null) {
+      return null;
+    }
+    return mappingForAnswerDetailTopicCardViewData(answer: answer);
+  }
+
+  AnswerDetailAnswerCardViewData? get answerViewData {
+    final answer = _answerDetailUseCase.answer;
+    if (answer == null) {
+      return null;
+    }
+    return mappingForAnswerDetailAnswerCardViewData(answer: answer);
+  }
 
   Future<void> likeAnswer() async {
+    final answer = _answerDetailUseCase.answer;
     if (answer == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ボケが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
       return;
     }
-    final result = await _likeUseCase.like(
-      answer: AnswerViewDataMapper.convertToEntity(
-        answerViewData: answer!,
-      ),
-    );
+    final result = await _likeUseCase.like(answer: answer);
     result.when(
       success: (_) {},
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -91,23 +106,31 @@ class AnswerDetailViewModel extends ChangeNotifier {
   }
 
   Future<void> favorAnswer() async {
+    final answer = _answerDetailUseCase.answer;
     if (answer == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ボケが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
       return;
     }
-    final result = await _favorUseCase.favor(
-      answer: AnswerViewDataMapper.convertToEntity(
-        answerViewData: answer!,
-      ),
-    );
+    final result = await _favorUseCase.favor(answer: answer);
     result.when(
       success: (_) {},
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -121,21 +144,44 @@ class AnswerDetailViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> addBlockAnswer(AnswerViewData answerViewData) async {
-    final result = await _blockUseCase.addAnswer(
-      answer: AnswerViewDataMapper.convertToEntity(
-        answerViewData: answerViewData,
-      ),
-    );
+  Future<void> addBlockAnswer() async {
+    final answer = _answerDetailUseCase.answer;
+    if (answer == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ボケが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.addAnswer(answer: answer);
     result.when(
-      success: (_) {},
+      success: (_) {
+        _reader.call(alertNotiferProvider).show(
+              title: '完了',
+              message: 'ボケをブロックしました',
+              okButtonTitle: 'OK',
+              cancelButtonTitle: null,
+              okButtonAction: () {
+                _reader.call(alertNotiferProvider).dismiss();
+                _reader.call(routerNotiferProvider(_key)).pop();
+              },
+              cancelButtonAction: null,
+            );
+      },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -149,21 +195,44 @@ class AnswerDetailViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> addBlockTopic(TopicViewData topicViewData) async {
-    final result = await _blockUseCase.addTopic(
-      topic: TopicViewDataMapper.convertToEntity(
-        topicViewData: topicViewData,
-      ),
-    );
+  Future<void> addBlockTopic() async {
+    final topic = _answerDetailUseCase.answer?.topic;
+    if (topic == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'お題が見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.addTopic(topic: topic);
     result.when(
-      success: (_) {},
+      success: (_) {
+        _reader.call(alertNotiferProvider).show(
+              title: '完了',
+              message: 'お題をブロックしました',
+              okButtonTitle: 'OK',
+              cancelButtonTitle: null,
+              okButtonAction: () {
+                _reader.call(alertNotiferProvider).dismiss();
+                _reader.call(routerNotiferProvider(_key)).pop();
+              },
+              cancelButtonAction: null,
+            );
+      },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {
@@ -177,21 +246,95 @@ class AnswerDetailViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> addBlockUser(UserViewData userViewData) async {
-    final result = await _blockUseCase.addUser(
-      user: UserViewDataMapper.convertToEntity(
-        userViewData: userViewData,
-      ),
-    );
+  Future<void> addBlockAnswerUser() async {
+    final user = _answerDetailUseCase.answer?.createdUser;
+    if (user == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ユーザーが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.addUser(user: user);
     result.when(
-      success: (_) {},
+      success: (_) {
+        _reader.call(alertNotiferProvider).show(
+              title: '完了',
+              message: 'ユーザーをブロックしました',
+              okButtonTitle: 'OK',
+              cancelButtonTitle: null,
+              okButtonAction: () {
+                _reader.call(alertNotiferProvider).dismiss();
+                _reader.call(routerNotiferProvider(_key)).pop();
+              },
+              cancelButtonAction: null,
+            );
+      },
       failure: (exception) {
         if (exception is OTException) {
-          final alertMessage = exception.alertMessage ?? '';
-          if (alertMessage.isNotEmpty) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
             _reader.call(alertNotiferProvider).show(
-                  title: 'エラー',
-                  message: alertMessage,
+                  title: alertTitle,
+                  message: alertText,
+                  okButtonTitle: 'OK',
+                  cancelButtonTitle: null,
+                  okButtonAction: () {
+                    _reader.call(alertNotiferProvider).dismiss();
+                  },
+                  cancelButtonAction: null,
+                );
+          }
+        }
+      },
+    );
+  }
+
+  Future<void> addBlockTopicUser() async {
+    final user = _answerDetailUseCase.answer?.topic?.createdUser;
+    if (user == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ユーザーが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.addUser(user: user);
+    result.when(
+      success: (_) {
+        _reader.call(alertNotiferProvider).show(
+              title: '完了',
+              message: 'ユーザーをブロックしました',
+              okButtonTitle: 'OK',
+              cancelButtonTitle: null,
+              okButtonAction: () {
+                _reader.call(alertNotiferProvider).dismiss();
+                _reader.call(routerNotiferProvider(_key)).pop();
+              },
+              cancelButtonAction: null,
+            );
+      },
+      failure: (exception) {
+        if (exception is OTException) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
+            _reader.call(alertNotiferProvider).show(
+                  title: alertTitle,
+                  message: alertText,
                   okButtonTitle: 'OK',
                   cancelButtonTitle: null,
                   okButtonAction: () {

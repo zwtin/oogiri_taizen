@@ -31,6 +31,10 @@ class SettingViewModel extends ChangeNotifier {
 
   final SettingUseCase _settingUseCase;
 
+  bool get isLogin {
+    return _settingUseCase.loginUser != null;
+  }
+
   Future<void> transitionToPushNotification() async {
     await _reader.call(routerNotiferProvider(_key)).push(
           nextScreen: SettingPushNotificationView(),

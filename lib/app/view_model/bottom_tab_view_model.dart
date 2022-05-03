@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/authentication_use_case_impl.dart';
-import 'package:oogiri_taizen/domain/use_case/push_notification_use_case.dart';
-import 'package:oogiri_taizen/domain/use_case/push_notification_use_case_impl.dart';
 
 final bottomTabViewModelProvider =
     ChangeNotifierProvider.autoDispose<BottomTabViewModel>(
   (ref) {
-    final bottomTabViewModel = BottomTabViewModel(
+    return BottomTabViewModel(
       ref.read,
-      ref.watch(authenticationUseCaseProvider),
-      ref.watch(pushNotificationUseCaseProvider(UniqueKey())),
+      ref.watch(authenticationUseCaseProvider(UniqueKey())),
     );
-    ref.onDispose(bottomTabViewModel.disposed);
-    return bottomTabViewModel;
   },
 );
 
@@ -25,15 +20,12 @@ class BottomTabViewModel extends ChangeNotifier {
   BottomTabViewModel(
     this._reader,
     this._authenticationUseCase,
-    this._pushNotificationUseCase,
-  ) {
-    _pushNotificationUseCase.requestPermission();
-  }
+  );
 
   final Reader _reader;
+  final _logger = Logger();
 
   final AuthenticationUseCase _authenticationUseCase;
-  final PushNotificationUseCase _pushNotificationUseCase;
 
   int selected = 0;
   final Map<int, UniqueKey> _keyMap = {};
@@ -94,11 +86,12 @@ class BottomTabViewModel extends ChangeNotifier {
           },
           failure: (exception) {
             if (exception is OTException) {
-              final alertMessage = exception.alertMessage ?? '';
-              if (alertMessage.isNotEmpty) {
+              final alertTitle = exception.title;
+              final alertText = exception.text;
+              if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
                 _reader.call(alertNotiferProvider).show(
-                      title: 'エラー',
-                      message: alertMessage,
+                      title: alertTitle,
+                      message: alertText,
                       okButtonTitle: 'OK',
                       cancelButtonTitle: null,
                       okButtonAction: () {
@@ -116,7 +109,9 @@ class BottomTabViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> disposed() async {
-    debugPrint('BottomTabViewModel disposed');
+  @override
+  void dispose() {
+    super.dispose();
+    _logger.d('BottomTabViewModel dispose');
   }
 }

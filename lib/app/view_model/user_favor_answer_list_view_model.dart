@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:oogiri_taizen/app/mapper/answer_list_card_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
+import 'package:oogiri_taizen/app/view_data/answer_list_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
-import 'package:oogiri_taizen/domain/entity/push_notification_setting.dart';
-import 'package:oogiri_taizen/domain/use_case/push_notification_setting_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/user_favor_answer_list_use_case.dart';
+import 'package:tuple/tuple.dart';
 
-final settingPushNotificationViewModelProvider = ChangeNotifierProvider
-    .autoDispose
-    .family<SettingPushNotificationViewModel, UniqueKey>(
-  (ref, key) {
-    return SettingPushNotificationViewModel(
-      key,
+final userFavorAnswerListViewModelProvider = ChangeNotifierProvider.autoDispose
+    .family<UserFavorAnswerListViewModel, Tuple2<UniqueKey, String>>(
+  (ref, tuple) {
+    return UserFavorAnswerListViewModel(
+      tuple.item1,
+      tuple.item2,
       ref.read,
-      ref.watch(pushNotificationSettingUseCaseProvider(key)),
+      ref.watch(userFavorAnswerListUseCaseProvider(tuple)),
     );
   },
 );
 
-class SettingPushNotificationViewModel extends ChangeNotifier {
-  SettingPushNotificationViewModel(
+class UserFavorAnswerListViewModel extends ChangeNotifier {
+  UserFavorAnswerListViewModel(
     this._key,
+    this._userId,
     this._reader,
-    this._pushNotificationSettingUseCase,
+    this._userFavorAnswerListUseCase,
   );
 
   final UniqueKey _key;
+  final String _userId;
   final Reader _reader;
   final _logger = Logger();
 
-  final PushNotificationSettingUseCase _pushNotificationSettingUseCase;
+  final UserFavorAnswerListUseCase _userFavorAnswerListUseCase;
 
-  bool get whenLiked {
-    return _pushNotificationSettingUseCase.pushNotificationSetting.whenLiked;
-  }
-
-  bool get whenFavored {
-    return _pushNotificationSettingUseCase.pushNotificationSetting.whenFavored;
-  }
-
-  Future<void> setWhenLiked({required bool newValue}) async {
-    final result =
-        await _pushNotificationSettingUseCase.updatePushNotificationSetting(
-      pushNotificationSetting: PushNotificationSetting(
-        whenLiked: newValue,
-        whenFavored: whenFavored,
-      ),
+  List<AnswerListCardViewData> get answerViewData {
+    return mappingForAnswerListCardViewData(
+      answers: _userFavorAnswerListUseCase.showingAnswers,
     );
+  }
+
+  bool get hasNext {
+    return _userFavorAnswerListUseCase.hasNext;
+  }
+
+  Future<void> resetAnswers() async {
+    final result = await _userFavorAnswerListUseCase.resetAnswers();
     result.when(
       success: (_) {},
       failure: (exception) {
@@ -70,14 +70,8 @@ class SettingPushNotificationViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> setWhenFavored({required bool newValue}) async {
-    final result =
-        await _pushNotificationSettingUseCase.updatePushNotificationSetting(
-      pushNotificationSetting: PushNotificationSetting(
-        whenLiked: whenLiked,
-        whenFavored: newValue,
-      ),
-    );
+  Future<void> fetchAnswers() async {
+    final result = await _userFavorAnswerListUseCase.fetchAnswers();
     result.when(
       success: (_) {},
       failure: (exception) {
@@ -104,6 +98,6 @@ class SettingPushNotificationViewModel extends ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-    _logger.d('SettingPushNotificationViewModel dispose $_key');
+    _logger.d('UserFavorAnswerListViewModel dispose $_key');
   }
 }
