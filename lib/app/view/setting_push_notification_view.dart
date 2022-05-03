@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/setting_push_notification_view_model.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
 class SettingPushNotificationView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('SettingPushNotificationView = $_key');
+    _logger.d('SettingPushNotificationView = $_key');
     final viewModel =
         useProvider(settingPushNotificationViewModelProvider(_key));
 
@@ -82,7 +84,7 @@ class SettingPushNotificationView extends HookWidget {
                                             _key,
                                           ),
                                         )
-                                        .setWhenLiked(val);
+                                        .setWhenLiked(newValue: val);
                                   },
                                 ),
                               ),
@@ -116,7 +118,7 @@ class SettingPushNotificationView extends HookWidget {
                                             _key,
                                           ),
                                         )
-                                        .setWhenFavored(val);
+                                        .setWhenFavored(newValue: val);
                                   },
                                 ),
                               ),

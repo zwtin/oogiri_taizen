@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/terms_of_service_view_model.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 class TermsOfServiceView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('TermsOfServiceView = $_key');
+    _logger.d('TermsOfServiceView = $_key');
     final viewModel = useProvider(termsOfServiceViewModelProvider(_key));
 
     return RouterWidget(

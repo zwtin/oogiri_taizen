@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/new_answer_list_view_model.dart';
+import 'package:oogiri_taizen/app/widget/answer_list_card_widget.dart';
 
 class NewAnswerListView extends HookWidget {
   final _key = UniqueKey();
@@ -55,102 +56,8 @@ class NewAnswerListView extends HookWidget {
                 );
               }
             }
-            return AnswerCardWidget(
-              userImageUrl:
-                  viewModel.newAnswers.elementAt(index).createdUser.imageUrl,
-              onTapUserImage: () {
-                final viewModel = context.read(
-                  answerListViewModelProvider(_key),
-                );
-                viewModel.transitionToProfile(
-                  id: viewModel.newAnswers.elementAt(index).createdUser.id,
-                );
-              },
-              createdTime: viewModel.newAnswers.elementAt(index).createdAt,
-              userName: viewModel.newAnswers.elementAt(index).createdUser.name,
-              menuList: viewModel.newAnswers.elementAt(index).isOwn
-                  ? [
-                      ListTile(
-                        leading: const Icon(Icons.block),
-                        title: const Text('このボケを削除する'),
-                        onTap: () {},
-                      ),
-                    ]
-                  : [
-                      ListTile(
-                        leading: const Icon(Icons.block),
-                        title: const Text('このボケをブロックする'),
-                        onTap: () {
-                          final viewModel = context.read(
-                            answerListViewModelProvider(_key),
-                          );
-                          viewModel.addBlockAnswer(
-                            viewModel.newAnswers.elementAt(index),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.block),
-                        title: const Text('このユーザーをブロックする'),
-                        onTap: () {
-                          final viewModel = context.read(
-                            answerListViewModelProvider(_key),
-                          );
-                          viewModel.addBlockUser(
-                            viewModel.newAnswers.elementAt(index).createdUser,
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.report),
-                        title: const Text('このユーザーを通報する'),
-                        onTap: () {},
-                      ),
-                    ],
-              text: viewModel.newAnswers.elementAt(index).topic.text,
-              imageUrl: viewModel.newAnswers.elementAt(index).topic.imageUrl,
-              imageTag: viewModel.newAnswers.elementAt(index).topic.imageTag,
-              onTapImage: () {
-                final viewModel = context.read(
-                  answerListViewModelProvider(_key),
-                );
-                viewModel.transitionToImageDetail(
-                    imageUrl:
-                        viewModel.newAnswers.elementAt(index).topic.imageUrl ??
-                            '',
-                    imageTag:
-                        viewModel.newAnswers.elementAt(index).topic.imageTag ??
-                            '');
-              },
-              isLike: viewModel.newAnswers.elementAt(index).isLike,
-              onTapLikeButton: () async {
-                final viewModel = context.read(
-                  answerListViewModelProvider(_key),
-                );
-                await viewModel.likeAnswer(
-                  viewModel.newAnswers.elementAt(index),
-                );
-              },
-              likedTime: viewModel.newAnswers.elementAt(index).likedTime,
-              isFavor: viewModel.newAnswers.elementAt(index).isFavor,
-              onTapFavorButton: () async {
-                final viewModel = context.read(
-                  answerListViewModelProvider(_key),
-                );
-                await viewModel.favorAnswer(
-                  viewModel.newAnswers.elementAt(index),
-                );
-              },
-              favoredTime: viewModel.newAnswers.elementAt(index).favoredTime,
-              onTap: () async {
-                final viewModel = context.read(
-                  answerListViewModelProvider(_key),
-                );
-                await viewModel.transitionToAnswerDetail(
-                  id: viewModel.newAnswers.elementAt(index).id,
-                );
-              },
-            );
+            final viewData = viewModel.answerViewData.elementAt(index);
+            return AnswerListCardWidget(viewData: viewData);
           },
           itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext
               ? viewModel.answerViewData.length + 1

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
-import 'package:oogiri_taizen/app/widget/router_widget.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/temporary_register_complete_view_model.dart';
+import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
 class TemporaryRegisterCompleteView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('TemporaryRegisterCompleteView = $_key');
+    _logger.d('TemporaryRegisterCompleteView = $_key');
     final viewModel =
         useProvider(temporaryRegisterCompleteViewModelProvider(_key));
 

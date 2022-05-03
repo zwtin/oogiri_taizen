@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/setting_view_model.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
 class SettingView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('SettingView = $_key');
+    _logger.d('SettingView = $_key');
     final viewModel = useProvider(settingViewModelProvider(_key));
 
     return RouterWidget(
@@ -54,29 +56,8 @@ class SettingView extends HookWidget {
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Column(
-                          children: viewModel.loginUser == null
+                          children: viewModel.isLogin
                               ? [
-                                  ListTile(
-                                    title: const Text(
-                                      'ブロック済み一覧',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    trailing: const Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.white,
-                                    ),
-                                    onTap: () async {
-                                      await context
-                                          .read(settingViewModelProvider(_key))
-                                          .transitionToBlockList();
-                                    },
-                                  ),
-                                ]
-                              : [
                                   ListTile(
                                     title: const Text(
                                       'プッシュ通知',
@@ -118,6 +99,27 @@ class SettingView extends HookWidget {
                                     color: Colors.white,
                                     height: 1,
                                   ),
+                                  ListTile(
+                                    title: const Text(
+                                      'ブロック済み一覧',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    trailing: const Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                    ),
+                                    onTap: () async {
+                                      await context
+                                          .read(settingViewModelProvider(_key))
+                                          .transitionToBlockList();
+                                    },
+                                  ),
+                                ]
+                              : [
                                   ListTile(
                                     title: const Text(
                                       'ブロック済み一覧',
@@ -211,68 +213,69 @@ class SettingView extends HookWidget {
                       Container(
                         height: 32,
                       ),
-                      viewModel.loginUser == null
-                          ? Container()
-                          : Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: Column(
-                                children: [
-                                  const ListTile(
-                                    title: Text(
-                                      'メールアドレス変更',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Container(
+                      Visibility(
+                        visible: viewModel.isLogin,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(
+                            children: [
+                              const ListTile(
+                                title: Text(
+                                  'メールアドレス変更',
+                                  style: TextStyle(
                                     color: Colors.white,
-                                    height: 1,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
                                   ),
-                                  const ListTile(
-                                    title: Text(
-                                      'パスワード変更',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Colors.white,
-                                    height: 1,
-                                  ),
-                                  const ListTile(
-                                    title: Text(
-                                      'アカウント削除',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
+                              Container(
+                                color: Colors.white,
+                                height: 1,
+                              ),
+                              const ListTile(
+                                title: Text(
+                                  'パスワード変更',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Container(
+                                color: Colors.white,
+                                height: 1,
+                              ),
+                              const ListTile(
+                                title: Text(
+                                  'アカウント削除',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

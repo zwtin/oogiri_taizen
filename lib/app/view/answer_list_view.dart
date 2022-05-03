@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/new_answer_list_view.dart';
 import 'package:oogiri_taizen/app/view/popular_answer_list_view.dart';
@@ -12,10 +13,11 @@ import 'package:oogiri_taizen/app/widget/floating_action_button_widget.dart';
 
 class AnswerListView extends HookWidget {
   final _key = UniqueKey();
+  final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('AnswerListView = $_key');
+    _logger.d('AnswerListView = $_key');
 
     // bottomTabにGlobalKeyをセット
     useProvider(bottomTabViewModelProvider).setUniqueKey(index: 0, key: _key);
