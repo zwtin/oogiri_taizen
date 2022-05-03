@@ -51,6 +51,22 @@ class BlockAnswerListUseCase extends ChangeNotifier {
   List<String> _blockAnswerIds = [];
   StreamSubscription<List<String>>? _blockAnswerIdsSubscription;
 
+  Future<Result<void>> resetBlockAnswers() async {
+    final clearLoadedAnswersResult = await _clearLoadedAnswers();
+    if (clearLoadedAnswersResult is Failure) {
+      return clearLoadedAnswersResult;
+    }
+    return fetchBlockAnswers();
+  }
+
+  Future<Result<void>> _clearLoadedAnswers() async {
+    loadedAnswers = const Answers(list: []);
+    hasNext = true;
+
+    notifyListeners();
+    return const Result.success(null);
+  }
+
   Future<Result<void>> fetchBlockAnswers() async {
     if (_isConnecting) {
       return const Result.success(null);

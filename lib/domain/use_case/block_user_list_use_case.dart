@@ -51,6 +51,22 @@ class BlockUserListUseCase extends ChangeNotifier {
   List<String> _blockUserIds = [];
   StreamSubscription<List<String>>? _blockUserIdsSubscription;
 
+  Future<Result<void>> resetBlockUsers() async {
+    final clearLoadedUsersResult = await _clearLoadedUsers();
+    if (clearLoadedUsersResult is Failure) {
+      return clearLoadedUsersResult;
+    }
+    return fetchBlockUsers();
+  }
+
+  Future<Result<void>> _clearLoadedUsers() async {
+    loadedUsers = const Users(list: []);
+    hasNext = true;
+
+    notifyListeners();
+    return const Result.success(null);
+  }
+
   Future<Result<void>> fetchBlockUsers() async {
     if (_isConnecting) {
       return const Result.success(null);
