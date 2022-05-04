@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/answer_detail_view.dart';
-import 'package:oogiri_taizen/app/view/profile_view.dart';
+import 'package:oogiri_taizen/app/view/user_profile_view.dart';
 
 final answerListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, UniqueKey>(
@@ -50,7 +50,7 @@ class AnswerListViewModel extends ChangeNotifier {
     required String id,
   }) async {
     await _reader.call(routerNotiferProvider(_key)).push(
-          nextScreen: ProfileView(userId: id),
+          nextScreen: UserProfileView(userId: id),
         );
   }
 

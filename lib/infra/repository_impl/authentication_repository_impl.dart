@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -38,15 +36,17 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Stream<LoginUser?> getLoginUserStream() {
-    return _firebaseAuth.authStateChanges().map((user) {
-      if (user == null) {
-        return null;
-      }
-      return LoginUser(
-        id: user.uid,
-        emailVerified: user.emailVerified,
-      );
-    });
+    return _firebaseAuth.authStateChanges().map(
+      (user) {
+        if (user == null) {
+          return null;
+        }
+        return LoginUser(
+          id: user.uid,
+          emailVerified: user.emailVerified,
+        );
+      },
+    );
   }
 
   @override

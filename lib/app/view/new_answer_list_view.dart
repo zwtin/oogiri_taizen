@@ -23,7 +23,7 @@ class NewAnswerListView extends HookWidget {
       },
       child: SafeArea(
         child: ListView.builder(
-          key: const PageStorageKey<String>('new'),
+          key: const PageStorageKey<String>('NewAnswerListView'),
           itemBuilder: (context, index) {
             if (viewModel.hasNext &&
                 index == viewModel.answerViewData.length - 3) {

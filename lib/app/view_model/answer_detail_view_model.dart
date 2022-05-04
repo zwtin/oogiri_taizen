@@ -7,7 +7,7 @@ import 'package:oogiri_taizen/app/mapper/answer_detail_answer_card_view_data_map
 import 'package:oogiri_taizen/app/mapper/answer_detail_topic_card_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
-import 'package:oogiri_taizen/app/view/profile_view.dart';
+import 'package:oogiri_taizen/app/view/user_profile_view.dart';
 import 'package:oogiri_taizen/app/view_data/answer_detail_answer_card_view_data.dart';
 import 'package:oogiri_taizen/app/view_data/answer_detail_topic_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
@@ -365,7 +365,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
     required String id,
   }) async {
     await _reader.call(routerNotiferProvider(_key)).push(
-          nextScreen: ProfileView(userId: id),
+          nextScreen: UserProfileView(userId: id),
         );
   }
 

@@ -2,34 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/app/view_model/popular_answer_list_view_model.dart';
-import 'package:oogiri_taizen/app/widget/answer_list_card_widget.dart';
+import 'package:oogiri_taizen/app/view_model/block_topic_list_view_model.dart';
+import 'package:oogiri_taizen/app/widget/block_topic_list_card_widget.dart';
 
-class PopularAnswerListView extends HookWidget {
+class BlockTopicListView extends HookWidget {
   final _key = UniqueKey();
   final _logger = Logger();
 
   @override
   Widget build(BuildContext context) {
-    _logger.d('PopularAnswerListView = $_key');
-    final viewModel = useProvider(popularAnswerListViewModelProvider(_key));
+    _logger.d('BlockTopicListView = $_key');
+    final viewModel = useProvider(blockTopicListViewModelProvider(_key));
 
     return RefreshIndicator(
       color: const Color(0xFFFFCC00),
       onRefresh: () async {
         return context
-            .read(popularAnswerListViewModelProvider(_key))
-            .resetAnswers();
+            .read(blockTopicListViewModelProvider(_key))
+            .resetTopics();
       },
       child: SafeArea(
         child: ListView.builder(
-          key: const PageStorageKey<String>('PopularAnswerListView'),
+          key: const PageStorageKey<String>('BlockTopicListView'),
           itemBuilder: (context, index) {
             if (viewModel.hasNext &&
                 index == viewModel.answerViewData.length - 3) {
-              context
-                  .read(popularAnswerListViewModelProvider(_key))
-                  .fetchAnswers();
+              context.read(blockTopicListViewModelProvider(_key)).fetchTopics();
             }
             if (index == viewModel.answerViewData.length) {
               if (viewModel.hasNext) {
@@ -59,7 +57,7 @@ class PopularAnswerListView extends HookWidget {
               }
             }
             final viewData = viewModel.answerViewData.elementAt(index);
-            return AnswerListCardWidget(viewData: viewData);
+            return BlockTopicListCardWidget(viewData: viewData);
           },
           itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext
               ? viewModel.answerViewData.length + 1

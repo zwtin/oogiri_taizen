@@ -2,34 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/app/view_model/popular_answer_list_view_model.dart';
+import 'package:oogiri_taizen/app/view_model/new_answer_list_view_model.dart';
+import 'package:oogiri_taizen/app/view_model/user_favor_answer_list_view_model.dart';
 import 'package:oogiri_taizen/app/widget/answer_list_card_widget.dart';
+import 'package:tuple/tuple.dart';
 
-class PopularAnswerListView extends HookWidget {
+class UserFavorAnswerListView extends HookWidget {
+  UserFavorAnswerListView({required this.userId});
+
   final _key = UniqueKey();
   final _logger = Logger();
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
-    _logger.d('PopularAnswerListView = $_key');
-    final viewModel = useProvider(popularAnswerListViewModelProvider(_key));
+    _logger.d('UserFavorAnswerListView = $_key');
+    final viewModel = useProvider(
+      userFavorAnswerListViewModelProvider(
+        Tuple2(_key, userId),
+      ),
+    );
 
     return RefreshIndicator(
       color: const Color(0xFFFFCC00),
       onRefresh: () async {
         return context
-            .read(popularAnswerListViewModelProvider(_key))
+            .read(newAnswerListViewModelProvider(_key))
             .resetAnswers();
       },
       child: SafeArea(
         child: ListView.builder(
-          key: const PageStorageKey<String>('PopularAnswerListView'),
+          key: PageStorageKey<String>('UserFavorAnswerListView_$_key'),
           itemBuilder: (context, index) {
             if (viewModel.hasNext &&
                 index == viewModel.answerViewData.length - 3) {
-              context
-                  .read(popularAnswerListViewModelProvider(_key))
-                  .fetchAnswers();
+              context.read(newAnswerListViewModelProvider(_key)).fetchAnswers();
             }
             if (index == viewModel.answerViewData.length) {
               if (viewModel.hasNext) {
