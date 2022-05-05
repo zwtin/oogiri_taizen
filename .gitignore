@@ -57,3 +57,7 @@ android/app/src/production/google-services.json
 # Android Signing
 android/app/signingConfigs/*
 android/key.properties
+
+# use fvm
+.fvm/flutter_sdk
+

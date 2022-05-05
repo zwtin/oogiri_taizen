@@ -11,6 +11,8 @@ class BottomTabView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(bottomTabViewModelProvider);
+    final answerListView = useMemoized(() => AnswerListView());
+    final myProfileView = useMemoized(() => MyProfileView());
 
     final controller = useTabController(initialLength: 2)
       ..index = viewModel.selected;
@@ -51,7 +53,7 @@ class BottomTabView extends HookWidget {
                       animation1,
                       animation2,
                     ) {
-                      return useMemoized(() => AnswerListView());
+                      return answerListView;
                     },
                   );
                 },
@@ -64,7 +66,7 @@ class BottomTabView extends HookWidget {
                       animation1,
                       animation2,
                     ) {
-                      return useMemoized(() => MyProfileView());
+                      return myProfileView;
                     },
                   );
                 },

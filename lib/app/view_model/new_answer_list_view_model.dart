@@ -32,7 +32,9 @@ class NewAnswerListViewModel extends ChangeNotifier {
     this._blockUseCase,
     this._favorUseCase,
     this._likeUseCase,
-  );
+  ) {
+    fetchAnswers();
+  }
 
   final UniqueKey _key;
   final Reader _reader;
@@ -81,7 +83,9 @@ class NewAnswerListViewModel extends ChangeNotifier {
   Future<void> fetchAnswers() async {
     final result = await _newAnswerListUseCase.fetchAnswers();
     result.when(
-      success: (_) {},
+      success: (_) {
+        notifyListeners();
+      },
       failure: (exception) {
         if (exception is OTException) {
           final alertTitle = exception.title;
