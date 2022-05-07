@@ -14,22 +14,20 @@ import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 import 'package:tuple/tuple.dart';
 
-final answerDetailUseCaseProvider =
-    Provider.autoDispose.family<AnswerDetailUseCase, Tuple2<UniqueKey, String>>(
+final answerDetailUseCaseProvider = ChangeNotifierProvider.autoDispose
+    .family<AnswerDetailUseCase, Tuple2<UniqueKey, String>>(
   (ref, tuple) {
-    final answerDetailUseCase = AnswerDetailUseCase(
+    return AnswerDetailUseCase(
       tuple.item1,
       tuple.item2,
       ref.watch(answerRepositoryProvider),
       ref.watch(topicRepositoryProvider),
       ref.watch(userRepositoryProvider),
     );
-    ref.onDispose(answerDetailUseCase.dispose);
-    return answerDetailUseCase;
   },
 );
 
-class AnswerDetailUseCase {
+class AnswerDetailUseCase extends ChangeNotifier {
   AnswerDetailUseCase(
     this._key,
     this._answerId,
@@ -93,10 +91,13 @@ class AnswerDetailUseCase {
     _answer = _answer.copyWith(topic: _topic);
 
     answer = _answer;
+    notifyListeners();
     return const Result.success(null);
   }
 
+  @override
   void dispose() {
+    super.dispose();
     _logger.d('AnswerDetailUseCase dispose $_key');
   }
 }

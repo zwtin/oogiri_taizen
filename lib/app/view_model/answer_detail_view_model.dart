@@ -69,9 +69,7 @@ class AnswerDetailViewModel extends ChangeNotifier {
   Future<void> fetchAnswerDetail() async {
     final result = await _answerDetailUseCase.fetchAnswerDetail();
     result.when(
-      success: (_) {
-        notifyListeners();
-      },
+      success: (_) {},
       failure: (exception) {
         if (exception is OTException) {
           final alertTitle = exception.title;
