@@ -124,12 +124,20 @@ class AnswerRepositoryImpl implements AnswerRepository {
               if (data == null) {
                 return null;
               }
-              return mappingForAnswer(answerData: data);
+              return data['id'] as String;
             },
           )
-          .whereType<Answer>()
+          .whereType<String>()
           .toList();
-      final answers = Answers(list: list);
+      final answerList = <Answer>[];
+      for (final answerId in list) {
+        final result = await getAnswer(id: answerId);
+        if (!(result is Success<Answer>)) {
+          continue;
+        }
+        answerList.add(result.value);
+      }
+      final answers = Answers(list: answerList);
       return Result.success(answers);
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -176,12 +184,20 @@ class AnswerRepositoryImpl implements AnswerRepository {
               if (data == null) {
                 return null;
               }
-              return mappingForAnswer(answerData: data);
+              return data['id'] as String;
             },
           )
-          .whereType<Answer>()
+          .whereType<String>()
           .toList();
-      final answers = Answers(list: list);
+      final answerList = <Answer>[];
+      for (final answerId in list) {
+        final result = await getAnswer(id: answerId);
+        if (!(result is Success<Answer>)) {
+          continue;
+        }
+        answerList.add(result.value);
+      }
+      final answers = Answers(list: answerList);
       return Result.success(answers);
     } on Exception catch (exception) {
       return Result.failure(exception);

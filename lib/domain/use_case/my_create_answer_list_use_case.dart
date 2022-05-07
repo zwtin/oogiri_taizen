@@ -18,8 +18,8 @@ import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_im
 import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
-final myCreateAnswerListUseCaseProvider =
-    Provider.autoDispose.family<MyCreateAnswerListUseCase, UniqueKey>(
+final myCreateAnswerListUseCaseProvider = ChangeNotifierProvider.autoDispose
+    .family<MyCreateAnswerListUseCase, UniqueKey>(
   (ref, key) {
     return MyCreateAnswerListUseCase(
       key,
@@ -42,19 +42,9 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
     _loginUserSubscription?.cancel();
     _loginUserSubscription =
         _authenticationRepository.getLoginUserStream().listen(
-      (_loginUser) async {
-        await _userSubscription?.cancel();
-        if (_loginUser == null) {
-          loginUser = null;
-          await resetAnswers();
-          return;
-        }
-        _userSubscription = _userRepository
-            .getUserStream(id: _loginUser.id)
-            .listen((user) async {
-          loginUser = _loginUser.copyWith(user: user);
-          await resetAnswers();
-        });
+      (loginUser) async {
+        loginUserId = loginUser?.id;
+        await resetAnswers();
       },
     );
   }
@@ -67,7 +57,7 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
   final UniqueKey _key;
   final _logger = Logger();
 
-  LoginUser? loginUser;
+  String? loginUserId;
   bool hasNext = true;
   Answers get showingAnswers {
     return _loadedAnswers;
@@ -77,7 +67,6 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
   Answers _loadedAnswers = const Answers(list: []);
 
   StreamSubscription<LoginUser?>? _loginUserSubscription;
-  StreamSubscription<User?>? _userSubscription;
 
   Future<Result<void>> resetAnswers() async {
     final clearAnswersResult = await _clearAnswers();
@@ -96,7 +85,7 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> fetchAnswers() async {
-    if (loginUser == null) {
+    if (loginUserId == null) {
       return Result.failure(
         OTException(
           title: 'エラー',
@@ -117,7 +106,7 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
     const limit = 10;
 
     final createdAnswersResult = await _answerRepository.getCreatedAnswers(
-      userId: loginUser!.id,
+      userId: loginUserId!,
       offset: offset,
       limit: limit + 1,
     );
@@ -169,6 +158,5 @@ class MyCreateAnswerListUseCase extends ChangeNotifier {
     _logger.d('MyCreateAnswerListUseCase dispose $_key');
 
     _loginUserSubscription?.cancel();
-    _userSubscription?.cancel();
   }
 }

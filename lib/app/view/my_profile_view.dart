@@ -16,6 +16,9 @@ class MyProfileView extends HookWidget {
   Widget build(BuildContext context) {
     _logger.d('MyProfileView = $_key');
     final viewModel = useProvider(myProfileViewModelProvider(_key));
+    final myCreateAnswerListView = useMemoized(() => MyCreateAnswerListView());
+    final myFavorAnswerListView = useMemoized(() => MyFavorAnswerListView());
+    final tabController = useTabController(initialLength: 2);
 
     return Scaffold(
       appBar: AppBar(
@@ -89,177 +92,173 @@ class MyProfileView extends HookWidget {
           ),
         ],
       ),
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverToBoxAdapter(
-                child: Container(
-                  color: const Color(0xFFFFCC00),
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Builder(
-                            builder: (context) {
-                              if ((viewModel.viewData?.imageUrl ?? '')
-                                  .isEmpty) {
-                                return SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: ClipOval(
-                                    child: Image.asset(
-                                      'assets/images/no_user.jpg',
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              final imageTag = StringExtension.randomString(8);
-                              return GestureDetector(
-                                onTap: () {
-                                  viewModel.transitionToImageDetail(
-                                    imageUrl:
-                                        viewModel.viewData?.imageUrl ?? '',
-                                    imageTag: imageTag,
-                                  );
-                                },
-                                child: Hero(
-                                  tag: imageTag,
-                                  child: SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: CachedNetworkImage(
-                                      placeholder: (context, url) =>
-                                          const Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                      imageUrl:
-                                          viewModel.viewData?.imageUrl ?? '',
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      errorWidget:
-                                          (context, url, dynamic error) =>
-                                              ClipOval(
-                                        child: Image.asset(
-                                          'assets/images/no_user.jpg',
-                                        ),
-                                      ),
-                                    ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverToBoxAdapter(
+              child: Container(
+                color: const Color(0xFFFFCC00),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Builder(
+                          builder: (context) {
+                            if ((viewModel.viewData?.imageUrl ?? '').isEmpty) {
+                              return SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    'assets/images/no_user.jpg',
                                   ),
                                 ),
                               );
-                            },
-                          ),
-                          Container(
-                            width: 16,
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                viewModel.viewData?.name ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22,
+                            }
+
+                            final imageTag = StringExtension.randomString(8);
+                            return GestureDetector(
+                              onTap: () {
+                                viewModel.transitionToImageDetail(
+                                  imageUrl: viewModel.viewData?.imageUrl ?? '',
+                                  imageTag: imageTag,
+                                );
+                              },
+                              child: Hero(
+                                tag: imageTag,
+                                child: SizedBox(
+                                  width: 100,
+                                  height: 100,
+                                  child: CachedNetworkImage(
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    imageUrl:
+                                        viewModel.viewData?.imageUrl ?? '',
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget:
+                                        (context, url, dynamic error) =>
+                                            ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/no_user.jpg',
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'ID:',
-                                    style: TextStyle(
+                            );
+                          },
+                        ),
+                        Container(
+                          width: 16,
+                        ),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              viewModel.viewData?.name ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  'ID:',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    viewModel.viewData?.id ?? '',
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 14,
                                     ),
+                                    textAlign: TextAlign.right,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  Flexible(
-                                    child: Text(
-                                      viewModel.viewData?.id ?? '',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              viewModel.viewData?.emailVerified ?? false
-                                  ? Container()
-                                  : const Text(
-                                      '※ メールアドレス未認証',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                              Container(
-                                height: 16,
-                              ),
-                              Text(
-                                viewModel.viewData?.introduction ?? '',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
                                 ),
+                              ],
+                            ),
+                            viewModel.viewData?.emailVerified ?? false
+                                ? Container()
+                                : const Text(
+                                    '※ メールアドレス未認証',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                            Container(
+                              height: 16,
+                            ),
+                            Text(
+                              viewModel.viewData?.introduction ?? '',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
                               ),
-                            ],
-                          )),
-                        ],
-                      ),
+                            ),
+                          ],
+                        )),
+                      ],
                     ),
                   ),
                 ),
               ),
-              const SliverAppBar(
-                pinned: true,
-                toolbarHeight: 0,
-                collapsedHeight: 0.01,
-                backgroundColor: Color(0xFFFFCC00),
-                elevation: 0,
-                bottom: TabBar(
-                  indicatorColor: Colors.blue,
-                  tabs: [
-                    Tab(
-                      text: '投稿したボケ',
-                    ),
-                    Tab(
-                      text: 'お気に入りのボケ',
-                    ),
-                  ],
-                ),
-              ),
-            ];
-          },
-          body: Stack(
-            children: [
-              Container(
-                color: const Color(0xFFFFCC00),
-              ),
-              TabBarView(
-                children: [
-                  MyCreateAnswerListView(),
-                  MyFavorAnswerListView(),
+            ),
+            SliverAppBar(
+              pinned: true,
+              toolbarHeight: 0,
+              collapsedHeight: 0.01,
+              backgroundColor: const Color(0xFFFFCC00),
+              elevation: 0,
+              bottom: TabBar(
+                indicatorColor: Colors.blue,
+                controller: tabController,
+                tabs: const [
+                  Tab(
+                    text: '投稿したボケ',
+                  ),
+                  Tab(
+                    text: 'お気に入りのボケ',
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ];
+        },
+        body: Stack(
+          children: [
+            Container(
+              color: const Color(0xFFFFCC00),
+            ),
+            TabBarView(
+              controller: tabController,
+              children: [
+                myCreateAnswerListView,
+                myFavorAnswerListView,
+              ],
+            ),
+          ],
         ),
       ),
     );

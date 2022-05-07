@@ -11,7 +11,7 @@ import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_im
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
 final myProfileUseCaseProvider =
-    Provider.autoDispose.family<MyProfileUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<MyProfileUseCase, UniqueKey>(
   (ref, key) {
     return MyProfileUseCase(
       key,

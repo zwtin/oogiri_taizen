@@ -17,15 +17,6 @@ class PopularAnswerListView extends HookWidget {
     final viewModel = useProvider(popularAnswerListViewModelProvider(_key));
     useAutomaticKeepAlive();
 
-    useEffect(
-      () {
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
-          context.read(popularAnswerListViewModelProvider(_key)).fetchAnswers();
-        });
-      },
-      const [],
-    );
-
     return RouterWidget(
       key: _key,
       child: SafeArea(

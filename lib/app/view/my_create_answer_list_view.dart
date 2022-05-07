@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/my_create_answer_list_view_model.dart';
-import 'package:oogiri_taizen/app/view_model/new_answer_list_view_model.dart';
 import 'package:oogiri_taizen/app/widget/answer_list_card_widget.dart';
+import 'package:oogiri_taizen/extension/flutter_hooks_extension.dart';
 
 class MyCreateAnswerListView extends HookWidget {
   final _key = UniqueKey();
@@ -14,21 +14,24 @@ class MyCreateAnswerListView extends HookWidget {
   Widget build(BuildContext context) {
     _logger.d('MyCreateAnswerListView = $_key');
     final viewModel = useProvider(myCreateAnswerListViewModelProvider(_key));
+    useAutomaticKeepAlive();
 
-    return RefreshIndicator(
-      color: const Color(0xFFFFCC00),
-      onRefresh: () async {
-        return context
-            .read(newAnswerListViewModelProvider(_key))
-            .resetAnswers();
-      },
-      child: SafeArea(
+    return SafeArea(
+      child: RefreshIndicator(
+        color: const Color(0xFFFFCC00),
+        onRefresh: () async {
+          return context
+              .read(myCreateAnswerListViewModelProvider(_key))
+              .resetAnswers();
+        },
         child: ListView.builder(
           key: const PageStorageKey<String>('MyCreateAnswerListView'),
           itemBuilder: (context, index) {
             if (viewModel.hasNext &&
                 index == viewModel.answerViewData.length - 3) {
-              context.read(newAnswerListViewModelProvider(_key)).fetchAnswers();
+              context
+                  .read(myCreateAnswerListViewModelProvider(_key))
+                  .fetchAnswers();
             }
             if (index == viewModel.answerViewData.length) {
               if (viewModel.hasNext) {
