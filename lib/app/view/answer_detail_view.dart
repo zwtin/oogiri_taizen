@@ -71,12 +71,26 @@ class AnswerDetailView extends HookWidget {
                     if (viewModel.topicViewData != null) ...{
                       AnswerDetailTopicCardWidget(
                         viewData: viewModel.topicViewData!,
-                      )
+                      ),
                     },
                     if (viewModel.answerViewData != null) ...{
                       AnswerDetailAnswerCardWidget(
                         viewData: viewModel.answerViewData!,
-                      )
+                        onTapLikeButton: () async {
+                          await context
+                              .read(answerDetailViewModelProvider(
+                                Tuple2<UniqueKey, String>(_key, answerId),
+                              ))
+                              .likeAnswer();
+                        },
+                        onTapFavorButton: () async {
+                          await context
+                              .read(answerDetailViewModelProvider(
+                                Tuple2<UniqueKey, String>(_key, answerId),
+                              ))
+                              .favorAnswer();
+                        },
+                      ),
                     },
                   ],
                 ),
