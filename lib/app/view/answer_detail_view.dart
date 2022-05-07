@@ -25,6 +25,17 @@ class AnswerDetailView extends HookWidget {
       ),
     );
 
+    useEffect(
+      () {
+        context
+            .read(answerDetailViewModelProvider(
+              Tuple2<UniqueKey, String>(_key, answerId),
+            ))
+            .fetchAnswerDetail();
+      },
+      const [],
+    );
+
     return RouterWidget(
       key: _key,
       child: Scaffold(
@@ -55,18 +66,28 @@ class AnswerDetailView extends HookWidget {
               child: SafeArea(
                 child: Column(
                   children: [
-                    Visibility(
-                      visible: viewModel.topicViewData != null,
-                      child: AnswerDetailTopicCardWidget(
-                        viewData: viewModel.topicViewData!,
-                      ),
-                    ),
-                    Visibility(
-                      visible: viewModel.answerViewData != null,
-                      child: AnswerDetailAnswerCardWidget(
-                        viewData: viewModel.answerViewData!,
-                      ),
-                    )
+                    viewModel.topicViewData != null
+                        ? AnswerDetailTopicCardWidget(
+                            viewData: viewModel.topicViewData!,
+                          )
+                        : Container(),
+                    // Visibility(
+                    //   visible: viewModel.topicViewData != null,
+                    //   child: AnswerDetailTopicCardWidget(
+                    //     viewData: viewModel.topicViewData!,
+                    //   ),
+                    // ),
+                    viewModel.answerViewData != null
+                        ? AnswerDetailAnswerCardWidget(
+                            viewData: viewModel.answerViewData!,
+                          )
+                        : Container(),
+                    // Visibility(
+                    //   visible: viewModel.answerViewData != null,
+                    //   child: AnswerDetailAnswerCardWidget(
+                    //     viewData: viewModel.answerViewData!,
+                    //   ),
+                    // )
                   ],
                 ),
               ),

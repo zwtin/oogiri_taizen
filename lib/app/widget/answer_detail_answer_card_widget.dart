@@ -159,9 +159,6 @@ class AnswerDetailAnswerCardWidget extends HookWidget {
                   fontSize: 22,
                 ),
               ),
-              Container(
-                height: 16,
-              ),
               Row(
                 children: [
                   Expanded(

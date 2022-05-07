@@ -66,6 +66,33 @@ class AnswerDetailViewModel extends ChangeNotifier {
     return mappingForAnswerDetailAnswerCardViewData(answer: answer);
   }
 
+  Future<void> fetchAnswerDetail() async {
+    final result = await _answerDetailUseCase.fetchAnswerDetail();
+    result.when(
+      success: (_) {
+        notifyListeners();
+      },
+      failure: (exception) {
+        if (exception is OTException) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
+            _reader.call(alertNotiferProvider).show(
+                  title: alertTitle,
+                  message: alertText,
+                  okButtonTitle: 'OK',
+                  cancelButtonTitle: null,
+                  okButtonAction: () {
+                    _reader.call(alertNotiferProvider).dismiss();
+                  },
+                  cancelButtonAction: null,
+                );
+          }
+        }
+      },
+    );
+  }
+
   Future<void> likeAnswer() async {
     final answer = _answerDetailUseCase.answer;
     if (answer == null) {
