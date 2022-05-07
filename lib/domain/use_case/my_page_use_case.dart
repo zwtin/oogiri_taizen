@@ -8,7 +8,7 @@ import 'package:oogiri_taizen/domain/repository/authentication_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/authentication_repository_impl.dart';
 
 final myPageUseCaseProvider =
-    Provider.autoDispose.family<MyPageUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<MyPageUseCase, UniqueKey>(
   (ref, key) {
     return MyPageUseCase(
       key,
