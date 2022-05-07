@@ -55,6 +55,7 @@ class AnswerDetailUseCase extends ChangeNotifier {
         _authenticationRepository.getLoginUserStream().listen(
       (loginUser) async {
         loginUserId = loginUser?.id;
+        await resetAnswerDetail();
       },
     );
   }

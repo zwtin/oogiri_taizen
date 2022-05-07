@@ -85,6 +85,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
         _authenticationRepository.getLoginUserStream().listen(
       (loginUser) async {
         loginUserId = loginUser?.id;
+        await resetAnswers();
       },
     );
   }
