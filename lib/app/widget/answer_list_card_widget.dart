@@ -193,9 +193,6 @@ class AnswerListCardWidget extends HookWidget {
                   ],
                 ),
               ),
-              Container(
-                height: 16,
-              ),
               Row(
                 children: [
                   Expanded(
