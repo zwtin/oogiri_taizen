@@ -23,33 +23,33 @@ class StartViewModel extends ChangeNotifier {
     this._key,
     this._reader,
     this._startUseCase,
-  ) {
-    Future(() async {
-      final needUpdate = _startUseCase.getNeedUpdate();
-      if (needUpdate) {
-        _reader.call(alertNotiferProvider).show(
-              title: 'バージョンエラー',
-              message: '最新バージョンのアプリをお使いください',
-              okButtonTitle: 'OK',
-              cancelButtonTitle: null,
-              okButtonAction: () async {
-                await SystemNavigator.pop();
-              },
-              cancelButtonAction: null,
-            );
-      } else {
-        await _reader
-            .call(routerNotiferProvider(_key))
-            .pushReplacement(nextScreen: BottomTabView());
-      }
-    });
-  }
+  );
 
   final UniqueKey _key;
   final Reader _reader;
   final _logger = Logger();
 
   final StartUseCase _startUseCase;
+
+  Future<void> checkNeedUpdate() async {
+    final needUpdate = _startUseCase.getNeedUpdate();
+    if (needUpdate) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'バージョンエラー',
+            message: '最新バージョンのアプリをお使いください',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () async {
+              await SystemNavigator.pop();
+            },
+            cancelButtonAction: null,
+          );
+    } else {
+      await _reader
+          .call(routerNotiferProvider(_key))
+          .pushReplacement(nextScreen: BottomTabView());
+    }
+  }
 
   @override
   void dispose() {

@@ -7,7 +7,7 @@ import 'package:oogiri_taizen/infra/repository_impl/app_info_repository_impl.dar
 import 'package:oogiri_taizen/infra/repository_impl/remote_config_repository_impl.dart';
 
 final startUseCaseProvider =
-    Provider.autoDispose.family<StartUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<StartUseCase, UniqueKey>(
   (ref, key) {
     return StartUseCase(
       key,

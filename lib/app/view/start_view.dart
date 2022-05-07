@@ -14,6 +14,15 @@ class StartView extends HookWidget {
     _logger.d('StartView = $_key');
     final viewModel = useProvider(startViewModelProvider(_key));
 
+    useEffect(
+      () {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          context.read(startViewModelProvider(_key)).checkNeedUpdate();
+        });
+      },
+      const [],
+    );
+
     return RouterWidget(
       key: _key,
       child: Scaffold(

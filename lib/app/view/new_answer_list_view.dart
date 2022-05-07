@@ -17,6 +17,15 @@ class NewAnswerListView extends HookWidget {
     final viewModel = useProvider(newAnswerListViewModelProvider(_key));
     useAutomaticKeepAlive();
 
+    useEffect(
+      () {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          context.read(newAnswerListViewModelProvider(_key)).fetchAnswers();
+        });
+      },
+      const [],
+    );
+
     return RouterWidget(
       key: _key,
       child: SafeArea(

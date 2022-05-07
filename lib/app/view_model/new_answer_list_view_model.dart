@@ -34,9 +34,7 @@ class NewAnswerListViewModel extends ChangeNotifier {
     this._blockUseCase,
     this._favorUseCase,
     this._likeUseCase,
-  ) {
-    fetchAnswers();
-  }
+  );
 
   final UniqueKey _key;
   final Reader _reader;
@@ -58,15 +56,13 @@ class NewAnswerListViewModel extends ChangeNotifier {
   }
 
   String? get loginUserId {
-    return _newAnswerListUseCase.loginUser?.id;
+    return _newAnswerListUseCase.loginUserId;
   }
 
   Future<void> resetAnswers() async {
     final result = await _newAnswerListUseCase.resetAnswers();
     result.when(
-      success: (_) {
-        notifyListeners();
-      },
+      success: (_) {},
       failure: (exception) {
         if (exception is OTException) {
           final alertTitle = exception.title;
@@ -91,9 +87,7 @@ class NewAnswerListViewModel extends ChangeNotifier {
   Future<void> fetchAnswers() async {
     final result = await _newAnswerListUseCase.fetchAnswers();
     result.when(
-      success: (_) {
-        notifyListeners();
-      },
+      success: (_) {},
       failure: (exception) {
         if (exception is OTException) {
           final alertTitle = exception.title;

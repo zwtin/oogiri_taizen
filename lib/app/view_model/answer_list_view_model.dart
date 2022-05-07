@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
-import 'package:oogiri_taizen/app/view/answer_detail_view.dart';
-import 'package:oogiri_taizen/app/view/user_profile_view.dart';
 
 final answerListViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<AnswerListViewModel, UniqueKey>(
@@ -24,35 +21,6 @@ class AnswerListViewModel extends ChangeNotifier {
   final UniqueKey _key;
   final Reader _reader;
   final _logger = Logger();
-
-  Future<void> transitionToImageDetail({
-    required String imageUrl,
-    required String imageTag,
-  }) async {
-    if (imageUrl.isEmpty) {
-      return;
-    }
-    await _reader.call(routerNotiferProvider(_key)).presentImage(
-          imageUrl: imageUrl,
-          imageTag: imageTag,
-        );
-  }
-
-  Future<void> transitionToAnswerDetail({required String id}) async {
-    await _reader.call(routerNotiferProvider(_key)).push(
-          nextScreen: AnswerDetailView(
-            answerId: id,
-          ),
-        );
-  }
-
-  Future<void> transitionToProfile({
-    required String id,
-  }) async {
-    await _reader.call(routerNotiferProvider(_key)).push(
-          nextScreen: UserProfileView(userId: id),
-        );
-  }
 
   @override
   void dispose() {

@@ -27,11 +27,13 @@ class AnswerDetailView extends HookWidget {
 
     useEffect(
       () {
-        context
-            .read(answerDetailViewModelProvider(
-              Tuple2<UniqueKey, String>(_key, answerId),
-            ))
-            .fetchAnswerDetail();
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          context
+              .read(answerDetailViewModelProvider(
+                Tuple2<UniqueKey, String>(_key, answerId),
+              ))
+              .fetchAnswerDetail();
+        });
       },
       const [],
     );
@@ -66,28 +68,16 @@ class AnswerDetailView extends HookWidget {
               child: SafeArea(
                 child: Column(
                   children: [
-                    viewModel.topicViewData != null
-                        ? AnswerDetailTopicCardWidget(
-                            viewData: viewModel.topicViewData!,
-                          )
-                        : Container(),
-                    // Visibility(
-                    //   visible: viewModel.topicViewData != null,
-                    //   child: AnswerDetailTopicCardWidget(
-                    //     viewData: viewModel.topicViewData!,
-                    //   ),
-                    // ),
-                    viewModel.answerViewData != null
-                        ? AnswerDetailAnswerCardWidget(
-                            viewData: viewModel.answerViewData!,
-                          )
-                        : Container(),
-                    // Visibility(
-                    //   visible: viewModel.answerViewData != null,
-                    //   child: AnswerDetailAnswerCardWidget(
-                    //     viewData: viewModel.answerViewData!,
-                    //   ),
-                    // )
+                    if (viewModel.topicViewData != null) ...{
+                      AnswerDetailTopicCardWidget(
+                        viewData: viewModel.topicViewData!,
+                      )
+                    },
+                    if (viewModel.answerViewData != null) ...{
+                      AnswerDetailAnswerCardWidget(
+                        viewData: viewModel.answerViewData!,
+                      )
+                    },
                   ],
                 ),
               ),

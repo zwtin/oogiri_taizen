@@ -24,8 +24,8 @@ import 'package:oogiri_taizen/infra/repository_impl/like_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
-final popularAnswerListUseCaseProvider =
-    Provider.autoDispose.family<PopularAnswerListUseCase, UniqueKey>(
+final popularAnswerListUseCaseProvider = ChangeNotifierProvider.autoDispose
+    .family<PopularAnswerListUseCase, UniqueKey>(
   (ref, key) {
     return PopularAnswerListUseCase(
       key,
@@ -83,19 +83,8 @@ class PopularAnswerListUseCase extends ChangeNotifier {
     _loginUserSubscription?.cancel();
     _loginUserSubscription =
         _authenticationRepository.getLoginUserStream().listen(
-      (_loginUser) async {
-        await _userSubscription?.cancel();
-        if (_loginUser == null) {
-          loginUser = null;
-          await resetAnswers();
-          return;
-        }
-        _userSubscription = _userRepository
-            .getUserStream(id: _loginUser.id)
-            .listen((user) async {
-          loginUser = _loginUser.copyWith(user: user);
-          await resetAnswers();
-        });
+      (loginUser) async {
+        loginUserId = loginUser?.id;
       },
     );
   }
@@ -111,7 +100,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
   final UniqueKey _key;
   final _logger = Logger();
 
-  LoginUser? loginUser;
+  String? loginUserId;
   bool hasNext = true;
   Answers get showingAnswers {
     return _loadedAnswers.filteredBlock(
@@ -125,7 +114,6 @@ class PopularAnswerListUseCase extends ChangeNotifier {
   Answers _loadedAnswers = const Answers(list: []);
 
   StreamSubscription<LoginUser?>? _loginUserSubscription;
-  StreamSubscription<User?>? _userSubscription;
   List<String> _blockAnswerIds = [];
   StreamSubscription<List<String>>? _blockAnswerIdsSubscription;
   List<String> _blockTopicIds = [];
@@ -229,13 +217,13 @@ class PopularAnswerListUseCase extends ChangeNotifier {
       topic = topic.copyWith(createdUser: topicCreatedUserResult.value);
       answer = answer.copyWith(topic: topic);
 
-      if (loginUser != null) {
+      if (loginUserId != null) {
         final isLikeResult = await _likeRepository.getLike(
-          userId: loginUser!.id,
+          userId: loginUserId!,
           answerId: answer.id,
         );
         final isFavorResult = await _favorRepository.getFavor(
-          userId: loginUser!.id,
+          userId: loginUserId!,
           answerId: answer.id,
         );
         if (isLikeResult is Success<bool> && isFavorResult is Success<bool>) {
@@ -248,9 +236,9 @@ class PopularAnswerListUseCase extends ChangeNotifier {
 
       _loadedAnswers = _loadedAnswers.added(answer);
 
-      if (loginUser != null) {
+      if (loginUserId != null) {
         _isLikeSubscriptions[answer.id] = _likeRepository
-            .getLikeStream(userId: loginUser!.id, answerId: answer.id)
+            .getLikeStream(userId: loginUserId!, answerId: answer.id)
             .listen((value) {
           var newAnswer = _loadedAnswers.getById(answer.id);
           if (newAnswer == null) {
@@ -273,7 +261,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
         });
 
         _isFavorSubscriptions[answer.id] = _favorRepository
-            .getFavorStream(userId: loginUser!.id, answerId: answer.id)
+            .getFavorStream(userId: loginUserId!, answerId: answer.id)
             .listen((value) {
           var newAnswer = _loadedAnswers.getById(answer.id);
           if (newAnswer == null) {
@@ -314,7 +302,6 @@ class PopularAnswerListUseCase extends ChangeNotifier {
       element.cancel();
     }
     _loginUserSubscription?.cancel();
-    _userSubscription?.cancel();
     _blockAnswerIdsSubscription?.cancel();
     _blockTopicIdsSubscription?.cancel();
     _blockUserIdsSubscription?.cancel();
