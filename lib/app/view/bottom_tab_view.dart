@@ -11,8 +11,40 @@ class BottomTabView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = useProvider(bottomTabViewModelProvider);
-    final answerListView = useMemoized(() => AnswerListView());
-    final myProfileView = useMemoized(() => MyProfileView());
+    final tab0 = useMemoized(
+      () {
+        return Navigator(
+          onGenerateRoute: (settings) {
+            return PageRouteBuilder<Widget>(
+              pageBuilder: (
+                context,
+                animation1,
+                animation2,
+              ) {
+                return AnswerListView();
+              },
+            );
+          },
+        );
+      },
+    );
+    final tab1 = useMemoized(
+      () {
+        return Navigator(
+          onGenerateRoute: (settings) {
+            return PageRouteBuilder<Widget>(
+              pageBuilder: (
+                context,
+                animation1,
+                animation2,
+              ) {
+                return MyProfileView();
+              },
+            );
+          },
+        );
+      },
+    );
 
     final controller = useTabController(initialLength: 2)
       ..index = viewModel.selected;
@@ -45,32 +77,8 @@ class BottomTabView extends HookWidget {
           body: IndexedStack(
             index: viewModel.selected,
             children: <Widget>[
-              Navigator(
-                onGenerateRoute: (settings) {
-                  return PageRouteBuilder<Widget>(
-                    pageBuilder: (
-                      context,
-                      animation1,
-                      animation2,
-                    ) {
-                      return answerListView;
-                    },
-                  );
-                },
-              ),
-              Navigator(
-                onGenerateRoute: (settings) {
-                  return PageRouteBuilder<Widget>(
-                    pageBuilder: (
-                      context,
-                      animation1,
-                      animation2,
-                    ) {
-                      return myProfileView;
-                    },
-                  );
-                },
-              ),
+              tab0,
+              tab1,
             ],
           ),
         ),

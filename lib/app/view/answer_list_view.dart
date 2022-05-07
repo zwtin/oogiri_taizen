@@ -22,6 +22,9 @@ class AnswerListView extends HookWidget {
     // bottomTabにGlobalKeyをセット
     useProvider(bottomTabViewModelProvider).setUniqueKey(index: 0, key: _key);
     final viewModel = useProvider(answerListViewModelProvider(_key));
+    final newAnswerListView = useMemoized(() => NewAnswerListView());
+    final popularAnswerListView = useMemoized(() => PopularAnswerListView());
+    final tabController = useTabController(initialLength: 2);
 
     // 戻るボタンのアクションを変えたいので、RouterWidgetを使わない
     return ProviderListener(
@@ -94,43 +97,42 @@ class AnswerListView extends HookWidget {
         action1: () {},
         action2: () {},
         // action3: () {},
-        child: DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'ホーム',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: const Color(0xFFFFCC00),
-              elevation: 0, // 影をなくす
-              bottom: const TabBar(
-                tabs: <Widget>[
-                  Tab(
-                    text: '新着順',
-                  ),
-                  Tab(
-                    text: '人気順',
-                  )
-                ],
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'ホーム',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            body: Stack(
-              children: [
-                Container(
-                  color: const Color(0xFFFFCC00),
+            backgroundColor: const Color(0xFFFFCC00),
+            elevation: 0, // 影をなくす
+            bottom: TabBar(
+              controller: tabController,
+              tabs: const <Widget>[
+                Tab(
+                  text: '新着順',
                 ),
-                TabBarView(
-                  children: [
-                    NewAnswerListView(),
-                    PopularAnswerListView(),
-                  ],
-                ),
+                Tab(
+                  text: '人気順',
+                )
               ],
             ),
+          ),
+          body: Stack(
+            children: [
+              Container(
+                color: const Color(0xFFFFCC00),
+              ),
+              TabBarView(
+                controller: tabController,
+                children: [
+                  newAnswerListView,
+                  popularAnswerListView,
+                ],
+              ),
+            ],
           ),
         ),
       ),
