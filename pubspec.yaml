@@ -80,6 +80,8 @@ dependencies:
 
   logger: ^1.1.0
 
+  mockito: ^5.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
