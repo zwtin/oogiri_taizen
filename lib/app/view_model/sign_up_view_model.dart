@@ -7,7 +7,7 @@ import 'package:oogiri_taizen/app/view/temporary_register_complete_view.dart';
 import 'package:oogiri_taizen/app/view/terms_of_service_view.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
-import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/sign_up_use_case.dart';
 
 final signUpViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignUpViewModel, UniqueKey>(
@@ -15,7 +15,7 @@ final signUpViewModelProvider =
     return SignUpViewModel(
       key,
       ref.read,
-      ref.watch(authenticationUseCaseProvider(key)),
+      ref.watch(signUpUseCaseProvider(key)),
     );
   },
 );
@@ -24,14 +24,14 @@ class SignUpViewModel extends ChangeNotifier {
   SignUpViewModel(
     this._key,
     this._reader,
-    this._authenticationUseCase,
+    this._signUpUseCase,
   );
 
   final UniqueKey _key;
   final Reader _reader;
   final _logger = Logger();
 
-  final AuthenticationUseCase _authenticationUseCase;
+  final SignUpUseCase _signUpUseCase;
 
   bool isConnecting = false;
   bool isAgreeWithTerms = false;
@@ -56,7 +56,7 @@ class SignUpViewModel extends ChangeNotifier {
       return;
     }
     _showIndicator();
-    final loginResult = await _authenticationUseCase.loginWithEmailAndPassword(
+    final loginResult = await _signUpUseCase.loginWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -65,7 +65,7 @@ class SignUpViewModel extends ChangeNotifier {
       _reader.call(routerNotiferProvider(_key)).pop();
       return;
     }
-    final result = await _authenticationUseCase.createUserWithEmailAndPassword(
+    final result = await _signUpUseCase.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );

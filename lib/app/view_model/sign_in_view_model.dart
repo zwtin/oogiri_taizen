@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
-import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/sign_in_use_case.dart';
 
 final signInViewModelProvider =
     ChangeNotifierProvider.autoDispose.family<SignInViewModel, UniqueKey>(
@@ -12,7 +12,7 @@ final signInViewModelProvider =
     return SignInViewModel(
       key,
       ref.read,
-      ref.watch(authenticationUseCaseProvider(key)),
+      ref.watch(signInUseCaseProvider(key)),
     );
   },
 );
@@ -21,14 +21,14 @@ class SignInViewModel extends ChangeNotifier {
   SignInViewModel(
     this._key,
     this._reader,
-    this._authenticationUseCase,
+    this._signInUseCase,
   );
 
   final UniqueKey _key;
   final Reader _reader;
   final _logger = Logger();
 
-  final AuthenticationUseCase _authenticationUseCase;
+  final SignInUseCase _signInUseCase;
 
   bool isConnecting = false;
   String email = '';
@@ -39,7 +39,7 @@ class SignInViewModel extends ChangeNotifier {
       return;
     }
     _showIndicator();
-    final result = await _authenticationUseCase.loginWithEmailAndPassword(
+    final result = await _signInUseCase.loginWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -74,7 +74,7 @@ class SignInViewModel extends ChangeNotifier {
       return;
     }
     _showIndicator();
-    final result = await _authenticationUseCase.loginWithGoogle();
+    final result = await _signInUseCase.loginWithGoogle();
     _hideIndicator();
     result.when(
       success: (_) {
@@ -106,7 +106,7 @@ class SignInViewModel extends ChangeNotifier {
       return;
     }
     _showIndicator();
-    final result = await _authenticationUseCase.loginWithApple();
+    final result = await _signInUseCase.loginWithApple();
     _hideIndicator();
     result.when(
       success: (_) {
