@@ -251,14 +251,15 @@ class PopularAnswerListUseCase extends ChangeNotifier {
               likedCount: newAnswer.likedCount + 1,
             );
             _loadedAnswers = _loadedAnswers.update(newAnswer);
+            notifyListeners();
           } else if (!value && newAnswer.isLike) {
             newAnswer = newAnswer.copyWith(
               isLike: value,
               likedCount: newAnswer.likedCount - 1,
             );
             _loadedAnswers = _loadedAnswers.update(newAnswer);
+            notifyListeners();
           }
-          notifyListeners();
         });
 
         _isFavorSubscriptions[answer.id] = _favorRepository
@@ -274,14 +275,15 @@ class PopularAnswerListUseCase extends ChangeNotifier {
               favoredCount: newAnswer.favoredCount + 1,
             );
             _loadedAnswers = _loadedAnswers.update(newAnswer);
+            notifyListeners();
           } else if (!value && newAnswer.isFavor) {
             newAnswer = newAnswer.copyWith(
               isFavor: value,
               favoredCount: newAnswer.favoredCount - 1,
             );
             _loadedAnswers = _loadedAnswers.update(newAnswer);
+            notifyListeners();
           }
-          notifyListeners();
         });
       }
     }
