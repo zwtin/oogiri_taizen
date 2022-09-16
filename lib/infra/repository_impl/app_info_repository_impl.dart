@@ -2,7 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/app_info_repository.dart';
-import 'package:oogiri_taizen/infra/repository_impl/streaming_shared_preferences.dart';
+import 'package:oogiri_taizen/temporary_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 final appInfoRepositoryProvider = Provider.autoDispose<AppInfoRepository>(

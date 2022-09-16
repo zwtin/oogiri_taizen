@@ -3,7 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/block_repository.dart';
-import 'package:oogiri_taizen/infra/repository_impl/streaming_shared_preferences.dart';
+import 'package:oogiri_taizen/temporary_provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 final blockRepositoryProvider = Provider.autoDispose<BlockRepository>(
