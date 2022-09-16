@@ -1,3 +1,5 @@
+import 'package:oogiri_taizen/domain/entity/result.dart';
+
 abstract class AppInfoRepository {
-  String getVersion();
+  Future<Result<String>> getVersion();
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/repository/remote_config_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/remote_config_repository_impl.dart';
 
 final termsOfServiceUseCaseProvider =
-    Provider.autoDispose.family<TermsOfServiceUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<TermsOfServiceUseCase, UniqueKey>(
   (ref, key) {
     return TermsOfServiceUseCase(
       key,
@@ -25,7 +26,7 @@ class TermsOfServiceUseCase extends ChangeNotifier {
   final UniqueKey _key;
   final _logger = Logger();
 
-  String getTermsOfService() {
+  Future<Result<String>> getTermsOfService() async {
     return _remoteConfigRepository.getTermsOfService();
   }
 

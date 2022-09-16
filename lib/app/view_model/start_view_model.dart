@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/bottom_tab_view.dart';
+import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/use_case/start_use_case.dart';
 
 final startViewModelProvider =
@@ -32,7 +33,21 @@ class StartViewModel extends ChangeNotifier {
   final StartUseCase _startUseCase;
 
   Future<void> checkNeedUpdate() async {
-    final needUpdate = _startUseCase.getNeedUpdate();
+    final needUpdateResult = await _startUseCase.getNeedUpdate();
+    if (needUpdateResult is Failure) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'アプリバージョンの取得に失敗しました',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () async {
+              _reader.call(alertNotiferProvider).dismiss();
+              await checkNeedUpdate();
+            },
+            cancelButtonAction: null,
+          );
+    }
+    final needUpdate = (needUpdateResult as Success<bool>).value;
     if (needUpdate) {
       _reader.call(alertNotiferProvider).show(
             title: 'バージョンエラー',

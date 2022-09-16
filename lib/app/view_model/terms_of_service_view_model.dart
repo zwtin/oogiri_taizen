@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
+import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/use_case/terms_of_service_use_case.dart';
 
 final termsOfServiceViewModelProvider = ChangeNotifierProvider.autoDispose
@@ -19,10 +21,7 @@ class TermsOfServiceViewModel extends ChangeNotifier {
     this._key,
     this._reader,
     this._termsOfServiceUseCase,
-  ) {
-    html = _termsOfServiceUseCase.getTermsOfService();
-    notifyListeners();
-  }
+  );
 
   final UniqueKey _key;
   final Reader _reader;
@@ -31,6 +30,25 @@ class TermsOfServiceViewModel extends ChangeNotifier {
   final TermsOfServiceUseCase _termsOfServiceUseCase;
 
   String html = '';
+
+  Future<void> getTermsOfService() async {
+    final termsOfServiceResult =
+        await _termsOfServiceUseCase.getTermsOfService();
+    if (termsOfServiceResult is Failure) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: '利用規約の取得に失敗しました',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+    }
+    html = (termsOfServiceResult as Success<String>).value;
+    notifyListeners();
+  }
 
   @override
   void dispose() {

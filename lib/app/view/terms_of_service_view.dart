@@ -15,6 +15,17 @@ class TermsOfServiceView extends HookWidget {
     _logger.d('TermsOfServiceView = $_key');
     final viewModel = useProvider(termsOfServiceViewModelProvider(_key));
 
+    useEffect(
+      () {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          context
+              .read(termsOfServiceViewModelProvider(_key))
+              .getTermsOfService();
+        });
+      },
+      const [],
+    );
+
     return RouterWidget(
       key: _key,
       child: Scaffold(
