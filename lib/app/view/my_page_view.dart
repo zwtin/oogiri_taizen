@@ -18,7 +18,7 @@ class MyPageView extends HookWidget {
     _logger.d('MyPageView = $_key');
 
     // bottomTabにGlobalKeyをセット
-    useProvider(bottomTabViewModelProvider).setUniqueKey(index: 1, key: _key);
+    context.read(bottomTabViewModelProvider).setUniqueKey(index: 1, key: _key);
     final viewModel = useProvider(myPageViewModelProvider(_key));
 
     // 戻るボタンのアクションを変えたいので、RouterWidgetを使わない

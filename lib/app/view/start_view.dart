@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/start_view_model.dart';
+import 'package:oogiri_taizen/app/widget/alert_widget.dart';
 import 'package:oogiri_taizen/app/widget/router_widget.dart';
 
 class StartView extends HookWidget {
@@ -23,11 +24,13 @@ class StartView extends HookWidget {
       const [],
     );
 
-    return RouterWidget(
-      key: _key,
-      child: Scaffold(
-        body: Container(
-          color: const Color(0xFFFFCC00),
+    return AlertWidget(
+      child: RouterWidget(
+        key: _key,
+        child: Scaffold(
+          body: Container(
+            color: const Color(0xFFFFCC00),
+          ),
         ),
       ),
     );

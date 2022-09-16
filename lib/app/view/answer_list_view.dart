@@ -20,7 +20,7 @@ class AnswerListView extends HookWidget {
     _logger.d('AnswerListView = $_key');
 
     // bottomTabにGlobalKeyをセット
-    useProvider(bottomTabViewModelProvider).setUniqueKey(index: 0, key: _key);
+    context.read(bottomTabViewModelProvider).setUniqueKey(index: 0, key: _key);
     final viewModel = useProvider(answerListViewModelProvider(_key));
     final newAnswerListView = useMemoized(() => NewAnswerListView());
     final popularAnswerListView = useMemoized(() => PopularAnswerListView());
