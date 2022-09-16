@@ -248,28 +248,28 @@ class SignUpView extends HookWidget {
                       Container(
                         height: 16,
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                      //   child: SignInButton(
-                      //     Buttons.Twitter,
-                      //     mini: false,
-                      //     onPressed: () {},
-                      //   ),
-                      // ),
-                      // Container(
-                      //   height: 16,
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                      //   child: SignInButton(
-                      //     Buttons.Facebook,
-                      //     mini: false,
-                      //     onPressed: () {},
-                      //   ),
-                      // ),
-                      // Container(
-                      //   height: 16,
-                      // ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                        child: SignInButton(
+                          Buttons.Twitter,
+                          mini: false,
+                          onPressed: () {},
+                        ),
+                      ),
+                      Container(
+                        height: 16,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                        child: SignInButton(
+                          Buttons.Facebook,
+                          mini: false,
+                          onPressed: () {},
+                        ),
+                      ),
+                      Container(
+                        height: 16,
+                      ),
                     ],
                   ),
                 ),

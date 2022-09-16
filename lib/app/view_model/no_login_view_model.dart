@@ -27,7 +27,7 @@ class NoLoginViewModel extends ChangeNotifier {
   final _logger = Logger();
 
   Future<void> transitionToSetting() async {
-    await _reader.call(routerNotiferProvider(_key)).push(
+    await _reader.call(routerNotiferProvider(_key)).present(
           nextScreen: SettingView(),
         );
   }

@@ -37,7 +37,7 @@ class NoLoginView extends HookWidget {
               onPressed: () {
                 showModalBottomSheet<int>(
                   context: context,
-                  builder: (BuildContext _context) {
+                  builder: (_context) {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
                       child: Column(
