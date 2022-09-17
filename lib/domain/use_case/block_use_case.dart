@@ -33,7 +33,16 @@ class BlockUseCase extends ChangeNotifier {
   final _logger = Logger();
 
   Future<Result<void>> addUser({required User user}) async {
-    final list = _blockRepository.getBlockUserIds();
+    final getBlockUserIdsResult = await _blockRepository.getBlockUserIds();
+    if (getBlockUserIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックユーザーの取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockUserIdsResult as Success<List<String>>).value;
     if (list.contains(user.id)) {
       return Result.failure(
         OTException(
@@ -55,7 +64,16 @@ class BlockUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> removeUser({required User user}) async {
-    final list = _blockRepository.getBlockUserIds();
+    final getBlockUserIdsResult = await _blockRepository.getBlockUserIds();
+    if (getBlockUserIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックユーザーの取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockUserIdsResult as Success<List<String>>).value;
     if (!list.contains(user.id)) {
       return Result.failure(
         OTException(
@@ -77,7 +95,16 @@ class BlockUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> addTopic({required Topic topic}) async {
-    final list = _blockRepository.getBlockTopicIds();
+    final getBlockTopicsIdsResult = await _blockRepository.getBlockTopicIds();
+    if (getBlockTopicsIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックしたお題の取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockTopicsIdsResult as Success<List<String>>).value;
     if (list.contains(topic.id)) {
       return Result.failure(
         OTException(
@@ -99,7 +126,16 @@ class BlockUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> removeTopic({required Topic topic}) async {
-    final list = _blockRepository.getBlockTopicIds();
+    final getBlockTopicsIdsResult = await _blockRepository.getBlockTopicIds();
+    if (getBlockTopicsIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックしたお題の取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockTopicsIdsResult as Success<List<String>>).value;
     if (!list.contains(topic.id)) {
       return Result.failure(
         OTException(
@@ -121,7 +157,16 @@ class BlockUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> addAnswer({required Answer answer}) async {
-    final list = _blockRepository.getBlockAnswerIds();
+    final getBlockAnswerIdsResult = await _blockRepository.getBlockAnswerIds();
+    if (getBlockAnswerIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックしたボケの取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockAnswerIdsResult as Success<List<String>>).value;
     if (list.contains(answer.id)) {
       return Result.failure(
         OTException(
@@ -143,7 +188,16 @@ class BlockUseCase extends ChangeNotifier {
   }
 
   Future<Result<void>> removeAnswer({required Answer answer}) async {
-    final list = _blockRepository.getBlockAnswerIds();
+    final getBlockAnswerIdsResult = await _blockRepository.getBlockAnswerIds();
+    if (getBlockAnswerIdsResult is Failure) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'ブロックしたボケの取得に失敗しました',
+        ),
+      );
+    }
+    final list = (getBlockAnswerIdsResult as Success<List<String>>).value;
     if (!list.contains(answer.id)) {
       return Result.failure(
         OTException(

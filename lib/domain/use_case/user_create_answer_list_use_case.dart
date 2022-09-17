@@ -62,7 +62,6 @@ class UserCreateAnswerListUseCase extends ChangeNotifier {
         await resetAnswers();
       },
     );
-    _blockAnswerIds = _blockRepository.getBlockAnswerIds();
 
     _blockTopicIdsSubscription?.cancel();
     _blockTopicIdsSubscription =
@@ -72,7 +71,6 @@ class UserCreateAnswerListUseCase extends ChangeNotifier {
         await resetAnswers();
       },
     );
-    _blockTopicIds = _blockRepository.getBlockTopicIds();
 
     _blockUserIdsSubscription?.cancel();
     _blockUserIdsSubscription = _blockRepository.getBlockUserIdsStream().listen(
@@ -81,7 +79,6 @@ class UserCreateAnswerListUseCase extends ChangeNotifier {
         await resetAnswers();
       },
     );
-    _blockUserIds = _blockRepository.getBlockUserIds();
 
     _loginUserSubscription?.cancel();
     _loginUserSubscription =

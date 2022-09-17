@@ -35,7 +35,6 @@ class BlockUserListUseCase extends ChangeNotifier {
         _blockUserIds = ids;
       },
     );
-    _blockUserIds = _blockRepository.getBlockAnswerIds();
   }
 
   final UserRepository _userRepository;

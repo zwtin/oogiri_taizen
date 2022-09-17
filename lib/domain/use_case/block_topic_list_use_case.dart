@@ -35,7 +35,6 @@ class BlockTopicListUseCase extends ChangeNotifier {
         _blockTopicIds = ids;
       },
     );
-    _blockTopicIds = _blockRepository.getBlockAnswerIds();
   }
 
   final TopicRepository _topicRepository;

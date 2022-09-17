@@ -30,8 +30,10 @@ class BlockRepositoryImpl implements BlockRepository {
   }
 
   @override
-  List<String> getBlockUserIds() {
-    return _instance.getStringList('BlockUsers', defaultValue: []).getValue();
+  Future<Result<List<String>>> getBlockUserIds() async {
+    final list =
+        _instance.getStringList('BlockUsers', defaultValue: []).getValue();
+    return Result.success(list);
   }
 
   @override
@@ -72,8 +74,10 @@ class BlockRepositoryImpl implements BlockRepository {
   }
 
   @override
-  List<String> getBlockTopicIds() {
-    return _instance.getStringList('BlockTopics', defaultValue: []).getValue();
+  Future<Result<List<String>>> getBlockTopicIds() async {
+    final list =
+        _instance.getStringList('BlockTopics', defaultValue: []).getValue();
+    return Result.success(list);
   }
 
   @override
@@ -114,8 +118,10 @@ class BlockRepositoryImpl implements BlockRepository {
   }
 
   @override
-  List<String> getBlockAnswerIds() {
-    return _instance.getStringList('BlockAnswers', defaultValue: []).getValue();
+  Future<Result<List<String>>> getBlockAnswerIds() async {
+    final list =
+        _instance.getStringList('BlockAnswers', defaultValue: []).getValue();
+    return Result.success(list);
   }
 
   @override
