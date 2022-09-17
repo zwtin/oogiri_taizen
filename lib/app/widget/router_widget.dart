@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view_model/bottom_tab_view_model.dart';
 import 'package:oogiri_taizen/app/widget/fade_in_route.dart';
@@ -37,14 +36,16 @@ class RouterWidget extends HookWidget {
             break;
           case TransitionType.pushReplacement:
             await Navigator.of(context).pushReplacement(
-              MaterialPageRoute<Widget>(
-                builder: (BuildContext context) {
+              PageRouteBuilder<Widget>(
+                pageBuilder: (context, animation1, animation2) {
                   if (routerNotifer.nextScreen == null) {
                     return Container();
                   } else {
                     return routerNotifer.nextScreen!;
                   }
                 },
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
               ),
             );
             break;
