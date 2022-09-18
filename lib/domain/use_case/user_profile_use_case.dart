@@ -7,8 +7,8 @@ import 'package:oogiri_taizen/domain/repository/user_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 import 'package:tuple/tuple.dart';
 
-final userProfileUseCaseProvider =
-    Provider.autoDispose.family<UserProfileUseCase, Tuple2<UniqueKey, String>>(
+final userProfileUseCaseProvider = ChangeNotifierProvider.autoDispose
+    .family<UserProfileUseCase, Tuple2<UniqueKey, String>>(
   (ref, tuple) {
     return UserProfileUseCase(
       tuple.item1,

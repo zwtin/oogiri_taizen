@@ -25,7 +25,7 @@ import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 import 'package:tuple/tuple.dart';
 
-final userFavorAnswerListUseCaseProvider = Provider.autoDispose
+final userFavorAnswerListUseCaseProvider = ChangeNotifierProvider.autoDispose
     .family<UserFavorAnswerListUseCase, Tuple2<UniqueKey, String>>(
   (ref, tuple) {
     return UserFavorAnswerListUseCase(
