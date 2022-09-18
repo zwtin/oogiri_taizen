@@ -80,7 +80,7 @@ class BlockTopicListUseCase extends ChangeNotifier {
     _isConnecting = true;
     notifyListeners();
     var willLoadTopicIds = <String>[];
-    if (_blockTopicIds.isEmpty) {
+    if (loadedTopics.isEmpty) {
       willLoadTopicIds = _blockTopicIds.take(10).toList();
     } else {
       willLoadTopicIds = _blockTopicIds

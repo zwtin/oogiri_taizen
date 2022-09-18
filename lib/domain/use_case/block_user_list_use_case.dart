@@ -29,8 +29,7 @@ class BlockUserListUseCase extends ChangeNotifier {
     this._userRepository,
     this._blockRepository,
   ) {
-    _blockUserIdsSubscription =
-        _blockRepository.getBlockTopicIdsStream().listen(
+    _blockUserIdsSubscription = _blockRepository.getBlockUserIdsStream().listen(
       (ids) {
         _blockUserIds = ids;
         resetBlockUsers();
@@ -74,7 +73,7 @@ class BlockUserListUseCase extends ChangeNotifier {
     _isConnecting = true;
     notifyListeners();
     var willLoadUserIds = <String>[];
-    if (_blockUserIds.isEmpty) {
+    if (loadedUsers.isEmpty) {
       willLoadUserIds = _blockUserIds.take(10).toList();
     } else {
       willLoadUserIds = _blockUserIds
