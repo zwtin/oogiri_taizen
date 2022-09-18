@@ -66,6 +66,10 @@ class AnswerDetailViewModel extends ChangeNotifier {
     return mappingForAnswerDetailAnswerCardViewData(answer: answer);
   }
 
+  String? get loginUserId {
+    return _answerDetailUseCase.loginUserId;
+  }
+
   Future<void> fetchAnswerDetail() async {
     final result = await _answerDetailUseCase.fetchAnswerDetail();
     result.when(

@@ -71,11 +71,85 @@ class AnswerDetailView extends HookWidget {
                     if (viewModel.topicViewData != null) ...{
                       AnswerDetailTopicCardWidget(
                         viewData: viewModel.topicViewData!,
+                        menuList: viewModel.topicViewData!.userId ==
+                                viewModel.loginUserId
+                            ? []
+                            : [
+                                ListTile(
+                                  leading: const Icon(Icons.block),
+                                  title: const Text('このお題をブロックする'),
+                                  onTap: () async {
+                                    await context
+                                        .read(answerDetailViewModelProvider(
+                                          Tuple2<UniqueKey, String>(
+                                              _key, answerId),
+                                        ))
+                                        .addBlockTopic();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.block),
+                                  title: const Text('このユーザーをブロックする'),
+                                  onTap: () async {
+                                    await context
+                                        .read(answerDetailViewModelProvider(
+                                          Tuple2<UniqueKey, String>(
+                                              _key, answerId),
+                                        ))
+                                        .addBlockTopicUser();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.report),
+                                  title: const Text('このユーザーを通報する'),
+                                  onTap: () {},
+                                ),
+                              ],
                       ),
                     },
                     if (viewModel.answerViewData != null) ...{
                       AnswerDetailAnswerCardWidget(
                         viewData: viewModel.answerViewData!,
+                        menuList: viewModel.answerViewData!.userId ==
+                                viewModel.loginUserId
+                            ? [
+                                ListTile(
+                                  leading: const Icon(Icons.block),
+                                  title: const Text('このボケを削除する'),
+                                  onTap: () {},
+                                ),
+                              ]
+                            : [
+                                ListTile(
+                                  leading: const Icon(Icons.block),
+                                  title: const Text('このボケをブロックする'),
+                                  onTap: () async {
+                                    await context
+                                        .read(answerDetailViewModelProvider(
+                                          Tuple2<UniqueKey, String>(
+                                              _key, answerId),
+                                        ))
+                                        .addBlockAnswer();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.block),
+                                  title: const Text('このユーザーをブロックする'),
+                                  onTap: () async {
+                                    await context
+                                        .read(answerDetailViewModelProvider(
+                                          Tuple2<UniqueKey, String>(
+                                              _key, answerId),
+                                        ))
+                                        .addBlockAnswerUser();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.report),
+                                  title: const Text('このユーザーを通報する'),
+                                  onTap: () {},
+                                ),
+                              ],
                         onTapLikeButton: () async {
                           await context
                               .read(answerDetailViewModelProvider(
