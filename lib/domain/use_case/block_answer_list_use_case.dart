@@ -7,18 +7,26 @@ import 'package:oogiri_taizen/domain/entity/answer.dart';
 import 'package:oogiri_taizen/domain/entity/answers.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
+import 'package:oogiri_taizen/domain/entity/topic.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart';
 import 'package:oogiri_taizen/domain/repository/answer_repository.dart';
 import 'package:oogiri_taizen/domain/repository/block_repository.dart';
+import 'package:oogiri_taizen/domain/repository/topic_repository.dart';
+import 'package:oogiri_taizen/domain/repository/user_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/answer_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/block_repository_impl.dart';
+import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
+import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
-final blockAnswerListUseCaseProvider =
-    Provider.autoDispose.family<BlockAnswerListUseCase, UniqueKey>(
+final blockAnswerListUseCaseProvider = ChangeNotifierProvider.autoDispose
+    .family<BlockAnswerListUseCase, UniqueKey>(
   (ref, key) {
     return BlockAnswerListUseCase(
       key,
       ref.watch(answerRepositoryProvider),
       ref.watch(blockRepositoryProvider),
+      ref.watch(topicRepositoryProvider),
+      ref.watch(userRepositoryProvider),
     );
   },
 );
@@ -28,17 +36,22 @@ class BlockAnswerListUseCase extends ChangeNotifier {
     this._key,
     this._answerRepository,
     this._blockRepository,
+    this._topicRepository,
+    this._userRepository,
   ) {
     _blockAnswerIdsSubscription =
         _blockRepository.getBlockAnswerIdsStream().listen(
       (ids) {
         _blockAnswerIds = ids;
+        resetBlockAnswers();
       },
     );
   }
 
   final AnswerRepository _answerRepository;
   final BlockRepository _blockRepository;
+  final TopicRepository _topicRepository;
+  final UserRepository _userRepository;
 
   final UniqueKey _key;
   final _logger = Logger();
@@ -83,12 +96,37 @@ class BlockAnswerListUseCase extends ChangeNotifier {
     }
     for (final blockAnswerId in willLoadAnswerIds) {
       final answerResult = await _answerRepository.getAnswer(id: blockAnswerId);
-
-      if (answerResult is Success<Answer>) {
-        loadedAnswers = loadedAnswers.added(answerResult.value);
+      if (answerResult is Failure) {
+        continue;
       }
+      var answer = (answerResult as Success<Answer>).value;
+      final createdUserResult =
+          await _userRepository.getUser(id: answer.createdUserId);
+      if (createdUserResult is Failure) {
+        continue;
+      }
+      final createdUser = (createdUserResult as Success<User>).value;
+      final topicResult = await _topicRepository.getTopic(id: answer.topicId);
+      if (topicResult is Failure) {
+        continue;
+      }
+      var topic = (topicResult as Success<Topic>).value;
+      final topicCreatedUserResult =
+          await _userRepository.getUser(id: topic.createdUserId);
+      if (topicCreatedUserResult is Failure) {
+        continue;
+      }
+      final topicCreatedUser = (topicCreatedUserResult as Success<User>).value;
+      topic = topic.copyWith(createdUser: topicCreatedUser);
+
+      answer = answer.copyWith(
+        createdUser: createdUser,
+        topic: topic,
+      );
+
+      loadedAnswers = loadedAnswers.added(answer);
     }
-    hasNext = _blockAnswerIds.length == loadedAnswers.length;
+    hasNext = _blockAnswerIds.length != loadedAnswers.length;
     _isConnecting = false;
     notifyListeners();
     return const Result.success(null);

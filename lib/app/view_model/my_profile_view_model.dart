@@ -6,8 +6,6 @@ import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view/answer_detail_view.dart';
 import 'package:oogiri_taizen/app/view/edit_profile_view.dart';
 import 'package:oogiri_taizen/app/view/setting_view.dart';
-import 'package:oogiri_taizen/app/view/sign_in_view.dart';
-import 'package:oogiri_taizen/app/view/sign_up_view.dart';
 import 'package:oogiri_taizen/app/view_data/my_profile_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/authentication_use_case.dart';
@@ -79,26 +77,14 @@ class MyProfileViewModel extends ChangeNotifier {
     );
   }
 
-  Future<void> transitionToSignIn() async {
-    await _reader.call(routerNotiferProvider(_key)).present(
-          nextScreen: SignInView(),
-        );
-  }
-
-  Future<void> transitionToSignUp() async {
-    await _reader.call(routerNotiferProvider(_key)).present(
-          nextScreen: SignUpView(),
-        );
-  }
-
   Future<void> transitionToEditProfile() async {
-    await _reader.call(routerNotiferProvider(_key)).push(
+    await _reader.call(routerNotiferProvider(_key)).present(
           nextScreen: EditProfileView(),
         );
   }
 
   Future<void> transitionToSetting() async {
-    await _reader.call(routerNotiferProvider(_key)).push(
+    await _reader.call(routerNotiferProvider(_key)).present(
           nextScreen: SettingView(),
         );
   }

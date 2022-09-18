@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/view_model/block_user_list_view_model.dart';
 import 'package:oogiri_taizen/app/widget/block_user_list_card_widget.dart';
+import 'package:oogiri_taizen/extension/flutter_hooks_extension.dart';
 
 class BlockUserListView extends HookWidget {
   final _key = UniqueKey();
@@ -13,6 +14,7 @@ class BlockUserListView extends HookWidget {
   Widget build(BuildContext context) {
     _logger.d('BlockUserListView = $_key');
     final viewModel = useProvider(blockUserListViewModelProvider(_key));
+    useAutomaticKeepAlive();
 
     return RefreshIndicator(
       color: const Color(0xFFFFCC00),
