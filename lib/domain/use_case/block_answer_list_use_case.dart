@@ -126,7 +126,8 @@ class BlockAnswerListUseCase extends ChangeNotifier {
 
       loadedAnswers = loadedAnswers.added(answer);
     }
-    hasNext = _blockAnswerIds.length != loadedAnswers.length;
+    hasNext = _blockAnswerIds.isNotEmpty &&
+        _blockAnswerIds.length != loadedAnswers.length;
     _isConnecting = false;
     notifyListeners();
     return const Result.success(null);

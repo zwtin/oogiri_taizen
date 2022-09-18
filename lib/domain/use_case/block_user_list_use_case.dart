@@ -13,7 +13,7 @@ import 'package:oogiri_taizen/infra/repository_impl/block_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
 final blockUserListUseCaseProvider =
-    Provider.autoDispose.family<BlockUserListUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<BlockUserListUseCase, UniqueKey>(
   (ref, key) {
     return BlockUserListUseCase(
       key,
@@ -33,6 +33,7 @@ class BlockUserListUseCase extends ChangeNotifier {
         _blockRepository.getBlockTopicIdsStream().listen(
       (ids) {
         _blockUserIds = ids;
+        resetBlockUsers();
       },
     );
   }
@@ -88,7 +89,8 @@ class BlockUserListUseCase extends ChangeNotifier {
         loadedUsers = loadedUsers.added(userResult.value);
       }
     }
-    hasNext = _blockUserIds.length == loadedUsers.length;
+    hasNext =
+        _blockUserIds.isNotEmpty && _blockUserIds.length != loadedUsers.length;
     _isConnecting = false;
     notifyListeners();
     return const Result.success(null);

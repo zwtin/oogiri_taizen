@@ -36,13 +36,13 @@ class SettingViewModel extends ChangeNotifier {
   }
 
   Future<void> transitionToPushNotification() async {
-    await _reader.call(routerNotiferProvider(_key)).push(
+    await _reader.call(routerNotiferProvider(_key)).present(
           nextScreen: SettingPushNotificationView(),
         );
   }
 
   Future<void> transitionToBlockList() async {
-    await _reader.call(routerNotiferProvider(_key)).push(
+    await _reader.call(routerNotiferProvider(_key)).present(
           nextScreen: BlockListView(),
         );
   }

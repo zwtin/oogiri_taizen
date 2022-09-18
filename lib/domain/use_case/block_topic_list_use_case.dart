@@ -7,18 +7,22 @@ import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/entity/topic.dart';
 import 'package:oogiri_taizen/domain/entity/topics.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart';
 import 'package:oogiri_taizen/domain/repository/block_repository.dart';
 import 'package:oogiri_taizen/domain/repository/topic_repository.dart';
+import 'package:oogiri_taizen/domain/repository/user_repository.dart';
 import 'package:oogiri_taizen/infra/repository_impl/block_repository_impl.dart';
 import 'package:oogiri_taizen/infra/repository_impl/topic_repository_impl.dart';
+import 'package:oogiri_taizen/infra/repository_impl/user_repository_impl.dart';
 
 final blockTopicListUseCaseProvider =
-    Provider.autoDispose.family<BlockTopicListUseCase, UniqueKey>(
+    ChangeNotifierProvider.autoDispose.family<BlockTopicListUseCase, UniqueKey>(
   (ref, key) {
     return BlockTopicListUseCase(
       key,
-      ref.watch(topicRepositoryProvider),
       ref.watch(blockRepositoryProvider),
+      ref.watch(topicRepositoryProvider),
+      ref.watch(userRepositoryProvider),
     );
   },
 );
@@ -26,19 +30,22 @@ final blockTopicListUseCaseProvider =
 class BlockTopicListUseCase extends ChangeNotifier {
   BlockTopicListUseCase(
     this._key,
-    this._topicRepository,
     this._blockRepository,
+    this._topicRepository,
+    this._userRepository,
   ) {
     _blockTopicIdsSubscription =
         _blockRepository.getBlockTopicIdsStream().listen(
       (ids) {
         _blockTopicIds = ids;
+        resetBlockTopics();
       },
     );
   }
 
-  final TopicRepository _topicRepository;
   final BlockRepository _blockRepository;
+  final TopicRepository _topicRepository;
+  final UserRepository _userRepository;
 
   final UniqueKey _key;
   final _logger = Logger();
@@ -83,12 +90,23 @@ class BlockTopicListUseCase extends ChangeNotifier {
     }
     for (final blockTopicId in willLoadTopicIds) {
       final topicResult = await _topicRepository.getTopic(id: blockTopicId);
-
-      if (topicResult is Success<Topic>) {
-        loadedTopics = loadedTopics.added(topicResult.value);
+      if (topicResult is Failure) {
+        continue;
       }
+      var topic = (topicResult as Success<Topic>).value;
+
+      final createdUserResult =
+          await _userRepository.getUser(id: topic.createdUserId);
+      if (createdUserResult is Failure) {
+        continue;
+      }
+      final createdUser = (createdUserResult as Success<User>).value;
+      topic = topic.copyWith(createdUser: createdUser);
+
+      loadedTopics = loadedTopics.added(topic);
     }
-    hasNext = _blockTopicIds.length == loadedTopics.length;
+    hasNext = _blockTopicIds.isNotEmpty &&
+        _blockTopicIds.length != loadedTopics.length;
     _isConnecting = false;
     notifyListeners();
     return const Result.success(null);
