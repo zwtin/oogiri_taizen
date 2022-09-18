@@ -56,7 +56,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
         _blockRepository.getBlockAnswerIdsStream().listen(
       (ids) async {
         _blockAnswerIds = ids;
-        await resetAnswers();
+        notifyListeners();
       },
     );
 
@@ -65,7 +65,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
         _blockRepository.getBlockTopicIdsStream().listen(
       (ids) async {
         _blockTopicIds = ids;
-        await resetAnswers();
+        notifyListeners();
       },
     );
 
@@ -73,7 +73,7 @@ class PopularAnswerListUseCase extends ChangeNotifier {
     _blockUserIdsSubscription = _blockRepository.getBlockUserIdsStream().listen(
       (ids) async {
         _blockUserIds = ids;
-        await resetAnswers();
+        notifyListeners();
       },
     );
 

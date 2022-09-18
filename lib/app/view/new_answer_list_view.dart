@@ -114,6 +114,14 @@ class NewAnswerListView extends HookWidget {
                       .read(newAnswerListViewModelProvider(_key))
                       .transitionToAnswerDetail(answerId: viewData.answerId);
                 },
+                onTapImage: () {
+                  context
+                      .read(newAnswerListViewModelProvider(_key))
+                      .transitionToImageDetail(
+                        imageUrl: viewData.imageUrl ?? '',
+                        imageTag: viewData.imageTag ?? '',
+                      );
+                },
               );
             },
             itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext

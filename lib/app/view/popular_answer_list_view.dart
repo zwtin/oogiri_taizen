@@ -114,6 +114,14 @@ class PopularAnswerListView extends HookWidget {
                       .read(popularAnswerListViewModelProvider(_key))
                       .transitionToAnswerDetail(answerId: viewData.answerId);
                 },
+                onTapImage: () {
+                  context
+                      .read(popularAnswerListViewModelProvider(_key))
+                      .transitionToImageDetail(
+                        imageUrl: viewData.imageUrl ?? '',
+                        imageTag: viewData.imageTag ?? '',
+                      );
+                },
               );
             },
             itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext

@@ -86,6 +86,14 @@ class BlockTopicListView extends HookWidget {
                   },
                 );
               },
+              onTapImage: () {
+                context
+                    .read(blockTopicListViewModelProvider(_key))
+                    .transitionToImageDetail(
+                      imageUrl: viewData.imageUrl ?? '',
+                      imageTag: viewData.imageTag ?? '',
+                    );
+              },
             );
           },
           itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext

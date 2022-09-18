@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/app/view_model/new_answer_list_view_model.dart';
 import 'package:oogiri_taizen/app/view_model/user_create_answer_list_view_model.dart';
 import 'package:oogiri_taizen/app/widget/answer_list_card_widget.dart';
 import 'package:tuple/tuple.dart';
@@ -27,7 +26,11 @@ class UserCreateAnswerListView extends HookWidget {
       color: const Color(0xFFFFCC00),
       onRefresh: () async {
         return context
-            .read(newAnswerListViewModelProvider(_key))
+            .read(
+              userCreateAnswerListViewModelProvider(
+                Tuple2(_key, userId),
+              ),
+            )
             .resetAnswers();
       },
       child: SafeArea(
@@ -36,7 +39,13 @@ class UserCreateAnswerListView extends HookWidget {
           itemBuilder: (context, index) {
             if (viewModel.hasNext &&
                 index == viewModel.answerViewData.length - 3) {
-              context.read(newAnswerListViewModelProvider(_key)).fetchAnswers();
+              context
+                  .read(
+                    userCreateAnswerListViewModelProvider(
+                      Tuple2(_key, userId),
+                    ),
+                  )
+                  .fetchAnswers();
             }
             if (index == viewModel.answerViewData.length) {
               if (viewModel.hasNext) {
@@ -66,7 +75,21 @@ class UserCreateAnswerListView extends HookWidget {
               }
             }
             final viewData = viewModel.answerViewData.elementAt(index);
-            return AnswerListCardWidget(viewData: viewData);
+            return AnswerListCardWidget(
+              viewData: viewData,
+              onTapImage: () {
+                context
+                    .read(
+                      userCreateAnswerListViewModelProvider(
+                        Tuple2(_key, userId),
+                      ),
+                    )
+                    .transitionToImageDetail(
+                      imageUrl: viewData.imageUrl ?? '',
+                      imageTag: viewData.imageTag ?? '',
+                    );
+              },
+            );
           },
           itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext
               ? viewModel.answerViewData.length + 1

@@ -64,7 +64,17 @@ class MyCreateAnswerListView extends HookWidget {
                 }
               }
               final viewData = viewModel.answerViewData.elementAt(index);
-              return AnswerListCardWidget(viewData: viewData);
+              return AnswerListCardWidget(
+                viewData: viewData,
+                onTapImage: () {
+                  context
+                      .read(myCreateAnswerListViewModelProvider(_key))
+                      .transitionToImageDetail(
+                        imageUrl: viewData.imageUrl ?? '',
+                        imageTag: viewData.imageTag ?? '',
+                      );
+                },
+              );
             },
             itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext
                 ? viewModel.answerViewData.length + 1

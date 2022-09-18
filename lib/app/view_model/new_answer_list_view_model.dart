@@ -296,6 +296,19 @@ class NewAnswerListViewModel extends ChangeNotifier {
         );
   }
 
+  Future<void> transitionToImageDetail({
+    required String imageUrl,
+    required String imageTag,
+  }) async {
+    if (imageUrl.isEmpty) {
+      return;
+    }
+    await _reader.call(routerNotiferProvider(_key)).presentImage(
+          imageUrl: imageUrl,
+          imageTag: imageTag,
+        );
+  }
+
   @override
   void dispose() {
     super.dispose();

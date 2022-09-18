@@ -105,6 +105,18 @@ class AnswerDetailView extends HookWidget {
                                   onTap: () {},
                                 ),
                               ],
+                        onTapImage: () async {
+                          await context
+                              .read(answerDetailViewModelProvider(
+                                Tuple2<UniqueKey, String>(_key, answerId),
+                              ))
+                              .transitionToImageDetail(
+                                imageUrl:
+                                    viewModel.topicViewData!.imageUrl ?? '',
+                                imageTag:
+                                    viewModel.topicViewData!.imageTag ?? '',
+                              );
+                        },
                       ),
                     },
                     if (viewModel.answerViewData != null) ...{

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/app/mapper/block_topic_list_card_view_data_mapper.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
+import 'package:oogiri_taizen/app/notifer/router_notifer.dart';
 import 'package:oogiri_taizen/app/view_data/block_topic_list_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/block_topic_list_use_case.dart';
@@ -132,6 +133,19 @@ class BlockTopicListViewModel extends ChangeNotifier {
         }
       },
     );
+  }
+
+  Future<void> transitionToImageDetail({
+    required String imageUrl,
+    required String imageTag,
+  }) async {
+    if (imageUrl.isEmpty) {
+      return;
+    }
+    await _reader.call(routerNotiferProvider(_key)).presentImage(
+          imageUrl: imageUrl,
+          imageTag: imageTag,
+        );
   }
 
   @override
