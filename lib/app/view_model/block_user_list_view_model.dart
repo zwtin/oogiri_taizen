@@ -5,6 +5,7 @@ import 'package:oogiri_taizen/app/mapper/block_user_list_card_view_data.dart';
 import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/view_data/block_user_list_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
+import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
 import 'package:oogiri_taizen/domain/use_case/block_user_list_use_case.dart';
 
 final blockUserListViewModelProvider = ChangeNotifierProvider.autoDispose
@@ -14,6 +15,7 @@ final blockUserListViewModelProvider = ChangeNotifierProvider.autoDispose
       key,
       ref.read,
       ref.watch(blockUserListUseCaseProvider(key)),
+      ref.watch(blockUseCaseProvider(key)),
     );
   },
 );
@@ -23,6 +25,7 @@ class BlockUserListViewModel extends ChangeNotifier {
     this._key,
     this._reader,
     this._blockUserListUseCase,
+    this._blockUseCase,
   );
 
   final UniqueKey _key;
@@ -30,6 +33,7 @@ class BlockUserListViewModel extends ChangeNotifier {
   final _logger = Logger();
 
   final BlockUserListUseCase _blockUserListUseCase;
+  final BlockUseCase _blockUseCase;
 
   List<BlockUserListCardViewData> get answerViewData {
     return mappingForBlockUserListCardViewData(
@@ -68,6 +72,45 @@ class BlockUserListViewModel extends ChangeNotifier {
 
   Future<void> fetchUsers() async {
     final result = await _blockUserListUseCase.fetchBlockUsers();
+    result.when(
+      success: (_) {},
+      failure: (exception) {
+        if (exception is OTException) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
+            _reader.call(alertNotiferProvider).show(
+                  title: alertTitle,
+                  message: alertText,
+                  okButtonTitle: 'OK',
+                  cancelButtonTitle: null,
+                  okButtonAction: () {
+                    _reader.call(alertNotiferProvider).dismiss();
+                  },
+                  cancelButtonAction: null,
+                );
+          }
+        }
+      },
+    );
+  }
+
+  Future<void> removeBlockUser({required String userId}) async {
+    final user = _blockUserListUseCase.loadedUsers.getById(userId);
+    if (user == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'ユーザーが見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.removeUser(user: user);
     result.when(
       success: (_) {},
       failure: (exception) {

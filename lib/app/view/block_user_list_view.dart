@@ -57,7 +57,34 @@ class BlockUserListView extends HookWidget {
               }
             }
             final viewData = viewModel.answerViewData.elementAt(index);
-            return BlockUserListCardWidget(viewData: viewData);
+            return BlockUserListCardWidget(
+              viewData: viewData,
+              onTap: () {
+                showModalBottomSheet<int>(
+                  context: context,
+                  builder: (BuildContext _context) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.block),
+                            title: const Text('ブロックを解除する'),
+                            onTap: () {
+                              context
+                                  .read(blockUserListViewModelProvider(_key))
+                                  .removeBlockUser(userId: viewData.id);
+                              Navigator.of(_context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            );
           },
           itemCount: viewModel.answerViewData.isEmpty || viewModel.hasNext
               ? viewModel.answerViewData.length + 1

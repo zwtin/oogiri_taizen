@@ -6,6 +6,7 @@ import 'package:oogiri_taizen/app/notifer/alert_notifer.dart';
 import 'package:oogiri_taizen/app/view_data/block_topic_list_card_view_data.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/use_case/block_topic_list_use_case.dart';
+import 'package:oogiri_taizen/domain/use_case/block_use_case.dart';
 
 final blockTopicListViewModelProvider = ChangeNotifierProvider.autoDispose
     .family<BlockTopicListViewModel, UniqueKey>(
@@ -14,6 +15,7 @@ final blockTopicListViewModelProvider = ChangeNotifierProvider.autoDispose
       key,
       ref.read,
       ref.watch(blockTopicListUseCaseProvider(key)),
+      ref.watch(blockUseCaseProvider(key)),
     );
   },
 );
@@ -23,6 +25,7 @@ class BlockTopicListViewModel extends ChangeNotifier {
     this._key,
     this._reader,
     this._blockTopicListUseCase,
+    this._blockUseCase,
   );
 
   final UniqueKey _key;
@@ -30,6 +33,7 @@ class BlockTopicListViewModel extends ChangeNotifier {
   final _logger = Logger();
 
   final BlockTopicListUseCase _blockTopicListUseCase;
+  final BlockUseCase _blockUseCase;
 
   List<BlockTopicListCardViewData> get answerViewData {
     return mappingForBlockTopicListCardViewData(
@@ -68,6 +72,45 @@ class BlockTopicListViewModel extends ChangeNotifier {
 
   Future<void> fetchTopics() async {
     final result = await _blockTopicListUseCase.fetchBlockTopics();
+    result.when(
+      success: (_) {},
+      failure: (exception) {
+        if (exception is OTException) {
+          final alertTitle = exception.title;
+          final alertText = exception.text;
+          if (alertTitle.isNotEmpty && alertText.isNotEmpty) {
+            _reader.call(alertNotiferProvider).show(
+                  title: alertTitle,
+                  message: alertText,
+                  okButtonTitle: 'OK',
+                  cancelButtonTitle: null,
+                  okButtonAction: () {
+                    _reader.call(alertNotiferProvider).dismiss();
+                  },
+                  cancelButtonAction: null,
+                );
+          }
+        }
+      },
+    );
+  }
+
+  Future<void> removeBlockTopic({required String topicId}) async {
+    final topic = _blockTopicListUseCase.loadedTopics.getById(topicId);
+    if (topic == null) {
+      _reader.call(alertNotiferProvider).show(
+            title: 'エラー',
+            message: 'お題が見つかりませんでした',
+            okButtonTitle: 'OK',
+            cancelButtonTitle: null,
+            okButtonAction: () {
+              _reader.call(alertNotiferProvider).dismiss();
+            },
+            cancelButtonAction: null,
+          );
+      return;
+    }
+    final result = await _blockUseCase.removeTopic(topic: topic);
     result.when(
       success: (_) {},
       failure: (exception) {
