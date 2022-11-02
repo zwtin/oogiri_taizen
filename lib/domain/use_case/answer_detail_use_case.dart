@@ -156,13 +156,14 @@ class AnswerDetailUseCase extends ChangeNotifier {
             isLike: value,
             likedCount: answer!.likedCount + 1,
           );
+          notifyListeners();
         } else if (!value && answer!.isLike) {
           answer = answer!.copyWith(
             isLike: value,
             likedCount: answer!.likedCount - 1,
           );
+          notifyListeners();
         }
-        notifyListeners();
       });
 
       _isFavorSubscription = _favorRepository
@@ -176,13 +177,14 @@ class AnswerDetailUseCase extends ChangeNotifier {
             isFavor: value,
             favoredCount: answer!.favoredCount + 1,
           );
+          notifyListeners();
         } else if (!value && answer!.isFavor) {
           answer = answer!.copyWith(
             isFavor: value,
             favoredCount: answer!.favoredCount - 1,
           );
+          notifyListeners();
         }
-        notifyListeners();
       });
     }
 
