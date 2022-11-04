@@ -3,7 +3,9 @@
 // Do not manually edit this file.
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:oogiri_taizen/domain/entity/answer.dart' as _i2;
+import 'package:oogiri_taizen/domain/entity/answer.dart' as _i4;
+import 'package:oogiri_taizen/domain/entity/topic.dart' as _i2;
+import 'package:oogiri_taizen/domain/entity/user.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -15,15 +17,19 @@ import 'package:oogiri_taizen/domain/entity/answer.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeDateTime_0 extends _i1.Fake implements DateTime {}
+class _FakeTopic_0 extends _i1.Fake implements _i2.Topic {}
 
-class _Fake$AnswerCopyWith_1<$Res> extends _i1.Fake
-    implements _i2.$AnswerCopyWith<$Res> {}
+class _FakeUser_1 extends _i1.Fake implements _i3.User {}
+
+class _FakeDateTime_2 extends _i1.Fake implements DateTime {}
+
+class _Fake$AnswerCopyWith_3<$Res> extends _i1.Fake
+    implements _i4.$AnswerCopyWith<$Res> {}
 
 /// A class which mocks [Answer].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnswer extends _i1.Mock implements _i2.Answer {
+class MockAnswer extends _i1.Mock implements _i4.Answer {
   MockAnswer() {
     _i1.throwOnMissingStub(this);
   }
@@ -59,19 +65,18 @@ class MockAnswer extends _i1.Mock implements _i2.Answer {
       (super.noSuchMethod(Invocation.getter(#popularPoint), returnValue: 0)
           as int);
   @override
-  String get topicId =>
-      (super.noSuchMethod(Invocation.getter(#topicId), returnValue: '')
-          as String);
+  _i2.Topic get topic => (super.noSuchMethod(Invocation.getter(#topic),
+      returnValue: _FakeTopic_0()) as _i2.Topic);
   @override
-  String get createdUserId =>
-      (super.noSuchMethod(Invocation.getter(#createdUserId), returnValue: '')
-          as String);
+  _i3.User get createdUser =>
+      (super.noSuchMethod(Invocation.getter(#createdUser),
+          returnValue: _FakeUser_1()) as _i3.User);
   @override
   DateTime get createdAt => (super.noSuchMethod(Invocation.getter(#createdAt),
-      returnValue: _FakeDateTime_0()) as DateTime);
+      returnValue: _FakeDateTime_2()) as DateTime);
   @override
-  _i2.$AnswerCopyWith<_i2.Answer> get copyWith =>
+  _i4.$AnswerCopyWith<_i4.Answer> get copyWith =>
       (super.noSuchMethod(Invocation.getter(#copyWith),
-              returnValue: _Fake$AnswerCopyWith_1<_i2.Answer>())
-          as _i2.$AnswerCopyWith<_i2.Answer>);
+              returnValue: _Fake$AnswerCopyWith_3<_i4.Answer>())
+          as _i4.$AnswerCopyWith<_i4.Answer>);
 }

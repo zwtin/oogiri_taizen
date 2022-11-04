@@ -26,10 +26,8 @@ class _$AnswerTearOff {
       required bool isFavor,
       required int favoredCount,
       required int popularPoint,
-      required String topicId,
-      Topic? topic,
-      required String createdUserId,
-      User? createdUser,
+      required Topic topic,
+      required User createdUser,
       required DateTime createdAt}) {
     return _Answer(
       id: id,
@@ -40,9 +38,7 @@ class _$AnswerTearOff {
       isFavor: isFavor,
       favoredCount: favoredCount,
       popularPoint: popularPoint,
-      topicId: topicId,
       topic: topic,
-      createdUserId: createdUserId,
       createdUser: createdUser,
       createdAt: createdAt,
     );
@@ -62,10 +58,8 @@ mixin _$Answer {
   bool get isFavor => throw _privateConstructorUsedError;
   int get favoredCount => throw _privateConstructorUsedError;
   int get popularPoint => throw _privateConstructorUsedError;
-  String get topicId => throw _privateConstructorUsedError;
-  Topic? get topic => throw _privateConstructorUsedError;
-  String get createdUserId => throw _privateConstructorUsedError;
-  User? get createdUser => throw _privateConstructorUsedError;
+  Topic get topic => throw _privateConstructorUsedError;
+  User get createdUser => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -85,14 +79,12 @@ abstract class $AnswerCopyWith<$Res> {
       bool isFavor,
       int favoredCount,
       int popularPoint,
-      String topicId,
-      Topic? topic,
-      String createdUserId,
-      User? createdUser,
+      Topic topic,
+      User createdUser,
       DateTime createdAt});
 
-  $TopicCopyWith<$Res>? get topic;
-  $UserCopyWith<$Res>? get createdUser;
+  $TopicCopyWith<$Res> get topic;
+  $UserCopyWith<$Res> get createdUser;
 }
 
 /// @nodoc
@@ -113,9 +105,7 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
     Object? isFavor = freezed,
     Object? favoredCount = freezed,
     Object? popularPoint = freezed,
-    Object? topicId = freezed,
     Object? topic = freezed,
-    Object? createdUserId = freezed,
     Object? createdUser = freezed,
     Object? createdAt = freezed,
   }) {
@@ -152,22 +142,14 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
           ? _value.popularPoint
           : popularPoint // ignore: cast_nullable_to_non_nullable
               as int,
-      topicId: topicId == freezed
-          ? _value.topicId
-          : topicId // ignore: cast_nullable_to_non_nullable
-              as String,
       topic: topic == freezed
           ? _value.topic
           : topic // ignore: cast_nullable_to_non_nullable
-              as Topic?,
-      createdUserId: createdUserId == freezed
-          ? _value.createdUserId
-          : createdUserId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Topic,
       createdUser: createdUser == freezed
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as User,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -176,23 +158,15 @@ class _$AnswerCopyWithImpl<$Res> implements $AnswerCopyWith<$Res> {
   }
 
   @override
-  $TopicCopyWith<$Res>? get topic {
-    if (_value.topic == null) {
-      return null;
-    }
-
-    return $TopicCopyWith<$Res>(_value.topic!, (value) {
+  $TopicCopyWith<$Res> get topic {
+    return $TopicCopyWith<$Res>(_value.topic, (value) {
       return _then(_value.copyWith(topic: value));
     });
   }
 
   @override
-  $UserCopyWith<$Res>? get createdUser {
-    if (_value.createdUser == null) {
-      return null;
-    }
-
-    return $UserCopyWith<$Res>(_value.createdUser!, (value) {
+  $UserCopyWith<$Res> get createdUser {
+    return $UserCopyWith<$Res>(_value.createdUser, (value) {
       return _then(_value.copyWith(createdUser: value));
     });
   }
@@ -212,16 +186,14 @@ abstract class _$AnswerCopyWith<$Res> implements $AnswerCopyWith<$Res> {
       bool isFavor,
       int favoredCount,
       int popularPoint,
-      String topicId,
-      Topic? topic,
-      String createdUserId,
-      User? createdUser,
+      Topic topic,
+      User createdUser,
       DateTime createdAt});
 
   @override
-  $TopicCopyWith<$Res>? get topic;
+  $TopicCopyWith<$Res> get topic;
   @override
-  $UserCopyWith<$Res>? get createdUser;
+  $UserCopyWith<$Res> get createdUser;
 }
 
 /// @nodoc
@@ -243,9 +215,7 @@ class __$AnswerCopyWithImpl<$Res> extends _$AnswerCopyWithImpl<$Res>
     Object? isFavor = freezed,
     Object? favoredCount = freezed,
     Object? popularPoint = freezed,
-    Object? topicId = freezed,
     Object? topic = freezed,
-    Object? createdUserId = freezed,
     Object? createdUser = freezed,
     Object? createdAt = freezed,
   }) {
@@ -282,22 +252,14 @@ class __$AnswerCopyWithImpl<$Res> extends _$AnswerCopyWithImpl<$Res>
           ? _value.popularPoint
           : popularPoint // ignore: cast_nullable_to_non_nullable
               as int,
-      topicId: topicId == freezed
-          ? _value.topicId
-          : topicId // ignore: cast_nullable_to_non_nullable
-              as String,
       topic: topic == freezed
           ? _value.topic
           : topic // ignore: cast_nullable_to_non_nullable
-              as Topic?,
-      createdUserId: createdUserId == freezed
-          ? _value.createdUserId
-          : createdUserId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Topic,
       createdUser: createdUser == freezed
           ? _value.createdUser
           : createdUser // ignore: cast_nullable_to_non_nullable
-              as User?,
+              as User,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -318,10 +280,8 @@ class _$_Answer extends _Answer {
       required this.isFavor,
       required this.favoredCount,
       required this.popularPoint,
-      required this.topicId,
-      this.topic,
-      required this.createdUserId,
-      this.createdUser,
+      required this.topic,
+      required this.createdUser,
       required this.createdAt})
       : super._();
 
@@ -342,19 +302,15 @@ class _$_Answer extends _Answer {
   @override
   final int popularPoint;
   @override
-  final String topicId;
+  final Topic topic;
   @override
-  final Topic? topic;
-  @override
-  final String createdUserId;
-  @override
-  final User? createdUser;
+  final User createdUser;
   @override
   final DateTime createdAt;
 
   @override
   String toString() {
-    return 'Answer(id: $id, text: $text, viewedCount: $viewedCount, isLike: $isLike, likedCount: $likedCount, isFavor: $isFavor, favoredCount: $favoredCount, popularPoint: $popularPoint, topicId: $topicId, topic: $topic, createdUserId: $createdUserId, createdUser: $createdUser, createdAt: $createdAt)';
+    return 'Answer(id: $id, text: $text, viewedCount: $viewedCount, isLike: $isLike, likedCount: $likedCount, isFavor: $isFavor, favoredCount: $favoredCount, popularPoint: $popularPoint, topic: $topic, createdUser: $createdUser, createdAt: $createdAt)';
   }
 
   @override
@@ -382,14 +338,8 @@ class _$_Answer extends _Answer {
             (identical(other.popularPoint, popularPoint) ||
                 const DeepCollectionEquality()
                     .equals(other.popularPoint, popularPoint)) &&
-            (identical(other.topicId, topicId) ||
-                const DeepCollectionEquality()
-                    .equals(other.topicId, topicId)) &&
             (identical(other.topic, topic) ||
                 const DeepCollectionEquality().equals(other.topic, topic)) &&
-            (identical(other.createdUserId, createdUserId) ||
-                const DeepCollectionEquality()
-                    .equals(other.createdUserId, createdUserId)) &&
             (identical(other.createdUser, createdUser) ||
                 const DeepCollectionEquality()
                     .equals(other.createdUser, createdUser)) &&
@@ -409,9 +359,7 @@ class _$_Answer extends _Answer {
       const DeepCollectionEquality().hash(isFavor) ^
       const DeepCollectionEquality().hash(favoredCount) ^
       const DeepCollectionEquality().hash(popularPoint) ^
-      const DeepCollectionEquality().hash(topicId) ^
       const DeepCollectionEquality().hash(topic) ^
-      const DeepCollectionEquality().hash(createdUserId) ^
       const DeepCollectionEquality().hash(createdUser) ^
       const DeepCollectionEquality().hash(createdAt);
 
@@ -431,10 +379,8 @@ abstract class _Answer extends Answer {
       required bool isFavor,
       required int favoredCount,
       required int popularPoint,
-      required String topicId,
-      Topic? topic,
-      required String createdUserId,
-      User? createdUser,
+      required Topic topic,
+      required User createdUser,
       required DateTime createdAt}) = _$_Answer;
   const _Answer._() : super._();
 
@@ -455,13 +401,9 @@ abstract class _Answer extends Answer {
   @override
   int get popularPoint => throw _privateConstructorUsedError;
   @override
-  String get topicId => throw _privateConstructorUsedError;
+  Topic get topic => throw _privateConstructorUsedError;
   @override
-  Topic? get topic => throw _privateConstructorUsedError;
-  @override
-  String get createdUserId => throw _privateConstructorUsedError;
-  @override
-  User? get createdUser => throw _privateConstructorUsedError;
+  User get createdUser => throw _privateConstructorUsedError;
   @override
   DateTime get createdAt => throw _privateConstructorUsedError;
   @override

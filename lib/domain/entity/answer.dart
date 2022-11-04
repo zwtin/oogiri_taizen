@@ -15,10 +15,8 @@ abstract class Answer implements _$Answer {
     required bool isFavor,
     required int favoredCount,
     required int popularPoint,
-    required String topicId,
-    Topic? topic,
-    required String createdUserId,
-    User? createdUser,
+    required Topic topic,
+    required User createdUser,
     required DateTime createdAt,
   }) = _Answer;
   const Answer._();
