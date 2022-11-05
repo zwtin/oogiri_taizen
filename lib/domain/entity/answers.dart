@@ -69,9 +69,9 @@ abstract class Answers implements _$Answers {
   }) {
     final filteredList = List<Answer>.from(list.where((answer) {
       return !(blockAnswerIds.contains(answer.id) ||
-          (blockTopicIds.contains(answer.topic?.id)) ||
-          (blockUserIds.contains(answer.createdUser?.id)) ||
-          (blockUserIds.contains(answer.topic?.createdUser?.id)));
+          (blockTopicIds.contains(answer.topic.id)) ||
+          (blockUserIds.contains(answer.createdUser.id)) ||
+          (blockUserIds.contains(answer.topic.createdUser.id)));
     }));
     return Answers(list: filteredList);
   }
