@@ -58,6 +58,24 @@ abstract class User implements _$User {
 
     return const Result.success(null);
   }
+
+  Result<void> unlike({required Answer answer}) {
+    if (!likeAnswers.map((e) => e.id).contains(answer.id)) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'イイね！の解除に失敗しました',
+        ),
+      );
+    }
+    likeAnswers.removeWhere((element) => element.id == answer.id);
+
+    if (answer.likedUsers.map((e) => e.id).contains(id)) {
+      answer.likedUsers.removeWhere((element) => element.id == id);
+    }
+
+    return const Result.success(null);
+  }
 }
 
 @freezed
