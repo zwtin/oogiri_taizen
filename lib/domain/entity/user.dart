@@ -76,6 +76,62 @@ abstract class User implements _$User {
 
     return const Result.success(null);
   }
+
+  Result<void> favor({required Answer answer}) {
+    if (answer.userId == id) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: '自分のボケはお気に入りできません',
+        ),
+      );
+    }
+
+    if (favorAnswers.map((e) => e.id).contains(answer.id)) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'お気に入りに失敗しました',
+        ),
+      );
+    }
+
+    final favorAnswer = UserFavorAnswer(
+      id: answer.id,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    favorAnswers.add(favorAnswer);
+
+    if (!answer.favoredUsers.map((e) => e.id).contains(id)) {
+      final favoredUser = AnswerFavoredUser(
+        id: id,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      answer.favoredUsers.add(favoredUser);
+    }
+
+    return const Result.success(null);
+  }
+
+  Result<void> unfavor({required Answer answer}) {
+    if (!favorAnswers.map((e) => e.id).contains(answer.id)) {
+      return Result.failure(
+        OTException(
+          title: 'エラー',
+          text: 'お気に入りの解除に失敗しました',
+        ),
+      );
+    }
+    favorAnswers.removeWhere((element) => element.id == answer.id);
+
+    if (answer.favoredUsers.map((e) => e.id).contains(id)) {
+      answer.favoredUsers.removeWhere((element) => element.id == id);
+    }
+
+    return const Result.success(null);
+  }
 }
 
 @freezed
