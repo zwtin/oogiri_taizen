@@ -1,20 +1,48 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:oogiri_taizen/domain/entity/answer.dart';
+import 'package:oogiri_taizen/domain/entity/topic.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart';
+import 'package:oogiri_taizen/infra/dao/answer_dao.dart';
 
-Answer mappingForAnswer({
-  required Map<String, dynamic> answerData,
-}) {
-  return Answer(
-    id: answerData['id'] as String,
-    text: answerData['text'] as String,
-    viewedCount: answerData['viewed_time'] as int,
-    isLike: false,
-    likedCount: answerData['liked_time'] as int,
-    isFavor: false,
-    favoredCount: answerData['favored_time'] as int,
-    popularPoint: answerData['point'] as int,
-    topicId: answerData['topic'] as String,
-    createdUserId: answerData['created_user'] as String,
-    createdAt: (answerData['created_at'] as Timestamp).toDate(),
-  );
+class AnswerMapper {
+  AnswerMapper._() {
+    throw AssertionError('private Constructor');
+  }
+
+  static Answer mappingFromDAO({
+    required AnswerDAO answerDAO,
+    required User createdUser,
+    required Topic topic,
+    required bool isLike,
+    required bool isFavor,
+  }) {
+    return Answer(
+      id: answerDAO.id,
+      text: answerDAO.text,
+      viewedCount: answerDAO.viewedCount,
+      isLike: isLike,
+      likedCount: answerDAO.likedCount,
+      isFavor: isFavor,
+      favoredCount: answerDAO.favoredCount,
+      popularPoint: answerDAO.popularPoint,
+      topic: topic,
+      createdUser: createdUser,
+      createdAt: answerDAO.createdAt,
+    );
+  }
+
+  static AnswerDAO mappingToDAO({
+    required Answer answer,
+  }) {
+    return AnswerDAO(
+      id: answer.id,
+      text: answer.text,
+      viewedCount: answer.viewedCount,
+      likedCount: answer.likedCount,
+      favoredCount: answer.favoredCount,
+      popularPoint: answer.popularPoint,
+      topicId: answer.topic.id,
+      createdUserId: answer.createdUser.id,
+      createdAt: answer.createdAt,
+    );
+  }
 }

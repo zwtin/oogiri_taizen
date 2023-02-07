@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -5,8 +6,11 @@ import 'package:logger/logger.dart';
 import 'package:oogiri_taizen/domain/entity/login_user.dart';
 import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
+import 'package:oogiri_taizen/domain/entity/user.dart' as ot;
 import 'package:oogiri_taizen/domain/repository/authentication_repository.dart';
 import 'package:oogiri_taizen/flavors.dart';
+import 'package:oogiri_taizen/infra/dao/user_dao.dart';
+import 'package:oogiri_taizen/infra/mapper/user_mapper.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 final authenticationRepositoryProvider =
@@ -21,42 +25,55 @@ final authenticationRepositoryProvider =
 class AuthenticationRepositoryImpl implements AuthenticationRepository {
   final _logger = Logger();
   final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   @override
-  LoginUser? getLoginUser() {
-    final user = _firebaseAuth.currentUser;
-    if (user == null) {
-      return null;
+  Future<Result<LoginUser?>> getLoginUser() async {
+    try {
+      final currentUser = _firebaseAuth.currentUser;
+      if (currentUser == null) {
+        return const Result.success(null);
+      }
+      final doc =
+          await _firestore.collection('users').doc(currentUser.uid).get();
+      final data = doc.data();
+      if (data == null) {
+        throw OTException(title: 'エラー', text: 'ユーザーの取得に失敗しました');
+      }
+      final userDAO = UserDAO.fromMap(data);
+      final user = UserMapper.mappingFromDAO(userDAO: userDAO);
+      return Result.success(
+        LoginUser(
+          user: user,
+          emailVerified: currentUser.emailVerified,
+        ),
+      );
+    } on Exception catch (exception) {
+      return Result.failure(exception);
     }
-    return LoginUser(
-      id: user.uid,
-      emailVerified: user.emailVerified,
-    );
   }
 
   @override
   Stream<LoginUser?> getLoginUserStream() {
-    return _firebaseAuth.authStateChanges().map(
-      (user) {
-        if (user == null) {
+    return _firebaseAuth.authStateChanges().asyncMap(
+      (currentUser) async {
+        if (currentUser == null) {
           return null;
         }
+        final doc =
+            await _firestore.collection('users').doc(currentUser.uid).get();
+        final data = doc.data();
+        if (data == null) {
+          return null;
+        }
+        final userDAO = UserDAO.fromMap(data);
+        final user = UserMapper.mappingFromDAO(userDAO: userDAO);
         return LoginUser(
-          id: user.uid,
-          emailVerified: user.emailVerified,
+          user: user,
+          emailVerified: currentUser.emailVerified,
         );
       },
     );
-  }
-
-  @override
-  Future<Result<void>> refresh() async {
-    try {
-      await _firebaseAuth.currentUser?.reload();
-      return const Result.success(null);
-    } on Exception catch (exception) {
-      return Result.failure(exception);
-    }
   }
 
   @override
@@ -65,6 +82,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }) async {
     try {
       await _firebaseAuth.applyActionCode(code);
+      await _firebaseAuth.currentUser?.reload();
       return const Result.success(null);
     } on Exception catch (exception) {
       return Result.failure(exception);
@@ -80,6 +98,27 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
+      );
+      final currentUser = _firebaseAuth.currentUser;
+      if (currentUser == null) {
+        throw OTException(title: 'エラー', text: 'ユーザーの作成に失敗しました');
+      }
+      final user = ot.User(
+        id: currentUser.uid,
+        name: '名無し',
+        imageUrl: null,
+        introduction: 'よろしくお願いします',
+      );
+      final userDAO = UserMapper.mappingToDAO(user: user);
+      final data = userDAO.toMap();
+      final ref = _firestore.collection('users').doc(currentUser.uid);
+      await _firestore.runTransaction<void>(
+        (Transaction transaction) async {
+          transaction.set(
+            ref,
+            data,
+          );
+        },
       );
       return const Result.success(null);
     } on Exception catch (exception) {
@@ -224,7 +263,22 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   @override
   Future<Result<void>> deleteLoginUser() async {
     try {
-      await _firebaseAuth.currentUser?.delete();
+      final currentUser = _firebaseAuth.currentUser;
+      if (currentUser == null) {
+        throw OTException(title: 'エラー', text: 'ログインしていません');
+      }
+      await _firestore.runTransaction<void>(
+        (Transaction transaction) async {
+          final ref = _firestore.collection('users').doc(currentUser.uid);
+          final doc = await transaction.get(ref);
+          if (doc.exists) {
+            transaction.delete(ref);
+          } else {
+            throw OTException(title: 'エラー', text: 'ユーザー情報がありません');
+          }
+        },
+      );
+      await currentUser.delete();
       return const Result.success(null);
     } on Exception catch (exception) {
       return Result.failure(exception);

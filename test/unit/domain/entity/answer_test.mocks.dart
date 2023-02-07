@@ -3,9 +3,7 @@
 // Do not manually edit this file.
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:oogiri_taizen/domain/entity/answer.dart' as _i4;
-import 'package:oogiri_taizen/domain/entity/topic.dart' as _i2;
-import 'package:oogiri_taizen/domain/entity/user.dart' as _i3;
+import 'package:oogiri_taizen/domain/entity/answer.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -17,19 +15,15 @@ import 'package:oogiri_taizen/domain/entity/user.dart' as _i3;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeTopic_0 extends _i1.Fake implements _i2.Topic {}
+class _FakeDateTime_0 extends _i1.Fake implements DateTime {}
 
-class _FakeUser_1 extends _i1.Fake implements _i3.User {}
-
-class _FakeDateTime_2 extends _i1.Fake implements DateTime {}
-
-class _Fake$AnswerCopyWith_3<$Res> extends _i1.Fake
-    implements _i4.$AnswerCopyWith<$Res> {}
+class _Fake$AnswerCopyWith_1<$Res> extends _i1.Fake
+    implements _i2.$AnswerCopyWith<$Res> {}
 
 /// A class which mocks [Answer].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAnswer extends _i1.Mock implements _i4.Answer {
+class MockAnswer extends _i1.Mock implements _i2.Answer {
   MockAnswer() {
     _i1.throwOnMissingStub(this);
   }
@@ -45,17 +39,9 @@ class MockAnswer extends _i1.Mock implements _i4.Answer {
       (super.noSuchMethod(Invocation.getter(#viewedCount), returnValue: 0)
           as int);
   @override
-  bool get isLike =>
-      (super.noSuchMethod(Invocation.getter(#isLike), returnValue: false)
-          as bool);
-  @override
   int get likedCount =>
       (super.noSuchMethod(Invocation.getter(#likedCount), returnValue: 0)
           as int);
-  @override
-  bool get isFavor =>
-      (super.noSuchMethod(Invocation.getter(#isFavor), returnValue: false)
-          as bool);
   @override
   int get favoredCount =>
       (super.noSuchMethod(Invocation.getter(#favoredCount), returnValue: 0)
@@ -65,18 +51,30 @@ class MockAnswer extends _i1.Mock implements _i4.Answer {
       (super.noSuchMethod(Invocation.getter(#popularPoint), returnValue: 0)
           as int);
   @override
-  _i2.Topic get topic => (super.noSuchMethod(Invocation.getter(#topic),
-      returnValue: _FakeTopic_0()) as _i2.Topic);
+  String get topicId =>
+      (super.noSuchMethod(Invocation.getter(#topicId), returnValue: '')
+          as String);
   @override
-  _i3.User get createdUser =>
-      (super.noSuchMethod(Invocation.getter(#createdUser),
-          returnValue: _FakeUser_1()) as _i3.User);
+  String get userId =>
+      (super.noSuchMethod(Invocation.getter(#userId), returnValue: '')
+          as String);
   @override
   DateTime get createdAt => (super.noSuchMethod(Invocation.getter(#createdAt),
-      returnValue: _FakeDateTime_2()) as DateTime);
+      returnValue: _FakeDateTime_0()) as DateTime);
   @override
-  _i4.$AnswerCopyWith<_i4.Answer> get copyWith =>
+  DateTime get updatedAt => (super.noSuchMethod(Invocation.getter(#updatedAt),
+      returnValue: _FakeDateTime_0()) as DateTime);
+  @override
+  List<_i2.AnswerLikedUser> get likedUsers =>
+      (super.noSuchMethod(Invocation.getter(#likedUsers),
+          returnValue: <_i2.AnswerLikedUser>[]) as List<_i2.AnswerLikedUser>);
+  @override
+  List<_i2.AnswerFavoredUser> get favoredUsers => (super.noSuchMethod(
+      Invocation.getter(#favoredUsers),
+      returnValue: <_i2.AnswerFavoredUser>[]) as List<_i2.AnswerFavoredUser>);
+  @override
+  _i2.$AnswerCopyWith<_i2.Answer> get copyWith =>
       (super.noSuchMethod(Invocation.getter(#copyWith),
-              returnValue: _Fake$AnswerCopyWith_3<_i4.Answer>())
-          as _i4.$AnswerCopyWith<_i4.Answer>);
+              returnValue: _Fake$AnswerCopyWith_1<_i2.Answer>())
+          as _i2.$AnswerCopyWith<_i2.Answer>);
 }

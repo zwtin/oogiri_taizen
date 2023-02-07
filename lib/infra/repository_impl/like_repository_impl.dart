@@ -157,6 +157,7 @@ class LikeRepositoryImpl implements LikeRepository {
         .map((snapshot) {
       return snapshot.exists;
     });
+    likeStream.last
     return likeStream;
   }
 

@@ -3,6 +3,8 @@
 // Do not manually edit this file.
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:oogiri_taizen/domain/entity/answer.dart' as _i4;
+import 'package:oogiri_taizen/domain/entity/result.dart' as _i3;
 import 'package:oogiri_taizen/domain/entity/user.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -15,8 +17,12 @@ import 'package:oogiri_taizen/domain/entity/user.dart' as _i2;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _Fake$UserCopyWith_0<$Res> extends _i1.Fake
+class _FakeDateTime_0 extends _i1.Fake implements DateTime {}
+
+class _Fake$UserCopyWith_1<$Res> extends _i1.Fake
     implements _i2.$UserCopyWith<$Res> {}
+
+class _FakeResult_2<T> extends _i1.Fake implements _i3.Result<T> {}
 
 /// A class which mocks [User].
 ///
@@ -37,8 +43,34 @@ class MockUser extends _i1.Mock implements _i2.User {
       (super.noSuchMethod(Invocation.getter(#introduction), returnValue: '')
           as String);
   @override
+  DateTime get createdAt => (super.noSuchMethod(Invocation.getter(#createdAt),
+      returnValue: _FakeDateTime_0()) as DateTime);
+  @override
+  DateTime get updatedAt => (super.noSuchMethod(Invocation.getter(#updatedAt),
+      returnValue: _FakeDateTime_0()) as DateTime);
+  @override
+  List<_i2.UserCreateTopic> get createTopics =>
+      (super.noSuchMethod(Invocation.getter(#createTopics),
+          returnValue: <_i2.UserCreateTopic>[]) as List<_i2.UserCreateTopic>);
+  @override
+  List<_i2.UserCreateAnswer> get createAnswers =>
+      (super.noSuchMethod(Invocation.getter(#createAnswers),
+          returnValue: <_i2.UserCreateAnswer>[]) as List<_i2.UserCreateAnswer>);
+  @override
+  List<_i2.UserLikeAnswer> get likeAnswers =>
+      (super.noSuchMethod(Invocation.getter(#likeAnswers),
+          returnValue: <_i2.UserLikeAnswer>[]) as List<_i2.UserLikeAnswer>);
+  @override
+  List<_i2.UserFavorAnswer> get favorAnswers =>
+      (super.noSuchMethod(Invocation.getter(#favorAnswers),
+          returnValue: <_i2.UserFavorAnswer>[]) as List<_i2.UserFavorAnswer>);
+  @override
   _i2.$UserCopyWith<_i2.User> get copyWith =>
       (super.noSuchMethod(Invocation.getter(#copyWith),
-              returnValue: _Fake$UserCopyWith_0<_i2.User>())
+              returnValue: _Fake$UserCopyWith_1<_i2.User>())
           as _i2.$UserCopyWith<_i2.User>);
+  @override
+  _i3.Result<void> like({_i4.Answer? answer}) =>
+      (super.noSuchMethod(Invocation.method(#like, [], {#answer: answer}),
+          returnValue: _FakeResult_2<void>()) as _i3.Result<void>);
 }

@@ -22,15 +22,19 @@ class _$TopicTearOff {
       required String text,
       required String? imageUrl,
       required int answeredCount,
-      required User createdUser,
-      required DateTime createdAt}) {
+      required String userId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      required List<TopicAnswer> answers}) {
     return _Topic(
       id: id,
       text: text,
       imageUrl: imageUrl,
       answeredCount: answeredCount,
-      createdUser: createdUser,
+      userId: userId,
       createdAt: createdAt,
+      updatedAt: updatedAt,
+      answers: answers,
     );
   }
 }
@@ -44,8 +48,10 @@ mixin _$Topic {
   String get text => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   int get answeredCount => throw _privateConstructorUsedError;
-  User get createdUser => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  List<TopicAnswer> get answers => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TopicCopyWith<Topic> get copyWith => throw _privateConstructorUsedError;
@@ -60,10 +66,10 @@ abstract class $TopicCopyWith<$Res> {
       String text,
       String? imageUrl,
       int answeredCount,
-      User createdUser,
-      DateTime createdAt});
-
-  $UserCopyWith<$Res> get createdUser;
+      String userId,
+      DateTime createdAt,
+      DateTime updatedAt,
+      List<TopicAnswer> answers});
 }
 
 /// @nodoc
@@ -80,8 +86,10 @@ class _$TopicCopyWithImpl<$Res> implements $TopicCopyWith<$Res> {
     Object? text = freezed,
     Object? imageUrl = freezed,
     Object? answeredCount = freezed,
-    Object? createdUser = freezed,
+    Object? userId = freezed,
     Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? answers = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -100,22 +108,23 @@ class _$TopicCopyWithImpl<$Res> implements $TopicCopyWith<$Res> {
           ? _value.answeredCount
           : answeredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      createdUser: createdUser == freezed
-          ? _value.createdUser
-          : createdUser // ignore: cast_nullable_to_non_nullable
-              as User,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: updatedAt == freezed
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      answers: answers == freezed
+          ? _value.answers
+          : answers // ignore: cast_nullable_to_non_nullable
+              as List<TopicAnswer>,
     ));
-  }
-
-  @override
-  $UserCopyWith<$Res> get createdUser {
-    return $UserCopyWith<$Res>(_value.createdUser, (value) {
-      return _then(_value.copyWith(createdUser: value));
-    });
   }
 }
 
@@ -129,11 +138,10 @@ abstract class _$TopicCopyWith<$Res> implements $TopicCopyWith<$Res> {
       String text,
       String? imageUrl,
       int answeredCount,
-      User createdUser,
-      DateTime createdAt});
-
-  @override
-  $UserCopyWith<$Res> get createdUser;
+      String userId,
+      DateTime createdAt,
+      DateTime updatedAt,
+      List<TopicAnswer> answers});
 }
 
 /// @nodoc
@@ -151,8 +159,10 @@ class __$TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res>
     Object? text = freezed,
     Object? imageUrl = freezed,
     Object? answeredCount = freezed,
-    Object? createdUser = freezed,
+    Object? userId = freezed,
     Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+    Object? answers = freezed,
   }) {
     return _then(_Topic(
       id: id == freezed
@@ -171,14 +181,22 @@ class __$TopicCopyWithImpl<$Res> extends _$TopicCopyWithImpl<$Res>
           ? _value.answeredCount
           : answeredCount // ignore: cast_nullable_to_non_nullable
               as int,
-      createdUser: createdUser == freezed
-          ? _value.createdUser
-          : createdUser // ignore: cast_nullable_to_non_nullable
-              as User,
+      userId: userId == freezed
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: createdAt == freezed
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      updatedAt: updatedAt == freezed
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      answers: answers == freezed
+          ? _value.answers
+          : answers // ignore: cast_nullable_to_non_nullable
+              as List<TopicAnswer>,
     ));
   }
 }
@@ -191,8 +209,10 @@ class _$_Topic extends _Topic {
       required this.text,
       required this.imageUrl,
       required this.answeredCount,
-      required this.createdUser,
-      required this.createdAt})
+      required this.userId,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.answers})
       : super._();
 
   @override
@@ -204,13 +224,17 @@ class _$_Topic extends _Topic {
   @override
   final int answeredCount;
   @override
-  final User createdUser;
+  final String userId;
   @override
   final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
+  @override
+  final List<TopicAnswer> answers;
 
   @override
   String toString() {
-    return 'Topic(id: $id, text: $text, imageUrl: $imageUrl, answeredCount: $answeredCount, createdUser: $createdUser, createdAt: $createdAt)';
+    return 'Topic(id: $id, text: $text, imageUrl: $imageUrl, answeredCount: $answeredCount, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt, answers: $answers)';
   }
 
   @override
@@ -227,12 +251,16 @@ class _$_Topic extends _Topic {
             (identical(other.answeredCount, answeredCount) ||
                 const DeepCollectionEquality()
                     .equals(other.answeredCount, answeredCount)) &&
-            (identical(other.createdUser, createdUser) ||
-                const DeepCollectionEquality()
-                    .equals(other.createdUser, createdUser)) &&
+            (identical(other.userId, userId) ||
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
-                    .equals(other.createdAt, createdAt)));
+                    .equals(other.createdAt, createdAt)) &&
+            (identical(other.updatedAt, updatedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.updatedAt, updatedAt)) &&
+            (identical(other.answers, answers) ||
+                const DeepCollectionEquality().equals(other.answers, answers)));
   }
 
   @override
@@ -242,8 +270,10 @@ class _$_Topic extends _Topic {
       const DeepCollectionEquality().hash(text) ^
       const DeepCollectionEquality().hash(imageUrl) ^
       const DeepCollectionEquality().hash(answeredCount) ^
-      const DeepCollectionEquality().hash(createdUser) ^
-      const DeepCollectionEquality().hash(createdAt);
+      const DeepCollectionEquality().hash(userId) ^
+      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(updatedAt) ^
+      const DeepCollectionEquality().hash(answers);
 
   @JsonKey(ignore: true)
   @override
@@ -257,8 +287,10 @@ abstract class _Topic extends Topic {
       required String text,
       required String? imageUrl,
       required int answeredCount,
-      required User createdUser,
-      required DateTime createdAt}) = _$_Topic;
+      required String userId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      required List<TopicAnswer> answers}) = _$_Topic;
   const _Topic._() : super._();
 
   @override
@@ -270,10 +302,191 @@ abstract class _Topic extends Topic {
   @override
   int get answeredCount => throw _privateConstructorUsedError;
   @override
-  User get createdUser => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
   @override
   DateTime get createdAt => throw _privateConstructorUsedError;
   @override
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  @override
+  List<TopicAnswer> get answers => throw _privateConstructorUsedError;
+  @override
   @JsonKey(ignore: true)
   _$TopicCopyWith<_Topic> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+class _$TopicAnswerTearOff {
+  const _$TopicAnswerTearOff();
+
+  _TopicAnswer call(
+      {required String id,
+      required DateTime createdAt,
+      required DateTime updatedAt}) {
+    return _TopicAnswer(
+      id: id,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+}
+
+/// @nodoc
+const $TopicAnswer = _$TopicAnswerTearOff();
+
+/// @nodoc
+mixin _$TopicAnswer {
+  String get id => throw _privateConstructorUsedError;
+  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $TopicAnswerCopyWith<TopicAnswer> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $TopicAnswerCopyWith<$Res> {
+  factory $TopicAnswerCopyWith(
+          TopicAnswer value, $Res Function(TopicAnswer) then) =
+      _$TopicAnswerCopyWithImpl<$Res>;
+  $Res call({String id, DateTime createdAt, DateTime updatedAt});
+}
+
+/// @nodoc
+class _$TopicAnswerCopyWithImpl<$Res> implements $TopicAnswerCopyWith<$Res> {
+  _$TopicAnswerCopyWithImpl(this._value, this._then);
+
+  final TopicAnswer _value;
+  // ignore: unused_field
+  final $Res Function(TopicAnswer) _then;
+
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      updatedAt: updatedAt == freezed
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class _$TopicAnswerCopyWith<$Res>
+    implements $TopicAnswerCopyWith<$Res> {
+  factory _$TopicAnswerCopyWith(
+          _TopicAnswer value, $Res Function(_TopicAnswer) then) =
+      __$TopicAnswerCopyWithImpl<$Res>;
+  @override
+  $Res call({String id, DateTime createdAt, DateTime updatedAt});
+}
+
+/// @nodoc
+class __$TopicAnswerCopyWithImpl<$Res> extends _$TopicAnswerCopyWithImpl<$Res>
+    implements _$TopicAnswerCopyWith<$Res> {
+  __$TopicAnswerCopyWithImpl(
+      _TopicAnswer _value, $Res Function(_TopicAnswer) _then)
+      : super(_value, (v) => _then(v as _TopicAnswer));
+
+  @override
+  _TopicAnswer get _value => super._value as _TopicAnswer;
+
+  @override
+  $Res call({
+    Object? id = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_TopicAnswer(
+      id: id == freezed
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: createdAt == freezed
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      updatedAt: updatedAt == freezed
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_TopicAnswer extends _TopicAnswer {
+  const _$_TopicAnswer(
+      {required this.id, required this.createdAt, required this.updatedAt})
+      : super._();
+
+  @override
+  final String id;
+  @override
+  final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
+
+  @override
+  String toString() {
+    return 'TopicAnswer(id: $id, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is _TopicAnswer &&
+            (identical(other.id, id) ||
+                const DeepCollectionEquality().equals(other.id, id)) &&
+            (identical(other.createdAt, createdAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.createdAt, createdAt)) &&
+            (identical(other.updatedAt, updatedAt) ||
+                const DeepCollectionEquality()
+                    .equals(other.updatedAt, updatedAt)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(id) ^
+      const DeepCollectionEquality().hash(createdAt) ^
+      const DeepCollectionEquality().hash(updatedAt);
+
+  @JsonKey(ignore: true)
+  @override
+  _$TopicAnswerCopyWith<_TopicAnswer> get copyWith =>
+      __$TopicAnswerCopyWithImpl<_TopicAnswer>(this, _$identity);
+}
+
+abstract class _TopicAnswer extends TopicAnswer {
+  const factory _TopicAnswer(
+      {required String id,
+      required DateTime createdAt,
+      required DateTime updatedAt}) = _$_TopicAnswer;
+  const _TopicAnswer._() : super._();
+
+  @override
+  String get id => throw _privateConstructorUsedError;
+  @override
+  DateTime get createdAt => throw _privateConstructorUsedError;
+  @override
+  DateTime get updatedAt => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$TopicAnswerCopyWith<_TopicAnswer> get copyWith =>
+      throw _privateConstructorUsedError;
 }

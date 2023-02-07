@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
-import 'package:oogiri_taizen/domain/entity/ot_exception.dart';
 import 'package:oogiri_taizen/domain/entity/result.dart';
 import 'package:oogiri_taizen/domain/entity/user.dart';
 import 'package:oogiri_taizen/domain/repository/user_repository.dart';
+import 'package:oogiri_taizen/infra/api_client/firestore_client.dart';
+import 'package:oogiri_taizen/infra/dao/user_dao.dart';
 import 'package:oogiri_taizen/infra/mapper/user_mapper.dart';
 
 final userRepositoryProvider = Provider.autoDispose<UserRepository>(
@@ -23,17 +24,13 @@ class UserRepositoryImpl implements UserRepository {
   Future<Result<User>> getUser({
     required String id,
   }) async {
-    try {
-      final doc = await _firestore.collection('users').doc(id).get();
-      final data = doc.data();
-      if (data == null) {
-        throw OTException(title: 'エラー', text: 'ユーザーの取得に失敗しました');
-      }
-      final user = mappingForUser(userData: data);
-      return Result.success(user);
-    } on Exception catch (exception) {
-      return Result.failure(exception);
+    final result = await FirestoreClient().requestUser(id: id);
+    if (result is Failure) {
+      return Result.failure((result as Failure).exception);
     }
+    final dao = (result as Success<UserDAO>).value;
+    final user = UserMapper.mappingFromDAO(userDAO: dao);
+    return Result.success(user);
   }
 
   @override

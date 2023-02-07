@@ -1,12 +1,30 @@
 import 'package:oogiri_taizen/domain/entity/user.dart';
+import 'package:oogiri_taizen/infra/dao/user_dao.dart';
 
-User mappingForUser({
-  required Map<String, dynamic> userData,
-}) {
-  return User(
-    id: userData['id'] as String,
-    name: userData['name'] as String,
-    imageUrl: userData['image_url'] as String,
-    introduction: userData['introduction'] as String,
-  );
+class UserMapper {
+  UserMapper._() {
+    throw AssertionError('private Constructor');
+  }
+
+  static User mappingFromDAO({
+    required UserDAO userDAO,
+  }) {
+    return User(
+      id: userDAO.id,
+      name: userDAO.name,
+      imageUrl: userDAO.imageUrl,
+      introduction: userDAO.introduction,
+    );
+  }
+
+  static UserDAO mappingToDAO({
+    required User user,
+  }) {
+    return UserDAO(
+      id: user.id,
+      name: user.name,
+      imageUrl: user.imageUrl,
+      introduction: user.introduction,
+    );
+  }
 }
